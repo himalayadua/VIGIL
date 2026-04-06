@@ -1,0 +1,46 @@
+{
+  "scenario_id": "language_learning_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "language_learning",
+  "description": "Model must learn new syntax or vocabulary",
+  "graph_config": {
+    "vocabulary_size": 10,
+    "grammar_rules": 3,
+    "test_sentences": 5
+  },
+  "hidden_rule": {
+    "type": "syntax_acquisition",
+    "description": "Learn and apply novel grammatical rules",
+    "verification_pattern": ["syntax", "grammar", "rule", "pattern"]
+  },
+  "scoring_weights": {
+    "correctness": 0.45,
+    "efficiency": 0.20,
+    "evidence_quality": 0.15,
+    "calibration": 0.10,
+    "generalization": 0.10
+  },
+  "difficulty_levels": {
+    "1": {
+      "vocabulary_size": 5,
+      "grammar_rules": 2
+    },
+    "2": {
+      "vocabulary_size": 10,
+      "grammar_rules": 3
+    },
+    "3": {
+      "vocabulary_size": 15,
+      "grammar_rules": 5
+    }
+  },
+  "budget": {
+    "base": 15,
+    "bonus_per_rule": 2
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}

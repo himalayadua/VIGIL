@@ -1,0 +1,14 @@
+# Vigil Benchmark Framework Requirements
+# For use on Kaggle - most dependencies are pre-installed
+
+# Kaggle Benchmarks SDK (pre-installed on Kaggle)
+# kaggle-benchmarks
+
+# Core dependencies (if running locally)
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Optional: For local development
+# pytest>=7.0.0
+# mypy>=1.0.0
+# ruff>=0.1.0

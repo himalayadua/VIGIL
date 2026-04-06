@@ -1,0 +1,44 @@
+{
+  "scenario_id": "procedural_learning_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "procedural_learning",
+  "description": "Model must improve through repeated practice",
+  "graph_config": {
+    "practice_rounds": 5,
+    "task_variants": 10
+  },
+  "hidden_rule": {
+    "type": "skill_improvement",
+    "description": "Performance should improve across practice rounds",
+    "verification_pattern": ["improved", "practice", "faster", "efficient"]
+  },
+  "scoring_weights": {
+    "correctness": 0.30,
+    "efficiency": 0.30,
+    "improvement_rate": 0.25,
+    "calibration": 0.15
+  },
+  "difficulty_levels": {
+    "1": {
+      "practice_rounds": 3,
+      "task_complexity": "simple"
+    },
+    "2": {
+      "practice_rounds": 5,
+      "task_complexity": "moderate"
+    },
+    "3": {
+      "practice_rounds": 8,
+      "task_complexity": "complex"
+    }
+  },
+  "budget": {
+    "base": 25,
+    "bonus_per_round": 3
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}

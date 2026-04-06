@@ -1,0 +1,46 @@
+{
+  "scenario_id": "associative_learning_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "associative_learning",
+  "description": "Model must learn relationships between co-occurring events",
+  "graph_config": {
+    "num_pairs": 8,
+    "association_strength": 0.8,
+    "distractor_ratio": 0.2
+  },
+  "hidden_rule": {
+    "type": "paired_association",
+    "description": "Certain node pairs always appear together with specific relations",
+    "verification_pattern": ["pair", "associated", "together", "co-occur"]
+  },
+  "scoring_weights": {
+    "correctness": 0.45,
+    "efficiency": 0.20,
+    "evidence_quality": 0.15,
+    "calibration": 0.10,
+    "recovery": 0.10
+  },
+  "difficulty_levels": {
+    "1": {
+      "num_pairs": 4,
+      "association_strength": 0.9
+    },
+    "2": {
+      "num_pairs": 8,
+      "association_strength": 0.7
+    },
+    "3": {
+      "num_pairs": 12,
+      "association_strength": 0.5
+    }
+  },
+  "budget": {
+    "base": 12,
+    "bonus_per_pair": 1
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "scenario_id": "concept_formation_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "concept_formation",
+  "description": "Model must infer latent category rules from graph exploration",
+  "graph_config": {
+    "num_nodes": 15,
+    "num_categories": 3,
+    "features_per_node": 5,
+    "core_features_per_category": 3,
+    "feature_pool_size": 30
+  },
+  "hidden_rule": {
+    "type": "category_by_core_features",
+    "description": "Nodes in the same category share 3+ core features",
+    "verification_pattern": ["core features", "shared features", "category", "same group"]
+  },
+  "scoring_weights": {
+    "correctness": 0.50,
+    "efficiency": 0.20,
+    "evidence_quality": 0.20,
+    "calibration": 0.10
+  },
+  "difficulty_levels": {
+    "1": {
+      "num_nodes": 9,
+      "num_categories": 2,
+      "features_per_node": 4,
+      "core_features_per_category": 3
+    },
+    "2": {
+      "num_nodes": 15,
+      "num_categories": 3,
+      "features_per_node": 5,
+      "core_features_per_category": 3
+    },
+    "3": {
+      "num_nodes": 24,
+      "num_categories": 4,
+      "features_per_node": 6,
+      "core_features_per_category": 4
+    }
+  },
+  "budget": {
+    "base": 10,
+    "bonus_per_category": 2
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}

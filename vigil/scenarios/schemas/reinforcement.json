@@ -1,0 +1,50 @@
+{
+  "scenario_id": "reinforcement_learning_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "reinforcement_learning",
+  "description": "Model must learn from rewards and punishments",
+  "graph_config": {
+    "num_nodes": 20,
+    "reward_nodes": 4,
+    "penalty_nodes": 3,
+    "neutral_nodes": 13
+  },
+  "hidden_rule": {
+    "type": "reward_maximization",
+    "description": "Navigate to reward nodes while avoiding penalty nodes",
+    "verification_pattern": ["reward", "maximize", "avoid", "penalty"]
+  },
+  "scoring_weights": {
+    "correctness": 0.40,
+    "efficiency": 0.25,
+    "evidence_quality": 0.15,
+    "calibration": 0.10,
+    "recovery": 0.10
+  },
+  "difficulty_levels": {
+    "1": {
+      "num_nodes": 12,
+      "reward_nodes": 3,
+      "penalty_nodes": 1
+    },
+    "2": {
+      "num_nodes": 20,
+      "reward_nodes": 4,
+      "penalty_nodes": 3
+    },
+    "3": {
+      "num_nodes": 30,
+      "reward_nodes": 5,
+      "penalty_nodes": 5
+    }
+  },
+  "budget": {
+    "base": 15,
+    "bonus_per_reward": 2
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}

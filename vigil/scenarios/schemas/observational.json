@@ -1,0 +1,44 @@
+{
+  "scenario_id": "observational_learning_v1",
+  "cognitive_track": "learning",
+  "sub_ability": "observational_learning",
+  "description": "Model must learn by watching demonstrations",
+  "graph_config": {
+    "demo_count": 3,
+    "transfer_tests": 5
+  },
+  "hidden_rule": {
+    "type": "imitation_with_generalization",
+    "description": "Observe solution strategy and apply to isomorphic problem",
+    "verification_pattern": ["observed", "demonstration", "similar", "pattern"]
+  },
+  "scoring_weights": {
+    "correctness": 0.50,
+    "efficiency": 0.20,
+    "evidence_quality": 0.15,
+    "calibration": 0.15
+  },
+  "difficulty_levels": {
+    "1": {
+      "demo_count": 2,
+      "transfer_tests": 3
+    },
+    "2": {
+      "demo_count": 3,
+      "transfer_tests": 5
+    },
+    "3": {
+      "demo_count": 4,
+      "transfer_tests": 8
+    }
+  },
+  "budget": {
+    "base": 20,
+    "bonus_per_test": 3
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-03-29",
+    "author": "Vigil Team"
+  }
+}
