@@ -1,25 +1,27 @@
 """
 Scoring engine for cognitive benchmarks.
-
-Provides multi-metric scoring for cognitive profile generation.
 """
 
-from vigil.scoring.profile import CognitiveProfile
+from vigil.scoring.profile import CognitiveProfile, HumanBaseline, TrackProfile
+from vigil.scoring.vis import VISScorer
 from vigil.scoring.metrics import (
     compute_correctness,
     compute_efficiency,
     compute_evidence_quality,
     compute_calibration,
     compute_recovery,
-    compute_weighted_score
+    compute_weighted_score,
 )
 
 __all__ = [
     "CognitiveProfile",
+    "HumanBaseline",
+    "TrackProfile",
+    "VISScorer",
     "compute_correctness",
     "compute_efficiency",
     "compute_evidence_quality",
     "compute_calibration",
     "compute_recovery",
-    "compute_weighted_score"
+    "compute_weighted_score",
 ]

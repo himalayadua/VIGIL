@@ -1,232 +1,212 @@
 """
-Reinforcement Learning Environment for Track 1: Learning.
+Reinforcement Learning Environment — Track 1: Learning (Iowa Gambling Task analog).
 
-Implements reinforcement learning test where models must:
-- Learn from rewards and punishments
-- Maximize cumulative reward
-- Avoid penalty states
+Fixes applied (Task 5):
+  5.3 — evidence_nodes populated on inspect of region nodes
+  5.6 — 4 regions (2 high-immediate/net-negative, 2 modest/net-positive),
+         stochastic rewards, cumulative_reward tracked, budget 20-25
 """
 
 import random
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Any, Dict, List, Optional
 
 from vigil.environments.base import (
-    CognitiveEnvironment,
-    EnvironmentState,
-    GraphAction,
-    ActionType
+    CognitiveEnvironment, EnvironmentState, EventType, TraversalEvent,
 )
-from vigil.graphs.core import CognitiveGraph, GraphNode, GraphEdge
+from vigil.graphs.core import CognitiveGraph, GraphEdge, GraphNode, NodeVisibility
+
+
+# Region reward schedules: (mean_reward, std_dev)
+# Regions 0,1: high immediate but net-negative (mean < 0 overall after many draws)
+# Regions 2,3: modest but net-positive
+_REGION_SCHEDULES = {
+    "region_0": {"mean": 2.0, "std": 3.5, "net": "negative"},   # high variance, net-negative
+    "region_1": {"mean": 1.5, "std": 3.0, "net": "negative"},
+    "region_2": {"mean": 0.5, "std": 0.5, "net": "positive"},   # low variance, net-positive
+    "region_3": {"mean": 0.8, "std": 0.6, "net": "positive"},
+}
 
 
 class ReinforcementLearningEnv(CognitiveEnvironment):
-    """
-    Environment for testing reinforcement learning ability.
 
-    The model must navigate to reward nodes while avoiding penalties,
-    learning the value of different paths through experience.
-    """
-
-    def __init__(
-        self,
-        scenario_config: Dict[str, Any],
-        difficulty: int = 2,
-        seed: Optional[int] = None
-    ):
-        """
-        Initialize RL environment.
-
-        Args:
-            scenario_config: Configuration from scenario JSON
-            difficulty: Difficulty level (1-3)
-            seed: Random seed
-        """
+    def __init__(self, scenario_config: Dict[str, Any], difficulty: int = 2, seed: Optional[int] = None):
         self.scenario_config = scenario_config
         self.difficulty = difficulty
-        self.seed = seed or random.randint(0, 10000)
-        random.seed(self.seed)
-
+        self.seed = seed if seed is not None else random.randint(0, 10000)
+        self._rng = random.Random(self.seed)
         self._graph_config = self._get_difficulty_config()
         self._scoring_weights = scenario_config.get("scoring_weights", {})
-
-        self.graph = self._generate_graph()
-        self.state: Optional[EnvironmentState] = None
         self._hidden_rule = scenario_config.get("hidden_rule", {})
-        self._reward_history = []
+        self._node_regions: Dict[str, str] = {}
+        self.graph = self._generate_graph()
+        # Evidence-relevant = nodes in net-positive regions
+        self._evidence_relevant = {nid for nid, r in self._node_regions.items() if _REGION_SCHEDULES[r]["net"] == "positive"}
 
     def _get_difficulty_config(self) -> Dict[str, Any]:
-        """Get difficulty config."""
         levels = self.scenario_config.get("difficulty_levels", {})
         return levels.get(str(self.difficulty), levels.get("2", {}))
 
     def _generate_graph(self) -> CognitiveGraph:
-        """Generate graph with reward and penalty nodes."""
-        num_nodes = self._graph_config.get("num_nodes", 20)
-        num_rewards = self._graph_config.get("reward_nodes", 4)
-        num_penalties = self._graph_config.get("penalty_nodes", 3)
-
+        num_nodes = self._graph_config.get("num_nodes", 16)
         graph = CognitiveGraph()
         node_ids = []
+        regions = list(_REGION_SCHEDULES.keys())
 
-        # Create nodes
         for i in range(num_nodes):
-            node_type = "neutral"
-            features = set()
-
-            if i < num_rewards:
-                node_type = "reward"
-                features.add("REWARD")
-            elif i < num_rewards + num_penalties:
-                node_type = "penalty"
-                features.add("PENALTY")
-
+            region = regions[i % 4]
+            self._node_regions[f"node_{i}"] = region
             node = GraphNode(
                 node_id=f"node_{i}",
-                features=features | {f"feature_{i}"},
-                category=node_type,
-                metadata={"type": node_type, "value": 1.0 if node_type == "reward" else (-1.0 if node_type == "penalty" else 0.0)}
+                features={f"region_marker_{i % 4}", f"node_attr_{i}"},
+                category=region,
+                metadata={"region": region},
             )
             graph.add_node(node)
             node_ids.append(node.node_id)
 
-        # Create random connections
-        for i, node in enumerate(graph.nodes.values()):
-            num_edges = random.randint(2, 4)
-            targets = random.sample(
-                [n for n in node_ids if n != node.node_id],
-                min(num_edges, len(node_ids) - 1)
-            )
-
+        for i in range(num_nodes):
+            num_edges = self._rng.randint(2, 4)
+            targets = self._rng.sample([n for n in node_ids if n != node_ids[i]], min(num_edges, len(node_ids) - 1))
             for target in targets:
-                graph.add_edge(
-                    node.node_id,
-                    GraphEdge(source=node.node_id, target=target, relation_type="leads_to")
-                )
+                graph.add_edge(node_ids[i], GraphEdge(source=node_ids[i], target=target, relation_type="leads_to"))
 
+        graph.hidden_rule = "reward_regions | advantageous: region_2, region_3"
+        graph.metadata = {"region_schedules": {k: v["net"] for k, v in _REGION_SCHEDULES.items()}}
+        graph.init_visibility(node_ids[0])
         return graph
 
+    def _draw_reward(self, region: str) -> float:
+        """Draw a stochastic reward from the region's schedule."""
+        schedule = _REGION_SCHEDULES[region]
+        # Gaussian draw, clipped to reasonable range
+        reward = self._rng.gauss(schedule["mean"], schedule["std"])
+        # Net-negative regions: subtract a penalty on most draws
+        if schedule["net"] == "negative":
+            reward -= 2.5  # makes expected value negative
+        return round(reward, 2)
+
     def reset(self) -> EnvironmentState:
-        """Reset environment."""
-        self.state = EnvironmentState(
-            current_node="node_0",
-            budget_remaining=self.scenario_config.get("budget", {}).get("base", 15)
-        )
-        self._reward_history = []
-        return self.state
+        # FIX 5.6: budget 20-25 (not 100)
+        budget = self.scenario_config.get("budget", {}).get("base", 20)
+        start = self.graph.get_all_node_ids()[0]
+        state = EnvironmentState(current_node=start, budget_remaining=budget)
+        state.visited_nodes.append(start)
+        return state
 
-    def get_available_actions(self, state: EnvironmentState) -> str:
-        """Get action menu."""
-        return f"""
-Current: {state.current_node}
-Budget: {state.budget_remaining}
-Total reward so far: {sum(self._reward_history):.1f}
-
-Actions:
-  expand:<node_id> - Move to connected node
-  inspect - View current node
-  submit - Submit findings
-"""
-
-    def execute_action(
-        self,
-        state: EnvironmentState,
-        action: GraphAction
-    ) -> Tuple[bool, str]:
-        """Execute action."""
-        if action.action_type == ActionType.EXPAND:
-            return self._execute_expand(state, action)
-        elif action.action_type == ActionType.INSPECT:
-            return self._execute_inspect(state, action)
-        elif action.action_type == ActionType.SUBMIT:
-            return self._execute_submit(state)
-
-        return False, "Invalid action"
-
-    def _execute_expand(
-        self,
-        state: EnvironmentState,
-        action: GraphAction
-    ) -> Tuple[bool, str]:
-        """Execute expand with reward/penalty feedback."""
-        if state.budget_remaining <= 0:
-            return False, "No budget"
-
-        target = action.target_node
-        if not target:
-            return False, "Specify target"
-
-        state.current_node = target
-        state.visited_nodes.append(target)
-        state.budget_remaining -= 1
-        state.action_history.append(action)
-
-        node = self.graph.get_node(target)
-        node_type = node.metadata.get("type", "neutral")
-
-        # Provide reward/penalty feedback
-        if node_type == "reward":
-            self._reward_history.append(1.0)
-            return True, f"REWARD! (+1.0). Features: {node.features}"
-        elif node_type == "penalty":
-            self._reward_history.append(-1.0)
-            return True, f"PENALTY! (-1.0). Features: {node.features}"
+    def render(self, state: EnvironmentState) -> str:
+        view = self.graph.get_agent_view()
+        if len(state.action_history) > 15:
+            history_str = f"[Compressed: {len(state.action_history)} actions]"
         else:
-            self._reward_history.append(0.0)
-            return True, f"Neutral. Features: {node.features}"
-
-    def _execute_inspect(
-        self,
-        state: EnvironmentState,
-        action: GraphAction
-    ) -> Tuple[bool, str]:
-        """Inspect current node."""
-        node = self.graph.get_node(state.current_node)
-        state.action_history.append(action)
-        return True, f"Features: {node.features}"
-
-    def _execute_submit(
-        self,
-        state: EnvironmentState
-    ) -> Tuple[bool, str]:
-        """Submit findings."""
-        state.budget_remaining = 0
-        return True, "Submitted"
-
-    def score_exploration(
-        self,
-        state: EnvironmentState,
-        final_answer: str
-    ) -> Dict[str, float]:
-        """Score exploration."""
-        from vigil.scoring.metrics import (
-            compute_correctness,
-            compute_efficiency,
-            compute_weighted_score
+            history_str = f"{len(state.action_history)} actions taken"
+        return (
+            f"=== Reinforcement Learning ===\n"
+            f"Current: {state.current_node} | Budget: {state.budget_remaining}\n"
+            f"Cumulative reward: {state.cumulative_reward:.2f}\n"
+            f"Expanded: {len(view['expanded'])} | Discovered: {len(view['discovered'])}\n"
+            f"Evidence (advantageous nodes found): {len(state.evidence_nodes)} | {history_str}\n"
+            f"Actions: explore:<node_id>(cost 2) | inspect:<node_id>(cost 1) | get_context | submit_answer\n"
+            f"Goal: Identify which regions yield net-positive rewards."
         )
 
-        # Correctness based on reward maximization
-        total_reward = sum(self._reward_history)
-        correctness = max(0, min(1, (total_reward + 5) / 10))  # Normalize
+    def execute_action(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        from vigil.actions.schemas import (
+            ActionParseError, ExploreAction, GetContextAction, InspectAction, SubmitAnswerAction,
+        )
+        if isinstance(action, ActionParseError):
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Parse error: {action.error}"))
+            return state
+        if isinstance(action, ExploreAction):
+            return self._execute_explore(state, action)
+        if isinstance(action, InspectAction):
+            return self._execute_inspect(state, action)
+        if isinstance(action, GetContextAction):
+            return self._execute_get_context(state)
+        if isinstance(action, SubmitAnswerAction):
+            return self._execute_submit(state, action)
+        state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Unknown action: {type(action)}"))
+        return state
 
-        efficiency = compute_efficiency(state, 5)
-        evidence_quality = min(1.0, len(state.visited_nodes) / 10)
-        calibration = 0.5
+    def _execute_explore(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        if state.budget_remaining < 2:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, "Need 2 budget for explore", node_id=action.node_id))
+            return state
+        neighbors = self.graph.get_neighbors(state.current_node)
+        if action.node_id not in neighbors:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"'{action.node_id}' is not a neighbor of '{state.current_node}'", node_id=action.node_id))
+            return state
+        state.current_node = action.node_id
+        state.visited_nodes.append(action.node_id)
+        state.budget_remaining -= 2
+        self.graph.set_visibility(action.node_id, NodeVisibility.EXPANDED)
+        for nid in self.graph.get_neighbors(action.node_id):
+            self.graph.set_visibility(nid, NodeVisibility.DISCOVERED)
+        # FIX 5.6: stochastic reward from region schedule
+        region = self._node_regions.get(action.node_id, "region_0")
+        reward = self._draw_reward(region)
+        state.cumulative_reward += reward
+        reward_str = f"+{reward:.2f}" if reward >= 0 else f"{reward:.2f}"
+        obs = f"Moved to {action.node_id} (region {region[-1]}). Reward: {reward_str}. Cumulative: {state.cumulative_reward:.2f}"
+        state.action_history.append(TraversalEvent.make(EventType.EXPLORE, obs, node_id=action.node_id, budget_delta=-2))
+        return state
 
+    def _execute_inspect(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        # FIX 5.3: populate evidence_nodes for net-positive region nodes
+        if state.budget_remaining < 1:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, "Need 1 budget for inspect", node_id=action.node_id))
+            return state
+        if self.graph.get_visibility(action.node_id) == NodeVisibility.UNEXPLORED:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Cannot inspect UNEXPLORED node '{action.node_id}'", node_id=action.node_id))
+            return state
+        node = self.graph.get_node(action.node_id)
+        if node is None:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Node '{action.node_id}' not found", node_id=action.node_id))
+            return state
+        visible = sorted(node.get_visible_features())
+        obs = f"Node {action.node_id} features: {visible}"
+        self.graph.set_visibility(action.node_id, NodeVisibility.EXPANDED)
+        state.budget_remaining -= 1
+        evidence_added = []
+        if action.node_id in self._evidence_relevant and action.node_id not in state.evidence_nodes:
+            state.evidence_nodes.append(action.node_id)
+            evidence_added.append(action.node_id)
+        state.action_history.append(TraversalEvent.make(EventType.INSPECT, obs, node_id=action.node_id, budget_delta=-1, evidence_added=evidence_added))
+        return state
+
+    def _execute_get_context(self, state: EnvironmentState) -> EnvironmentState:
+        # FIX 5.6: include cumulative_reward in get_context
+        view = self.graph.get_agent_view()
+        obs = (
+            f"At {state.current_node} | Budget: {state.budget_remaining} | "
+            f"Cumulative reward: {state.cumulative_reward:.2f} | "
+            f"Expanded: {len(view['expanded'])} | Evidence: {len(state.evidence_nodes)}"
+        )
+        state.action_history.append(TraversalEvent.make(EventType.GET_CONTEXT, obs))
+        return state
+
+    def _execute_submit(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        state.confidence_history.append(action.confidence)
+        state.episode_done = True
+        obs = f"Submitted: '{action.answer}' (confidence={action.confidence:.2f})"
+        state.action_history.append(TraversalEvent.make(EventType.SUBMIT_ANSWER, obs, episode_done=True))
+        return state
+
+    def score_episode(self, state: EnvironmentState, final_answer: str, justification: str = "") -> Dict[str, float]:
+        from vigil.scoring.metrics import compute_correctness, compute_efficiency, compute_evidence_quality, compute_calibration, compute_weighted_score
+        correctness = compute_correctness(final_answer, self._hidden_rule.get("description", ""), self.verify_answer)
+        # Reward-based correctness bonus: positive cumulative reward is a good signal
+        reward_bonus = max(0.0, min(0.3, state.cumulative_reward / 10.0))
+        correctness = min(1.0, correctness + reward_bonus)
         scores = {
             "correctness": correctness,
-            "efficiency": efficiency,
-            "evidence_quality": evidence_quality,
-            "calibration": calibration,
-            "recovery": 0.5
+            "efficiency": compute_efficiency(state, 8),
+            "evidence_quality": compute_evidence_quality(state, 4),
+            "calibration": compute_calibration(state, bool(correctness)),
+            "recovery": 0.5,
         }
-
         scores["final_score"] = compute_weighted_score(scores, self._scoring_weights)
         return scores
 
-    def verify_rule(self, answer: str) -> bool:
-        """Verify understanding of reward structure."""
-        answer_lower = answer.lower()
-        patterns = self._hidden_rule.get("verification_pattern", [
-            "reward", "maximize", "avoid"
-        ])
-        return any(p in answer_lower for p in patterns)
+    def verify_answer(self, answer: str) -> bool:
+        patterns = self._hidden_rule.get("verification_pattern", ["reward", "maximize", "avoid", "region_2", "region_3", "advantageous"])
+        return any(p in answer.lower() for p in patterns)

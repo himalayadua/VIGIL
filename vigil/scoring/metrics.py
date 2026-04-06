@@ -53,26 +53,19 @@ def compute_efficiency(
     """
     Compute path efficiency score.
 
-    Measures how efficiently the model explored the graph.
-    Higher score = fewer unnecessary actions.
-
-    Args:
-        state: Final environment state
-        optimal_path_length: Expected optimal path length
+    FIX 5.5: uses len(state.action_history) — counts ALL actions including
+    failed ones, inspect, backtrack, etc.
 
     Returns:
-        Score between 0.0 and 1.0
+        0.0 when no actions taken, otherwise optimal / actual (capped at 1.0)
     """
+    # FIX 5.5: always use action_history length
     actions_taken = len(state.action_history)
 
     if actions_taken == 0:
         return 0.0
 
-    # Efficiency = optimal / actual
-    # Perfect score if actions <= optimal
-    # Decreasing score for each extra action
     efficiency = optimal_path_length / max(actions_taken, optimal_path_length)
-
     return min(1.0, efficiency)
 
 

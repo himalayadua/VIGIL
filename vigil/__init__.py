@@ -16,21 +16,31 @@ Tracks supported:
 __version__ = "0.1.0"
 __author__ = "Vigil Team"
 
-# Import core components for easy access
-from vigil.environments.base import CognitiveEnvironment, EnvironmentState
-from vigil.graphs.core import CognitiveGraph, GraphNode, GraphEdge
+from vigil.environments.base import CognitiveEnvironment, EnvironmentState, TraversalEvent, EventType
+from vigil.graphs.core import CognitiveGraph, GraphNode, GraphEdge, NodeVisibility
 from vigil.scenarios.loader import ScenarioLoader
-from vigil.actions.schemas import GraphAction, ActionType
+from vigil.actions.schemas import (
+    ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction,
+    VigilAction, ActionParseError, ACTION_BUDGET_COST,
+)
 from vigil.scoring.profile import CognitiveProfile
 
 __all__ = [
     "CognitiveEnvironment",
     "EnvironmentState",
+    "TraversalEvent",
+    "EventType",
     "CognitiveGraph",
     "GraphNode",
     "GraphEdge",
+    "NodeVisibility",
     "ScenarioLoader",
-    "GraphAction",
-    "ActionType",
+    "ExploreAction",
+    "InspectAction",
+    "GetContextAction",
+    "SubmitAnswerAction",
+    "VigilAction",
+    "ActionParseError",
+    "ACTION_BUDGET_COST",
     "CognitiveProfile",
 ]

@@ -1,0 +1,3419 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "vigil_social_forum_succession_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-01",
+      "title": "The Forum Tone Shift",
+      "synthetic_domain": "communal guild forum",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Recover why new members are quietly leaving the Lattice Forum even though the most visible public blowup has already ended.",
+      "causal_chain": [
+        "A flood of anxious posts enters the Lattice Forum through two intake circles.",
+        "Warm, high-status peer guides rally around the first wave and keep departures low.",
+        "After the peak passes, forum stewardship is handed to impersonal digest clerks who summarize rather than personally respond.",
+        "Newcomers lose the social cues and micro-validation that made the forum feel safe.",
+        "Departures spike only after the visible conflict peak has passed."
+      ],
+      "red_herrings": [
+        "A dramatic public accusation during the peak week.",
+        "A construction project beside the forum hall that coincides with the exodus.",
+        "A cold-weather lull that changes posting volume."
+      ],
+      "hidden_mechanism": "The departures are not caused by the loud peak conflict itself. They are caused by a succession event in the support ecology: warm peer-guides are replaced by impersonal summarizers, changing how vulnerable newcomers interpret silence, status, and care.",
+      "disconfirmation_moment": "Lethal-seeming accusation transcripts are reviewed and most departing members were not direct targets of the accusation. Exit interviews cluster after the stewardship handoff, not at the accusation peak.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Newcomer Intake Circles",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Peak Accusation Thread",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Peer Guide Cohort",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Digest Clerks",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Exit Interview Cache",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Departure Spike",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "feeds"
+        },
+        {
+          "source": "n3",
+          "target": "n1",
+          "relation": "reassures"
+        },
+        {
+          "source": "n4",
+          "target": "n1",
+          "relation": "summarizes_for"
+        },
+        {
+          "source": "n4",
+          "target": "n6",
+          "relation": "precedes"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "implicates"
+        },
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "appears_to_explain"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "newcomers read clerk silence as rejection while clerks believe summary coverage is sufficient",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_mediator_vacuum_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-02",
+      "title": "The Mediator Vacuum",
+      "synthetic_domain": "federated neighborhood assembly",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "observational_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why harassment incidents rose in the Hearthring districts after a harmless budget reform for volunteer stipends.",
+      "causal_chain": [
+        "A stipend reform unintentionally removes the old volunteer mediators who handled informal grievances.",
+        "Unresolved grievances accumulate in public channels.",
+        "Attention-seeking rumor brokers step into the empty social niche and offer fast, sensational explanations.",
+        "Residents begin taking cues from rumor brokers rather than trusted mediators.",
+        "Harassment and retaliatory meetups rise across districts."
+      ],
+      "red_herrings": [
+        "Habitat stress from the crowded market season.",
+        "A spike in direct poaching of assembly supplies.",
+        "Weather volatility that kept people indoors."
+      ],
+      "hidden_mechanism": "The harm is not caused directly by the stipend reform or by the missing mediators alone. It is caused by a functional replacement cascade: rumor brokers replace mediators as grievance handlers, but amplify fear and retaliation instead of resolving conflict.",
+      "disconfirmation_moment": "Districts that never relied on the mediator network show no harassment increase, while districts that lost mediators but gained rumor-broker channels show the sharpest rise.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Stipend Reform Notice",
+          "kind": "policy",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Volunteer Mediators",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Rumor Broker Ring",
+          "kind": "agent_group",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "District Grievance Logs",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Harassment Spike",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Never-Mediated Districts",
+          "kind": "comparison_set",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "displaces"
+        },
+        {
+          "source": "n2",
+          "target": "n4",
+          "relation": "used_to_resolve"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "captures"
+        },
+        {
+          "source": "n3",
+          "target": "n5",
+          "relation": "amplifies"
+        },
+        {
+          "source": "n6",
+          "target": "n5",
+          "relation": "fails_to_show"
+        },
+        {
+          "source": "n4",
+          "target": "n5",
+          "relation": "precedes"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "residents think rumor brokers are helping them bypass bureaucracy; brokers optimize attention",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_bridge_messenger_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-03",
+      "title": "The Missing Bridge Messengers",
+      "synthetic_domain": "paired creative communities",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Find why collaboration collapsed in the Glasswake studio even though its own members report no internal conflict.",
+      "causal_chain": [
+        "Prank intrusions begin on the rooftop roost where inter-community messengers gather.",
+        "Messenger attendance collapses in the roost.",
+        "Glasswake receives far fewer idea bundles, corrections, and invitations from the neighboring Tidewell circle.",
+        "Project quality and morale fall inside Glasswake despite apparently stable internal behavior.",
+        "The decline is strongest in teams closest to the old messenger route."
+      ],
+      "red_herrings": [
+        "Temperature changes in the drafting rooms.",
+        "Direct fishing pressure on Glasswake commissions.",
+        "A simultaneous bleaching-like morale event in the outer annex."
+      ],
+      "hidden_mechanism": "The studio decline is not caused inside the studio. It is caused by a cross-community subsidy collapse: prank pressure removes the bridge messengers whose visits carried coordination, status signals, and opportunity flow across the community boundary.",
+      "disconfirmation_moment": "Neighboring teams with intact messenger routes remain healthy, while Tidewell-adjacent Glasswake teams decline most sharply after the rooftop roost empties.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Rooftop Roost",
+          "kind": "social_space",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Bridge Messengers",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Prank Intruders",
+          "kind": "agent_group",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "Glasswake Studio",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n5",
+          "label": "Tidewell Circle",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Idea Bundle Ledger",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n3",
+          "target": "n1",
+          "relation": "disrupts"
+        },
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "serves"
+        },
+        {
+          "source": "n2",
+          "target": "n4",
+          "relation": "links"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "reveals_drop_in"
+        },
+        {
+          "source": "n2",
+          "target": "n4",
+          "relation": "supplies_status_and_feedback"
+        },
+        {
+          "source": "n1",
+          "target": "n4",
+          "relation": "indirectly_supports"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "Glasswake believes the problem is internal fatigue; the pranksters target messengers for status games",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_shadow_auditor_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-04",
+      "title": "The Shadow of the Auditor",
+      "synthetic_domain": "care residence",
+      "primary_sub_abilities": [
+        "social_perception",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "procedural_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why resident wellbeing fell after the arrival of an outside auditor even though staff counts stayed normal.",
+      "causal_chain": [
+        "A new apex-status auditor begins unannounced rounds.",
+        "Care aides start avoiding long, visible interactions with residents who often cry or complain.",
+        "Aides redirect time toward tasks that look tidy under observation.",
+        "Residents with high emotional needs receive less informal care despite unchanged staffing.",
+        "Wellbeing indicators fall and plant-room conflicts rise."
+      ],
+      "red_herrings": [
+        "The auditor directly hurting residents.",
+        "Competition between the auditor and resident advocates.",
+        "An unexplained disease wave."
+      ],
+      "hidden_mechanism": "The deterioration runs through behavior change, not staff loss. The auditor's presence alters aides' inference about what counts as 'good work,' causing avoidance and distorted care allocation.",
+      "disconfirmation_moment": "Headcount logs remain normal, but time-motion journals show aides changing where they linger and which residents they avoid when the auditor is nearby.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Outside Auditor",
+          "kind": "agent",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Care Aides",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "High-Need Residents",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Time-Motion Journals",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Wellbeing Dip",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Staffing Roster",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "changes_behavior_of"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "avoids"
+        },
+        {
+          "source": "n6",
+          "target": "n5",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "reveals_shift_in_attention"
+        },
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "indirectly_causes"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "aides think visible tidiness will satisfy the auditor; residents interpret reduced contact as personal abandonment",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_archive_embers_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-05",
+      "title": "The Archive Embers",
+      "synthetic_domain": "lakefront civic coalition",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_negotiation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why mistrust keeps flaring in the coalition even after the leak-prevention policy was fully enforced.",
+      "causal_chain": [
+        "The coalition tightens current leak channels and verifies compliance.",
+        "Leaked meeting notes drop to near zero.",
+        "Conflict still resurges every warm-cycle retrospective.",
+        "Old archived accusations and unresolved side-threads get resurfaced in reflective sessions.",
+        "Members interpret present calm as fake because old grievances are repeatedly reactivated."
+      ],
+      "red_herrings": [
+        "Current policy non-compliance.",
+        "A recent temperature anomaly in the hall schedule.",
+        "New upstream construction of an annex."
+      ],
+      "hidden_mechanism": "The coalition addressed the current visible source of distrust but not the historical social debt stored in old archives. The dominant source of conflict shifted from new leaks to internal reactivation of unresolved memories.",
+      "disconfirmation_moment": "Audit logs confirm current leaks are almost gone. Yet every flare-up references old archive fragments, not new disclosures, forcing a pivot from enforcement to memory repair.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Leak-Prevention Policy",
+          "kind": "policy",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Compliance Audit",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Archive Embers",
+          "kind": "hidden_memory_store",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "Retrospective Sessions",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n5",
+          "label": "Trust Flare-Up",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Old Accusation Fragments",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "is_verified_by"
+        },
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "reactivates"
+        },
+        {
+          "source": "n6",
+          "target": "n5",
+          "relation": "triggers"
+        },
+        {
+          "source": "n3",
+          "target": "n5",
+          "relation": "sustains"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leaders believe present compliance should restore trust; members read resurfacing as proof the old wound was never owned",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_novice_swell_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-06",
+      "title": "The Novice Swell",
+      "synthetic_domain": "artisan fellowship",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Determine why specialist members are leaving even though total fellowship membership appears stable.",
+      "causal_chain": [
+        "A new intake wave increases novice numbers sharply.",
+        "Total fellowship headcount stays roughly constant.",
+        "Shared junior-stage resources become crowded with novice demand.",
+        "Specialists who rely on those same early-stage resources for advanced prototyping lose access and leave.",
+        "The fellowship enters an irreversible expertise drain."
+      ],
+      "red_herrings": [
+        "Disease among specialists.",
+        "Direct competition between adult master-crafters and specialists.",
+        "Nearby habitat loss in the market quarter."
+      ],
+      "hidden_mechanism": "The mechanism runs through role composition rather than total membership. A novice-heavy size-structure shift changes who consumes shared attention and lab time, indirectly driving out specialists.",
+      "disconfirmation_moment": "Membership totals look normal, but stage-distribution charts show a huge novice skew. Exit notes cite blocked prototype access, not general dissatisfaction.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Intake Wave",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Novice Cohort",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Shared Junior Lab",
+          "kind": "resource",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Specialist Circle",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Stable Headcount Dashboard",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Stage Distribution Ledger",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "expands"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "crowds"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "depends_on"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "misleads_about"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "reveals_skew_in"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "pushes_out"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leaders think stable totals imply stability; specialists infer the fellowship no longer sees their bottleneck",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_orientation_feed_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-07",
+      "title": "The Orientation Feed",
+      "synthetic_domain": "reefside volunteer program",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_persuasion"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "observational_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why newcomer clashes exploded even though veteran moderator presence did not measurably decline.",
+      "causal_chain": [
+        "Catchment reforms change what onboarding feeds emphasize to incoming volunteers.",
+        "Newcomers consume a diet of outrage-laced success stories and grievance posts during their first days.",
+        "Novices become primed to see neutral corrections as disrespect.",
+        "Recruitment cohorts enter the program with conflict scripts already active.",
+        "Visible disputes and norm violations surge."
+      ],
+      "red_herrings": [
+        "Missing adult predators in the veteran moderator pool.",
+        "More cyclones in the calendar year.",
+        "Overfishing of moderator attention."
+      ],
+      "hidden_mechanism": "The outbreak is driven by bottom-up social nutrition: the onboarding feed removes the usual bottleneck that kept grievance identity from scaling among novices. Moderator counts are a red herring.",
+      "disconfirmation_moment": "Veteran presence is similar across calm and chaotic cohorts, but cohorts exposed to the altered feed show much stronger dispute initiation on day one.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Onboarding Feed",
+          "kind": "information_channel",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "New Volunteer Cohorts",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Veteran Moderators",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Dispute Spike",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n5",
+          "label": "Cohort Comparison Board",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Moderator Count Sheet",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "primes"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "appears_to_explain"
+        },
+        {
+          "source": "n6",
+          "target": "n4",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n5",
+          "target": "n1",
+          "relation": "implicates"
+        },
+        {
+          "source": "n2",
+          "target": "n4",
+          "relation": "drives"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "program leads think moderation coverage is the key variable; recruits arrive already persuaded they are entering an adversarial arena",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_handoff_layer_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-08",
+      "title": "The Broken Handoff Layer",
+      "synthetic_domain": "harbor operations office",
+      "primary_sub_abilities": [
+        "social_skills_cooperation",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Find why service quality collapsed even though the office still looks fully staffed and orderly.",
+      "causal_chain": [
+        "Repeated storm weeks fill the handoff board between shifts with sediment-like clutter.",
+        "Frontline workers can no longer tell which requests are still live or who owns them.",
+        "People stop touching the board because every interaction feels costly and ambiguous.",
+        "Productivity and morale collapse while staffing and visible structure stay intact.",
+        "Leadership keeps reporting the office as healthy because desks are occupied and procedures still exist."
+      ],
+      "red_herrings": [
+        "Coral-like structural bleaching in the office layout.",
+        "Cyclone damage to furniture.",
+        "Fishing pressure from external clients."
+      ],
+      "hidden_mechanism": "The system is failing in function, not structure. The invisible coordination substrate between agents has collapsed, even while the institution's visible shell remains normal.",
+      "disconfirmation_moment": "Standard inspections show full attendance and intact desks, but task-throughput and fishery-service logs crater. The discrepancy forces attention to the spaces between roles rather than the roles themselves.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Shift Handoff Board",
+          "kind": "coordination_layer",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Storm-Week Backlog",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Frontline Workers",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Attendance Report",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n5",
+          "label": "Throughput Ledger",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Service Collapse",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "clutters"
+        },
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "confuses"
+        },
+        {
+          "source": "n4",
+          "target": "n6",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "reveals"
+        },
+        {
+          "source": "n1",
+          "target": "n6",
+          "relation": "indirectly_causes"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leaders infer visible order means healthy coordination; workers privately treat the board as unusable",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_masked_calm_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-09",
+      "title": "The Masked Calm",
+      "synthetic_domain": "pollinator-market social commons",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why collaboration suddenly crashes after months of apparently stable or even calmer interactions.",
+      "causal_chain": [
+        "A new stressor suppresses both bridge-builders and provocateurs.",
+        "Open conflict falls at first, so leaders think the policy helped.",
+        "The community still looks stable because fewer provocations mask the loss of social pollinators.",
+        "Seed-set equivalents \u2014 new project starts, introductions, cross-team trust bids \u2014 quietly decline.",
+        "Once the hidden threshold is crossed, collaboration collapses abruptly."
+      ],
+      "red_herrings": [
+        "Stable visible project headcount.",
+        "Beneficial-seeming drop in pest-like disruptors.",
+        "A drought year with some superficial attendance changes."
+      ],
+      "hidden_mechanism": "This is a masked cascade. Two social effects of the same stressor cancel each other at the surface: fewer provocateurs make the system look calmer while fewer bridge-builders undermine future cooperation.",
+      "disconfirmation_moment": "Project biomass looks stable, but reproduction metrics \u2014 new introductions and repeated pairings \u2014 are falling. The lag between surface calm and relational infertility disconfirms the 'all is well' story.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Calming Policy",
+          "kind": "policy",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Provocateur Drop",
+          "kind": "visible_effect",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Bridge-Builder Drop",
+          "kind": "hidden_effect",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "New Project Seed-Set",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Stable Headcount View",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Collaboration Crash",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "reduces"
+        },
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "also_reduces"
+        },
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "misleads"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "lowers"
+        },
+        {
+          "source": "n4",
+          "target": "n6",
+          "relation": "predicts"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "fails_to_predict"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leaders over-weight visible calm; hidden bridge-builders know the trust pipeline is failing",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_bystander_protocol_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ECO-10",
+      "title": "The Bystander Protocol",
+      "synthetic_domain": "agricultural volunteer network",
+      "primary_sub_abilities": [
+        "social_perception",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "procedural_learning"
+      ],
+      "difficulty_tier": "medium",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why nearby volunteers are becoming wary and absent around fields they do not even work in.",
+      "causal_chain": [
+        "A suspicion-check protocol is added to field-crop logistics that does not explicitly target volunteers.",
+        "Volunteers forage socially across field boundaries and repeatedly pass through those zones.",
+        "Subtle exposure to the protocol makes them feel treated as possible intruders.",
+        "Attendance and trust fall most in areas nearest the protocol-heavy fields.",
+        "The harmed group was never the policy's intended target."
+      ],
+      "red_herrings": [
+        "Managed pollinator use in specialty zones.",
+        "Parasites in formal volunteer circles.",
+        "General habitat loss."
+      ],
+      "hidden_mechanism": "The harm is bystander toxicity through proximity: a social control meant for one workflow spills onto a nearby group because their movement and attention patterns cross boundaries.",
+      "disconfirmation_moment": "Initial investigation focuses on the specialty zones where volunteers are officially assigned, but mapping reveals the strongest avoidance near non-target fields with the heaviest protocol use.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Suspicion-Check Protocol",
+          "kind": "policy",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Field Logistics Zones",
+          "kind": "space",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Volunteer Foragers",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Attendance Map",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Specialty Zone Hypothesis",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Trust Decline",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "operates_in"
+        },
+        {
+          "source": "n3",
+          "target": "n2",
+          "relation": "passes_through"
+        },
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "indirectly_causes"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "misattributes"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "implicates"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "operators see the protocol as neutral; volunteers read repeated scrutiny as social exclusion",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_breakroom_reservoir_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-01",
+      "title": "The Breakroom Reservoir",
+      "synthetic_domain": "multi-ward care campus",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_perception"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why the same subtle insult pattern keeps resurfacing across unrelated teams and months.",
+      "causal_chain": [
+        "A rare shaming phrase becomes embedded in the etiquette of one shared breakroom corner.",
+        "People repeat the phrase after hearing it in low-stakes moments there, believing it is house style.",
+        "Members from multiple units carry the phrase back into their own teams.",
+        "Recipients interpret it as targeted disrespect from specific coworkers.",
+        "Conflicts appear unrelated across time and units."
+      ],
+      "red_herrings": [
+        "Imported bad habits from external travel.",
+        "Direct patient-to-patient style transmission between units.",
+        "Contaminated formal equipment or manuals."
+      ],
+      "hidden_mechanism": "The reservoir is abiotic social infrastructure: a shared breakroom culture pocket, not any one malicious actor. The long-spread, low-density pattern is the signature of an environmental source.",
+      "disconfirmation_moment": "Linguistic matching across incidents shows the same rare phrase family in every case, even when the speakers never worked together. That forces a search for a shared environment rather than a shared person.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Shared Breakroom Corner",
+          "kind": "social_space",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Rare Shaming Phrase",
+          "kind": "signal",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Unit Conflicts",
+          "kind": "outcome_cluster",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Cross-Unit Phrase Match",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Travel Histories",
+          "kind": "red_herring_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Informal Etiquette Notes",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "seeds"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "appears_in"
+        },
+        {
+          "source": "n4",
+          "target": "n1",
+          "relation": "implicates"
+        },
+        {
+          "source": "n5",
+          "target": "n3",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n6",
+          "target": "n1",
+          "relation": "reveals_norm"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "speakers think they are using normal house banter; recipients infer personal hostility",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_courtesy_cascade_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-02",
+      "title": "The Courtesy Cascade",
+      "synthetic_domain": "polyclinic care team",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "observational_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Untangle why one patient advocate is now entangled in a worsening chain of 'helpful' interventions from multiple colleagues.",
+      "causal_chain": [
+        "Advocate A begins speaking less after a draining week.",
+        "A physician misreads the withdrawal as arrogance and routes around the advocate.",
+        "Another colleague sees the routing-around and assumes A is failing, so adds a 'backup' contact.",
+        "The backup contact creates role confusion and social friction.",
+        "More people interpret the friction as proof that A was the original problem, deepening the cascade."
+      ],
+      "red_herrings": [
+        "A new comorbidity-like issue: an actual personality change in A.",
+        "Ineffectiveness of the backup role itself.",
+        "Compliance problems by A."
+      ],
+      "hidden_mechanism": "The entire cascade begins with a misread social origin: exhaustion is interpreted as arrogance, and every later action treats that misread as a new underlying truth.",
+      "disconfirmation_moment": "Interaction review shows the first symptom appeared before any role conflict and follows a rare exhaustion pattern described only in a quiet note from A's mentor, not a trait shift.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Advocate A",
+          "kind": "agent",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Exhaustion Week",
+          "kind": "private_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n3",
+          "label": "Routing-Around Decision",
+          "kind": "event",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Backup Contact",
+          "kind": "agent_role",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Team Friction",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Mentor Note",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "changes_surface_behavior_of"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "creates"
+        },
+        {
+          "source": "n4",
+          "target": "n5",
+          "relation": "worsens"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "reveals"
+        },
+        {
+          "source": "n3",
+          "target": "n5",
+          "relation": "appears_to_confirm"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "colleagues believe they are compensating for a personality flaw; A thinks the team has decided not to trust them",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_impossible_consensus_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-03",
+      "title": "The Impossible Consensus",
+      "synthetic_domain": "deliberative citizens panel",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_negotiation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "procedural_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why a contentious panel suddenly shows impossible harmony that later collapses in spectacular fashion.",
+      "causal_chain": [
+        "A new deliberation enters phase three with promising support scores.",
+        "The records show even hardline skeptics becoming more favorable.",
+        "Observers assume the policy finally persuaded the skeptics.",
+        "Later audits reveal several seat-holders were substitutes who never represented the real skeptical bloc.",
+        "The apparent consensus was process contamination, not genuine belief change."
+      ],
+      "red_herrings": [
+        "The policy simply failing on substance.",
+        "A mismatch in the target population.",
+        "Insensitive measurement tools."
+      ],
+      "hidden_mechanism": "The failure is not social persuasion failure. It is a process-integrity failure: the panel was no longer measuring the beliefs it claimed to represent.",
+      "disconfirmation_moment": "Some recorded supporters later deny ever attending. That impossibility forces an investigation into seat validity rather than attitude change.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Citizens Panel",
+          "kind": "group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Phase Three Support Curve",
+          "kind": "evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Hardline Skeptic Seats",
+          "kind": "agent_slots",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Proxy Attendees",
+          "kind": "hidden_agents",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Audit of Attendance",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Consensus Collapse",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "appears_to_predict_stability"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "occupies"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "reveals"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "contaminates"
+        },
+        {
+          "source": "n3",
+          "target": "n6",
+          "relation": "later_reasserts"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "facilitators think minds changed; proxies know they were only filling chairs",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_facilitator_noise_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-04",
+      "title": "The Facilitator Noise Problem",
+      "synthetic_domain": "multi-site mediation program",
+      "primary_sub_abilities": [
+        "social_skills_negotiation",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "procedural_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why a mediation program looks ineffective overall even though some sites keep producing real reconciliations.",
+      "causal_chain": [
+        "A conflict-resolution program scales across many sites.",
+        "Aggregate results show no significant benefit over passive discussion.",
+        "Site-level breakdown reveals a few sites with strong gains and many with none.",
+        "Low-quality sites are using facilitation habits that inflate temporary warmth without changing actual commitments.",
+        "The mixed sites dilute the true signal of the stronger ones."
+      ],
+      "red_herrings": [
+        "The negotiation model itself is wrong.",
+        "The participant population is too heterogeneous.",
+        "The sample size is too small."
+      ],
+      "hidden_mechanism": "The apparent failure is driven by site-level social noise: some facilitators create expectation and response bias rather than genuine agreement, washing out clean signals from high-quality sites.",
+      "disconfirmation_moment": "When outcomes are stratified by facilitator quality markers, the pattern flips: high-quality sites show clear benefit while contaminated sites show theatrical but non-durable improvement.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Scaled Mediation Program",
+          "kind": "program",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Aggregate Outcome Dashboard",
+          "kind": "evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "High-Quality Sites",
+          "kind": "comparison_set",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Low-Quality Sites",
+          "kind": "comparison_set",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Facilitator Quality Markers",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Durable Reconciliation Scores",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "appears_to_disconfirm"
+        },
+        {
+          "source": "n5",
+          "target": "n3",
+          "relation": "separates"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "separates"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "dilutes"
+        },
+        {
+          "source": "n6",
+          "target": "n3",
+          "relation": "supports"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leadership sees one blended number; facilitators privately know some sites coach responses and some do not",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_script_transfer_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-05",
+      "title": "The Script That Jumped People",
+      "synthetic_domain": "hospital coalition network",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_deception_detection"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Determine why similar exclusionary behavior appears in different teams that do not share any one influential person.",
+      "causal_chain": [
+        "A dismissive coordination script appears in one team.",
+        "The same script then surfaces in different teams with different leaders and memberships.",
+        "Investigators look for a single charismatic instigator but find none.",
+        "Closer analysis shows the same portable talking-point packet moved through shared aides and briefings.",
+        "The real spreading unit is the script, not any single person."
+      ],
+      "red_herrings": [
+        "Direct person-to-person cloning from one leader.",
+        "International travel or community acquisition.",
+        "A single hostile clone of one team spreading culturally."
+      ],
+      "hidden_mechanism": "The social contagion is horizontal transfer of a norm-fragment. Different people carry the same harmful script because the briefing artifact moves between groups.",
+      "disconfirmation_moment": "Identity graphs show the teams are not socially clonally related, but phrase graphs show near-identical script fragments across them. That forces reconceptualization from person spread to script spread.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Dismissive Script Packet",
+          "kind": "artifact",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n2",
+          "label": "Team Alpha",
+          "kind": "group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Team Beta",
+          "kind": "group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Shared Aides",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Phrase Similarity Graph",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "No Shared-Leader Finding",
+          "kind": "disconfirmation_evidence",
+          "visibility": "discoverable"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n4",
+          "relation": "passes_through"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "delivers_to"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "delivers_to"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "fails_to_link_by_person"
+        },
+        {
+          "source": "n5",
+          "target": "n1",
+          "relation": "reveals_spreading_unit"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "teams think the issue is one bad actor somewhere else; aides treat the packet as efficient standardization",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_surveillance_checkin_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-06",
+      "title": "The Check-In That Felt Like Surveillance",
+      "synthetic_domain": "intensive support ward",
+      "primary_sub_abilities": [
+        "social_perception",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "procedural_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why a patient's trust abruptly falls after a supposedly caring support protocol is added.",
+      "causal_chain": [
+        "A new standard check-in protocol is introduced to support patient safety.",
+        "Staff ask more frequent scripted questions.",
+        "The patient begins withholding information and showing distress.",
+        "The team interprets this as worsening of the original condition.",
+        "Only later does the team realize the protocol itself was read as surveillance and mistrust."
+      ],
+      "red_herrings": [
+        "Progression of the original condition.",
+        "Drug reaction to concurrent treatment.",
+        "Community-acquired distrust unrelated to the ward."
+      ],
+      "hidden_mechanism": "The harm is iatrogenic at the social layer: the team's own protocol created the very mistrust it then misattributed to the patient.",
+      "disconfirmation_moment": "The language pattern in the patient's distress does not match the original condition but aligns with being watched or trapped. That mismatch forces re-evaluation of the protocol's social meaning.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Check-In Protocol",
+          "kind": "procedure",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Ward Team",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Patient",
+          "kind": "agent",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Distress Language Pattern",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Original Condition Model",
+          "kind": "red_herring_hypothesis",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Trust Collapse",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "is_read_as_surveillance_by"
+        },
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "anchors_on"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "misattributes"
+        },
+        {
+          "source": "n4",
+          "target": "n1",
+          "relation": "implicates"
+        },
+        {
+          "source": "n3",
+          "target": "n6",
+          "relation": "shows"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "staff think scripting signals care and consistency; patient infers distrust and monitoring",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_badge_printer_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-07",
+      "title": "The Badge Printer Incident",
+      "synthetic_domain": "summit hospitality setting",
+      "primary_sub_abilities": [
+        "social_perception",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "procedural_learning",
+        "associative_learning"
+      ],
+      "difficulty_tier": "medium",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Determine why guests from different tables all left offended even though no single toast or entr\u00e9e explains it.",
+      "causal_chain": [
+        "Several guests at the same summit report similar insult experiences.",
+        "Hosts initially suspect one shared speech or one specific table arrangement.",
+        "Attack-rate style stratification shows offended guests across multiple unrelated meals.",
+        "A recently serviced badge printer has been producing subtly wrong honorifics and affiliations.",
+        "Many interactions become insulting because people respond to incorrect visible identity cues."
+      ],
+      "red_herrings": [
+        "The main shared entr\u00e9e.",
+        "A recalled vendor product unrelated to badges.",
+        "The first guest to become angry."
+      ],
+      "hidden_mechanism": "The true vector is not a single insulting event but a horizontal contamination channel: the badge printer injected status mistakes into many interactions at once.",
+      "disconfirmation_moment": "Guests who never attended the main toast were still offended, but nearly all wore misprinted badges. This forces attention from the food and speeches to the visible identity tags.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Summit Guests",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Main Toast",
+          "kind": "red_herring_event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Badge Printer",
+          "kind": "infrastructure",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Misprinted Honorifics",
+          "kind": "signal",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Offense Cluster",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Table Stratification Sheet",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "appears_to_explain"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "produces"
+        },
+        {
+          "source": "n4",
+          "target": "n5",
+          "relation": "triggers"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "disconfirms"
+        },
+        {
+          "source": "n6",
+          "target": "n3",
+          "relation": "redirects_attention_to"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "hosts think the problem is one speech; guests infer deliberate disrespect from wrong titles",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_anchored_read_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-08",
+      "title": "The Anchored Read",
+      "synthetic_domain": "urgent support desk",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_perception"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "observational_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why one advisor keeps responding to a distressed caller as if they are merely anxious, even as the situation worsens.",
+      "causal_chain": [
+        "A caller presents with mixed signals: anxiety plus subtle danger cues.",
+        "The advisor makes an initial plausible read: 'this is mostly panic.'",
+        "Later evidence is reinterpreted to fit the first read.",
+        "Support escalations target calming techniques instead of underlying risk.",
+        "A severe event occurs that would likely have been caught if the initial read had been revisited."
+      ],
+      "red_herrings": [
+        "Young age and known anxiety history.",
+        "An initially normal checklist result.",
+        "Partial improvement after a calming script."
+      ],
+      "hidden_mechanism": "The hidden mechanism is cognitive anchoring in social inference: the advisor's early theory of the caller's mind becomes sticky, and later cues are filtered through it.",
+      "disconfirmation_moment": "The fact that the calming script does not resolve the deeper pattern should trigger revision, but instead it is misread as 'treatment-resistant anxiety.' That mismatch is the disconfirmation point.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Caller",
+          "kind": "agent",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Initial Panic Read",
+          "kind": "hypothesis",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Later Danger Cues",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "Calming Script Response",
+          "kind": "ambiguous_evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Advisor",
+          "kind": "agent",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Severe Outcome",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "anchors"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "falsely_confirms"
+        },
+        {
+          "source": "n3",
+          "target": "n2",
+          "relation": "should_disconfirm"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "fails_to_prevent"
+        },
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "emits"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "advisor believes consistency is prudence; caller expects the advisor to update when the pattern changes",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_new_slang_gap_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-09",
+      "title": "The Slang Gap",
+      "synthetic_domain": "street outreach network",
+      "primary_sub_abilities": [
+        "social_perception",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why a cluster of dangerous meetup incidents keeps evading the network's normal monitoring tools.",
+      "causal_chain": [
+        "Outreach workers notice overdose-like social emergencies in one neighborhood cluster.",
+        "Investigators look for the known supplier network and known code words.",
+        "Nothing unusual appears in the standard watchlist.",
+        "Victims use a new slang marker that the standard monitors treat as harmless noise.",
+        "The same hidden marker links the whole cluster."
+      ],
+      "red_herrings": [
+        "Known high-potency dealers.",
+        "A single party or gathering.",
+        "Standard watchlist hits on old terms."
+      ],
+      "hidden_mechanism": "The investigation is failing because the surveillance system cannot perceive the actual social signal. The connecting thread is not absent; it is invisible to the current detection vocabulary.",
+      "disconfirmation_moment": "Some cases respond strangely to the usual intervention pattern, prompting an expanded language review that surfaces the hidden marker. The mismatch between expected and observed response is the key disconfirmation.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Outreach Incident Cluster",
+          "kind": "event_cluster",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Standard Watchlist",
+          "kind": "tool",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Known Supplier Hypothesis",
+          "kind": "red_herring_hypothesis",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "New Slang Marker",
+          "kind": "hidden_signal",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Expanded Language Review",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Unusual Intervention Failure",
+          "kind": "disconfirmation_signal",
+          "visibility": "discoverable"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "supports"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "undermines"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "reveals"
+        },
+        {
+          "source": "n4",
+          "target": "n1",
+          "relation": "links"
+        },
+        {
+          "source": "n3",
+          "target": "n1",
+          "relation": "fails_to_explain"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "workers think the old codebook still captures the scene; participants have shifted to a new coded marker",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_private_channel_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "CLIN-10",
+      "title": "The Private Channel",
+      "synthetic_domain": "rural support community",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "procedural_learning",
+        "associative_learning"
+      ],
+      "difficulty_tier": "medium",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Identify the real source of a rumor wave after every commonly blamed official channel tests clean.",
+      "causal_chain": [
+        "Multiple members report the same harmful rumor.",
+        "Investigators test all official community channels and find nothing.",
+        "The rumor wave appears to fade and then returns.",
+        "Location-style mapping of who heard it first points to a campsite collective assumed to be on the official network.",
+        "The campsite actually runs a parallel private channel that was never checked."
+      ],
+      "red_herrings": [
+        "Official community channel.",
+        "A specific food item from the local fair.",
+        "A recent municipal upgrade."
+      ],
+      "hidden_mechanism": "The hidden mechanism is an assumed-connection fallacy: investigators treat one infrastructure category as shared when in fact the harmful information is flowing through a separate private system.",
+      "disconfirmation_moment": "Every official channel tests negative, yet new cases keep emerging from one camp. That persistence forces exact mapping of the communication infrastructure rather than broader guessing.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Official Channels",
+          "kind": "infrastructure",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Rumor Wave",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Campsite Collective",
+          "kind": "group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Parallel Private Channel",
+          "kind": "hidden_channel",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Channel Audit",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Origin Mapping Board",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "appears_to_explain"
+        },
+        {
+          "source": "n5",
+          "target": "n1",
+          "relation": "disconfirms"
+        },
+        {
+          "source": "n6",
+          "target": "n3",
+          "relation": "implicates"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "operates"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "actually_causes"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "investigators assume all members share the same channel infrastructure; the campsite believes its side-channel is semi-private and harmless",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_missing_safety_valve_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ENG-01",
+      "title": "The Missing Safety Valve",
+      "synthetic_domain": "federated service alliance",
+      "primary_sub_abilities": [
+        "social_skills_cooperation",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why one policy update turned into a multi-alliance social outage instead of a quick rollback.",
+      "causal_chain": [
+        "Alliance stewards deploy a new coordination script across shared service desks.",
+        "The update ships without an emergency rollback norm or opt-out toggle.",
+        "A hidden bug in role permissions begins misrouting requests.",
+        "Because no local steward can instantly disable the script, confusion cascades into every dependent service circle.",
+        "Partner networks fail in sequence as they inherit the misrouting."
+      ],
+      "red_herrings": [
+        "Independent failures in each downstream circle.",
+        "A coordinated harassment attack.",
+        "A regional hardware outage."
+      ],
+      "hidden_mechanism": "The root cause is not just the bad update; it is the missing safety valve. A procedural omission removes the alliance's capacity to stop social damage once it begins.",
+      "disconfirmation_moment": "Load and staffing stay normal during the outage, disconfirming the attack or hardware story and pushing investigators toward what changed in procedure.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Coordination Script Update",
+          "kind": "procedure_change",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Missing Rollback Toggle",
+          "kind": "hidden_condition",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n3",
+          "label": "Role Permission Bug",
+          "kind": "hidden_mechanism",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "Shared Service Circle",
+          "kind": "group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n5",
+          "label": "Dependent Partner Circles",
+          "kind": "group_set",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Alliance-Wide Confusion",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "contains"
+        },
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "extends"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "misroutes"
+        },
+        {
+          "source": "n4",
+          "target": "n5",
+          "relation": "feeds"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "cascades_into"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "operators think the issue is one bad downstream partner; stewards privately know rollback authority was omitted",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_foundational_roster_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ENG-02",
+      "title": "The Foundational Roster",
+      "synthetic_domain": "regional platform coalition",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "observational_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Find the single hidden failure that made many unrelated groups think their own local teams were broken.",
+      "causal_chain": [
+        "A foundational introduction roster used by many groups begins failing.",
+        "Every dependent group experiences local-seeming coordination failure.",
+        "Each group first investigates its own people and scripts.",
+        "Backup rosters are overwhelmed by redirected use and also fail.",
+        "The coalition experiences broad simultaneous social unavailability."
+      ],
+      "red_herrings": [
+        "Application-level failures inside each group.",
+        "Network-provider issues in the outer districts.",
+        "A coordinated cyberattack rumor."
+      ],
+      "hidden_mechanism": "Because the failing layer is so basic, nobody sees it as a category of failure at first. The social equivalent of DNS collapse is foundational-layer invisibility.",
+      "disconfirmation_moment": "Cross-group time-correlation shows many groups failing with no internal cause. The shared timing disconfirms the local-failure story.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Introduction Roster",
+          "kind": "foundational_infrastructure",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Local Group Failures",
+          "kind": "symptom_cluster",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Backup Roster",
+          "kind": "fallback_system",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n4",
+          "label": "Time-Correlation Board",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Internal Diagnostics",
+          "kind": "red_herring_process",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Coalition-Wide Outage",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "causes"
+        },
+        {
+          "source": "n3",
+          "target": "n6",
+          "relation": "fails_under_load"
+        },
+        {
+          "source": "n5",
+          "target": "n2",
+          "relation": "misdirects_attention_from"
+        },
+        {
+          "source": "n4",
+          "target": "n1",
+          "relation": "implicates"
+        },
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "aggregates_into"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "each team thinks the failure is theirs; only a cross-team observer can infer the shared dependency",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_delegated_trust_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ENG-03",
+      "title": "The Borrowed Badge",
+      "synthetic_domain": "SaaS-style alliance of councils",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_deception_detection"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain how outsiders reached many councils without ever directly deceiving most of them.",
+      "causal_chain": [
+        "A liaison service stores endorsement badges used to access partner councils.",
+        "The liaison is quietly compromised.",
+        "Badges are reused from unusual locations but still look legitimate to each council.",
+        "Victim councils scan their own perimeters and find no breach.",
+        "The real attack path is through inherited trust, not direct compromise."
+      ],
+      "red_herrings": [
+        "Direct attack on each council.",
+        "A vulnerability in the final target platform itself.",
+        "Recent phishing campaigns at the councils."
+      ],
+      "hidden_mechanism": "The mechanism is delegated authority exploitation. The attacker compromises the trust relationship between systems, not the final principals.",
+      "disconfirmation_moment": "Council logs show legitimate-looking badge use without any local intrusion. That mismatch forces investigation of who holds the badges upstream.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Liaison Service",
+          "kind": "shared_service",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Endorsement Badges",
+          "kind": "trust_token",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n3",
+          "label": "Partner Councils",
+          "kind": "group_set",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Unusual Access Logs",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "No Local Breach Finding",
+          "kind": "disconfirmation_evidence",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Data Spill",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "stores"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "authorizes_access_to"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "implicates"
+        },
+        {
+          "source": "n5",
+          "target": "n3",
+          "relation": "disconfirms_local_attack"
+        },
+        {
+          "source": "n2",
+          "target": "n6",
+          "relation": "enables"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "councils trust the liaison's authority tokens; the attacker exploits that trust chain",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_shared_vendor_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ENG-04",
+      "title": "The Shared Mediator Failure",
+      "synthetic_domain": "municipal alliance",
+      "primary_sub_abilities": [
+        "social_skills_cooperation",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "observational_learning",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Determine why more than two hundred councils lost grievance-processing capacity at once without each being directly attacked.",
+      "causal_chain": [
+        "A single mediator vendor serves many local councils.",
+        "The vendor's systems are frozen by a coercive group.",
+        "Councils all lose payroll-like grievance and scheduling services at the same time.",
+        "Each council first assumes it has been individually hit.",
+        "Investigation reveals one upstream vendor failure with hundreds of downstream victims."
+      ],
+      "red_herrings": [
+        "Independent security failures at each council.",
+        "A national government system attack.",
+        "Multiple unrelated incidents."
+      ],
+      "hidden_mechanism": "The hidden mechanism is centralization cascade risk: efficiency concentrated a social function into one shared vendor, creating correlated failure.",
+      "disconfirmation_moment": "Local councils find no local intrusion, disconfirming the story of many parallel attacks and forcing a shared-vendor explanation.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Mediator Vendor",
+          "kind": "shared_service",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Local Councils",
+          "kind": "group_set",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Frozen Vendor Systems",
+          "kind": "event",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n4",
+          "label": "No Local Intrusion Reports",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Simultaneous Service Loss",
+          "kind": "outcome",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Centralization Map",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "serves"
+        },
+        {
+          "source": "n3",
+          "target": "n1",
+          "relation": "disables"
+        },
+        {
+          "source": "n1",
+          "target": "n5",
+          "relation": "propagates_failure_to"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "disconfirms_local_attack"
+        },
+        {
+          "source": "n6",
+          "target": "n1",
+          "relation": "reveals_single_point_of_failure"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "each council believes the problem is local until cross-council evidence is compared",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_concentration_risk_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "ENG-05",
+      "title": "The One Interpreter Too Many",
+      "synthetic_domain": "cross-border apprenticeship network",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_negotiation"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_cooperation"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "medium",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why many houses suddenly stalled after a policy shock even though they thought they had plenty of social redundancy.",
+      "causal_chain": [
+        "A tariff-like dispute blocks travel by the one interpreter guild many houses implicitly depend on.",
+        "Houses try to switch to alternatives.",
+        "They discover that most of their relationships and certifications were built around the same interpreter network.",
+        "Projects pause, supplier-trust chains break, and apprentices lose work.",
+        "The vulnerability was latent concentration risk in one geographic-social source."
+      ],
+      "red_herrings": [
+        "Simple cost inflation.",
+        "One manufacturer's isolated decision.",
+        "Shipping disruptions alone."
+      ],
+      "hidden_mechanism": "The crisis is not mostly about higher price; it is about vanished availability from a socially concentrated source. The system optimized for efficiency and stopped noticing its own trust concentration.",
+      "disconfirmation_moment": "When houses try to re-route work, they find no qualified alternatives. The failed assumption of redundancy is the disconfirmation moment.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Interpreter Guild",
+          "kind": "group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n2",
+          "label": "Policy Shock",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n3",
+          "label": "Apprentice Houses",
+          "kind": "group_set",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Redundancy Assumption",
+          "kind": "belief",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "No Qualified Alternatives",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Project Stalls",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "blocks"
+        },
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "supports"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "misleads"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "disconfirms"
+        },
+        {
+          "source": "n1",
+          "target": "n6",
+          "relation": "reveals_dependency_through_loss"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "houses think they can swap intermediaries; the guild quietly knows how many certifications route through it",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_wrong_target_policy_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "GOV-01",
+      "title": "The Policy That Worked on Yesterday",
+      "synthetic_domain": "civic reputation board",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_negotiation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "associative_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why a conduct policy with high compliance fails to calm the board.",
+      "causal_chain": [
+        "The board identifies public insult outbreaks and passes a conduct rule against them.",
+        "Public insult rates fall and compliance is verified.",
+        "Board hostility still persists.",
+        "Investigation shows that old private whisper networks and historical grudges now dominate escalation.",
+        "The policy hit the original visible cause, but not the current sustaining cause."
+      ],
+      "red_herrings": [
+        "Poor policy compliance.",
+        "New point sources of hostility.",
+        "Climate-like amplification from external stress."
+      ],
+      "hidden_mechanism": "The institution suffers from policy-source mismatch. What created the crisis initially is no longer what sustains it.",
+      "disconfirmation_moment": "Once compliance is confirmed while hostility persists, stricter enforcement stops looking like the right next step and investigators must search for a shifted social cause.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Conduct Rule",
+          "kind": "policy",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Compliance Audit",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Public Insult Rate",
+          "kind": "visible_metric",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Whisper Network",
+          "kind": "hidden_mechanism",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Historical Grudges",
+          "kind": "latent_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Persistent Hostility",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n3",
+          "relation": "reduces"
+        },
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "verifies"
+        },
+        {
+          "source": "n3",
+          "target": "n6",
+          "relation": "fails_to_explain"
+        },
+        {
+          "source": "n4",
+          "target": "n6",
+          "relation": "sustains"
+        },
+        {
+          "source": "n5",
+          "target": "n4",
+          "relation": "feeds"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "leaders think present compliance should solve the issue; members privately route conflict through old loyalties",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_revolving_allegiance_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "GOV-02",
+      "title": "The Consultant's Shadow",
+      "synthetic_domain": "regulatory review council",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_negotiation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "observational_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why certain applicants keep experiencing slower reviews even though no current reviewer is employed by their rivals.",
+      "causal_chain": [
+        "Industry veterans move into consulting roles.",
+        "Some consultants advise both applicants and the review council at different times.",
+        "Applicants tied to those consultants face systematically longer review cycles.",
+        "Staff explain delays as normal due diligence.",
+        "The actual conflict runs through temporal allegiance and continuing ties, not simultaneous formal employment."
+      ],
+      "red_herrings": [
+        "Uniform staffing shortage.",
+        "Product complexity differences.",
+        "A general increase in regulatory stringency."
+      ],
+      "hidden_mechanism": "The social mechanism is temporal conflict of interest: legal independence in the present hides an ongoing network of prior loyalty and incentives.",
+      "disconfirmation_moment": "No current reviewer has formal industry employment, disconfirming the simplest conflict story. Delay patterns only make sense when prior affiliations are mapped.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Review Council",
+          "kind": "institution",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Consultant Ring",
+          "kind": "agent_group",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Applicant Set",
+          "kind": "group_set",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Delay Pattern Analysis",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Current Employment Check",
+          "kind": "red_herring_disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Prior Affiliation Map",
+          "kind": "evidence",
+          "visibility": "hidden"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n1",
+          "relation": "advises"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "also_advises"
+        },
+        {
+          "source": "n5",
+          "target": "n1",
+          "relation": "fails_to_find_current_conflict"
+        },
+        {
+          "source": "n6",
+          "target": "n2",
+          "relation": "reveals_temporal_ties"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "shows_selective_delays"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "council staff think legality equals neutrality; applicants perceive patterned delay but cannot initially prove motive",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_manufactured_discovery_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "GOV-03",
+      "title": "The Convenient Surprise",
+      "synthetic_domain": "public works project board",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_deception_detection"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "observational_learning",
+        "associative_learning"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Find why repeated 'unexpected' discoveries keep benefiting the same subcontractor during a project.",
+      "causal_chain": [
+        "A public project begins with a fixed scope.",
+        "During construction, a subcontractor repeatedly surfaces plausible unforeseen complications.",
+        "The committee approves one scope addition after another.",
+        "Every addition happens to benefit the same subcontractor.",
+        "Costs double even though each individual discovery looks reasonable in isolation."
+      ],
+      "red_herrings": [
+        "Genuine engineering complexity.",
+        "Original design mistakes.",
+        "General supply inflation."
+      ],
+      "hidden_mechanism": "The hidden mechanism is manufactured discovery: individually plausible events form a patterned strategy when viewed across time and beneficiary.",
+      "disconfirmation_moment": "Each addition seems defensible alone, but a pattern review shows the same subcontractor benefits from all of them despite controlling only a minority of the work area.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Project Board",
+          "kind": "institution",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Subcontractor Vane",
+          "kind": "agent",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Unexpected Condition Reports",
+          "kind": "event_series",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Benefit Concentration Analysis",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Scope Expansion Approvals",
+          "kind": "event_series",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n6",
+          "label": "Cost Doubling",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "surfaces"
+        },
+        {
+          "source": "n3",
+          "target": "n5",
+          "relation": "triggers"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "accumulates_into"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "implicates"
+        },
+        {
+          "source": "n4",
+          "target": "n3",
+          "relation": "reveals_nonrandom_pattern"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "board members think each decision is prudent alone; the subcontractor exploits that case-by-case framing",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_definition_gap_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "GOV-04",
+      "title": "The Narrow Definition",
+      "synthetic_domain": "patient-safety oversight network",
+      "primary_sub_abilities": [
+        "theory_of_mind",
+        "social_skills_cooperation"
+      ],
+      "secondary_sub_abilities": [
+        "social_perception"
+      ],
+      "supporting_sub_abilities": [
+        "concept_formation",
+        "observational_learning"
+      ],
+      "difficulty_tier": "very_hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain how a unit can look exceptionally respectful on paper while independent review finds widespread harm.",
+      "causal_chain": [
+        "A hospital unit is required to report disrespect and harm events.",
+        "Internally, staff use a narrower definition of what counts as harm.",
+        "Many injurious interactions never enter the reporting system.",
+        "Because they are not recorded, they are not investigated or corrected.",
+        "Independent review later finds a much higher true harm rate than the unit's self-report."
+      ],
+      "red_herrings": [
+        "Individual staff negligence only.",
+        "Documentation technology failures.",
+        "A broken reporting interface."
+      ],
+      "hidden_mechanism": "The mechanism is definitional arbitrage: operational definitions are narrowed in self-serving ways without overt fraud, producing systematic under-capture.",
+      "disconfirmation_moment": "Low self-reported harm first looks like success, but independent chart review reveals much higher rates. The gap forces investigation of category boundaries, not just reporting volume.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Reporting Requirement",
+          "kind": "rule",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Internal Narrow Definition",
+          "kind": "hidden_norm",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n3",
+          "label": "Self-Report Dashboard",
+          "kind": "visible_metric",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Independent Review",
+          "kind": "evidence",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n5",
+          "label": "Uncaptured Harm Events",
+          "kind": "hidden_event_set",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n6",
+          "label": "Recurrent Harm",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n2",
+          "target": "n5",
+          "relation": "excludes"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "recurs_as"
+        },
+        {
+          "source": "n3",
+          "target": "n6",
+          "relation": "misleads_about"
+        },
+        {
+          "source": "n4",
+          "target": "n2",
+          "relation": "implicates"
+        },
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "is_interpreted_through"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "unit staff believe they are compliant because they use a narrow but familiar definition; oversight assumes shared definitions",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    },
+    {
+      "scenario_id": "vigil_social_pipeline_cascade_v1",
+      "version": "1.0",
+      "cognitive_track": "social_cognition",
+      "source_skeleton_id": "GOV-05",
+      "title": "The Mentor Pipeline Break",
+      "synthetic_domain": "research commons",
+      "primary_sub_abilities": [
+        "social_skills_cooperation",
+        "theory_of_mind"
+      ],
+      "secondary_sub_abilities": [
+        "social_skills_negotiation"
+      ],
+      "supporting_sub_abilities": [
+        "associative_learning",
+        "concept_formation"
+      ],
+      "difficulty_tier": "hard",
+      "_changelog_from_skeleton": [
+        "Converted non-social causal skeleton into a fully synthetic social-cognition scenario.",
+        "Replaced real entities, places, organisms, institutions, and brands with invented agents, groups, and infrastructures.",
+        "Re-targeted the hidden mechanism toward agent beliefs, incentives, norms, trust, and coordination failures.",
+        "Added blind task framing, private/public information structure, and agent-specific belief states for Track 5."
+      ],
+      "task_frame": "Explain why one year of cuts caused damage that keeps compounding long after the money itself disappeared.",
+      "causal_chain": [
+        "A funding board terminates many active mentorship grants.",
+        "Immediate layoffs and abandoned projects follow.",
+        "Early-career members fail to finish publications and stop appearing in reviewer pools.",
+        "Senior reviewers become overloaded managing local crisis and cannot support others.",
+        "The long-term training and trust pipeline of the commons is damaged far beyond the original cut."
+      ],
+      "red_herrings": [
+        "The cut should matter only in direct financial proportion.",
+        "Purely political explanations detached from operations.",
+        "A temporary disruption that should reverse quickly."
+      ],
+      "hidden_mechanism": "The real damage is network compounding: each interrupted mentorship chain destroys future capacity, not just present activity. The social pipeline carries delayed multipliers.",
+      "disconfirmation_moment": "Financial accounting captures the direct cut, but future reviewer and mentor shortages appear years downstream. That temporal mismatch is the disconfirmation of a simple one-year-loss model.",
+      "nodes": [
+        {
+          "id": "n1",
+          "label": "Grant Terminations",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n2",
+          "label": "Mentorship Chains",
+          "kind": "social_pipeline",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n3",
+          "label": "Early-Career Researchers",
+          "kind": "agent_group",
+          "visibility": "visible"
+        },
+        {
+          "id": "n4",
+          "label": "Reviewer Pool",
+          "kind": "capacity_layer",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n5",
+          "label": "Immediate Financial Loss",
+          "kind": "visible_metric",
+          "visibility": "visible"
+        },
+        {
+          "id": "n6",
+          "label": "Long-Horizon Capacity Damage",
+          "kind": "outcome",
+          "visibility": "visible"
+        }
+      ],
+      "edges": [
+        {
+          "source": "n1",
+          "target": "n2",
+          "relation": "breaks"
+        },
+        {
+          "source": "n2",
+          "target": "n3",
+          "relation": "supports"
+        },
+        {
+          "source": "n3",
+          "target": "n4",
+          "relation": "would_feed"
+        },
+        {
+          "source": "n5",
+          "target": "n6",
+          "relation": "understates"
+        },
+        {
+          "source": "n4",
+          "target": "n6",
+          "relation": "mediates"
+        }
+      ],
+      "track5_validation_notes": {
+        "blind_task_fit": true,
+        "private_vs_public_information": true,
+        "agent_specific_beliefs": "budget managers see a one-year line item; researchers experience a long delayed collapse in mentorship and review reciprocity",
+        "partner_adaptation_required": true,
+        "functional_tom_required": true
+      }
+    }
+  ]
+}

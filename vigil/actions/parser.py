@@ -1,218 +1,171 @@
 """
-Action parsing utilities.
+Action parser for the Vigil benchmark.
 
-Parses model natural language responses into structured GraphAction objects.
+Converts raw LLM output (string or dict) into a typed VigilAction.
+On failure, returns an ActionParseError sentinel — never raises.
+
+The Kaggle SDK passes structured output directly when schema=VigilAction is
+used with llm.prompt(). This parser handles the fallback case where the LLM
+returns a plain string or malformed JSON.
 """
 
-import re
-from typing import Optional, Tuple
-from vigil.actions.schemas import GraphAction, ActionType
+import json
+from typing import Any, Union
+
+from pydantic import TypeAdapter, ValidationError
+
+from vigil.actions.schemas import (
+    ActionParseError,
+    ExploreAction,
+    GetContextAction,
+    InspectAction,
+    SubmitAnswerAction,
+    VigilAction,
+)
+
+# TypeAdapter lets us validate the discriminated union directly
+_adapter: TypeAdapter[VigilAction] = TypeAdapter(
+    Union[ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction]
+)
 
 
-def parse_action(response: str) -> Optional[GraphAction]:
+def parse_action(raw: Any) -> Union[VigilAction, ActionParseError]:
     """
-    Parse a model response into a GraphAction.
+    Parse raw LLM output into a VigilAction.
 
-    Supports multiple formats:
-    - "expand:node_id"
-    - "expand node_id"
-    - "inspect:node_id"
-    - "submit"
-    - "backtrack"
-    - Natural language with keywords
-
-    Args:
-        response: Model's natural language response
+    Accepts:
+    - A Pydantic model instance (already parsed by SDK schema= parameter)
+    - A dict (e.g. from llm.prompt returning structured output as dict)
+    - A JSON string
+    - A plain string with keyword hints (fallback heuristic)
 
     Returns:
-        GraphAction if parsing succeeds, None otherwise
+        A VigilAction subclass on success, ActionParseError on failure.
+        Never raises.
     """
-    if not response:
-        return None
+    if raw is None:
+        return ActionParseError(raw, "Input is None")
 
-    response_lower = response.lower().strip()
+    # Already a valid action model — pass through
+    if isinstance(raw, (ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction)):
+        return raw
 
-    # Check for submit action
-    if "submit" in response_lower or "answer" in response_lower:
-        # Try to extract confidence if present
-        confidence = extract_confidence(response)
-        return GraphAction(
-            action_type=ActionType.SUBMIT,
-            confidence=confidence
-        )
+    # Dict — validate directly
+    if isinstance(raw, dict):
+        return _validate_dict(raw)
 
-    # Check for backtrack
-    if "backtrack" in response_lower or "back" in response_lower:
-        return GraphAction(action_type=ActionType.BACKTRACK)
+    # String — try JSON first, then heuristic
+    if isinstance(raw, str):
+        stripped = raw.strip()
+        if stripped.startswith("{"):
+            try:
+                data = json.loads(stripped)
+                return _validate_dict(data)
+            except json.JSONDecodeError:
+                pass
+        # Heuristic fallback for plain-text responses
+        return _heuristic_parse(stripped)
 
-    # Check for expand action with colon format
-    expand_match = re.search(r'expand[:\s]*([a-zA-Z0-9_]+)', response_lower)
-    if expand_match:
-        target = expand_match.group(1)
-        # Try to extract relation type if present
-        relation_match = re.search(r'(?:via|through|by)\s+([a-zA-Z_]+)', response_lower)
-        relation = relation_match.group(1) if relation_match else None
-        confidence = extract_confidence(response)
-
-        return GraphAction(
-            action_type=ActionType.EXPAND,
-            target_node=target,
-            relation_type=relation,
-            confidence=confidence
-        )
-
-    # Check for inspect action
-    inspect_match = re.search(r'inspect[:\s]*([a-zA-Z0-9_]+)?', response_lower)
-    if inspect_match:
-        target = inspect_match.group(1)
-        confidence = extract_confidence(response)
-        return GraphAction(
-            action_type=ActionType.INSPECT,
-            target_node=target,
-            confidence=confidence
-        )
-
-    # Try to extract as structured action (JSON-like)
-    structured = parse_structured_action(response)
-    if structured:
-        return structured
-
-    return None
+    return ActionParseError(raw, f"Unsupported input type: {type(raw).__name__}")
 
 
-def parse_action_from_response(
-    response: str,
-    default_action: str = "submit"
-) -> Optional[GraphAction]:
+def _validate_dict(data: dict) -> Union[VigilAction, ActionParseError]:
+    """Validate a dict against the VigilAction discriminated union."""
+    try:
+        return _adapter.validate_python(data)
+    except ValidationError as e:
+        return ActionParseError(data, str(e))
+
+
+def _heuristic_parse(text: str) -> Union[VigilAction, ActionParseError]:
     """
-    Parse action with fallback to default.
+    Last-resort heuristic parser for plain-text LLM responses.
 
-    More robust version that always returns a valid action or None.
-
-    Args:
-        response: Model response
-        default_action: Default action type if parsing fails
-
-    Returns:
-        GraphAction or None
+    Handles patterns like:
+      "explore node_5"
+      "explore: node_5"
+      "inspect n3"
+      "get_context"
+      "submit_answer: The rule is X | justification: ... | confidence: 0.8"
     """
-    action = parse_action(response)
-    if action and action.is_valid():
-        return action
-    return None
+    lower = text.lower()
+
+    # get_context — no arguments needed
+    if lower.startswith("get_context") or lower == "context":
+        return GetContextAction(action_type="get_context")
+
+    # explore <node_id>
+    if lower.startswith("explore"):
+        node_id = _extract_first_token_after(text, "explore")
+        if node_id:
+            return ExploreAction(action_type="explore", node_id=node_id)
+        return ActionParseError(text, "explore requires a node_id")
+
+    # inspect <node_id>
+    if lower.startswith("inspect"):
+        node_id = _extract_first_token_after(text, "inspect")
+        if node_id:
+            return InspectAction(action_type="inspect", node_id=node_id)
+        return ActionParseError(text, "inspect requires a node_id")
+
+    # submit_answer — try to extract answer, justification, confidence
+    if lower.startswith("submit"):
+        answer, justification, confidence = _extract_submit_fields(text)
+        if answer:
+            return SubmitAnswerAction(
+                action_type="submit_answer",
+                answer=answer,
+                justification=justification or "",
+                confidence=confidence,
+            )
+        return ActionParseError(text, "submit_answer requires an answer")
+
+    return ActionParseError(text, f"Could not identify action type in: {text[:80]!r}")
 
 
-def extract_confidence(text: str) -> float:
+def _extract_first_token_after(text: str, keyword: str) -> str:
+    """Extract the first whitespace/colon-separated token after a keyword."""
+    import re
+    pattern = rf"{re.escape(keyword)}[\s:]+([a-zA-Z0-9_\-]+)"
+    m = re.search(pattern, text, re.IGNORECASE)
+    return m.group(1) if m else ""
+
+
+def _extract_submit_fields(text: str) -> tuple[str, str, float]:
     """
-    Extract confidence value from text.
+    Extract answer, justification, and confidence from a submit string.
 
-    Looks for patterns like:
-    - "confidence: 0.8"
-    - "confidence=0.8"
-    - "80% confidence"
-    - "0.8"
-
-    Args:
-        text: Text to search
-
-    Returns:
-        Confidence value between 0.0 and 1.0, or 0.5 if not found
+    Tries pipe-separated format first:
+      "submit_answer: <answer> | justification: <j> | confidence: 0.8"
+    Falls back to treating the whole text (minus keyword) as the answer.
     """
-    # Pattern: confidence[:=]\s*([0-1].[0-9]*)
-    match = re.search(r'confidence[:=\s]*([0-1]?\.[0-9]+|[01])', text)
-    if match:
-        return float(match.group(1))
+    import re
 
-    # Pattern: XX%
-    match = re.search(r'(\d+)%', text)
-    if match:
-        return int(match.group(1)) / 100.0
+    # Remove the leading keyword
+    body = re.sub(r"^submit[_\s]?answer[\s:]*", "", text, flags=re.IGNORECASE).strip()
 
-    return 0.5  # Default confidence
+    answer = body
+    justification = ""
+    confidence = 0.5
 
-
-def parse_structured_action(text: str) -> Optional[GraphAction]:
-    """
-    Try to parse action from structured text (JSON-like).
-
-    Looks for patterns like:
-    - action_type: expand
-    - target: node_5
-    - confidence: 0.8
-
-    Args:
-        text: Text to parse
-
-    Returns:
-        GraphAction if structured data found, None otherwise
-    """
-    action_type = None
-    target = None
-    relation = None
-    confidence = None
-
-    # Extract action_type
-    type_match = re.search(r'action[_\s]?type[:\s]*([a-zA-Z]+)', text)
-    if type_match:
-        action_type = ActionType.from_string(type_match.group(1))
-
-    # Extract target
-    target_match = re.search(r'target[_\s]?node?[:\s]*([a-zA-Z0-9_]+)', text)
-    if target_match:
-        target = target_match.group(1)
-
-    # Extract relation
-    relation_match = re.search(r'relation[_\s]?type?[:\s]*([a-zA-Z_]+)', text)
-    if relation_match:
-        relation = relation_match.group(1)
-
-    # Extract confidence
-    conf_match = re.search(r'confidence[:\s]*([0-1]?\.?[0-9]*)', text)
-    if conf_match:
+    # Try to extract confidence
+    conf_m = re.search(r"confidence[\s:=]+([0-1]?\.[0-9]+|[01])", body, re.IGNORECASE)
+    if conf_m:
         try:
-            confidence = float(conf_match.group(1))
+            confidence = float(conf_m.group(1))
         except ValueError:
-            confidence = 0.5
+            pass
+        body = body[: conf_m.start()].strip(" |")
 
-    # Only return if we found action_type
-    if action_type:
-        return GraphAction(
-            action_type=action_type,
-            target_node=target,
-            relation_type=relation,
-            confidence=confidence or 0.5
-        )
+    # Try to extract justification
+    just_m = re.search(r"justification[\s:]+(.+?)(?:\|confidence|$)", body, re.IGNORECASE | re.DOTALL)
+    if just_m:
+        justification = just_m.group(1).strip(" |")
+        body = body[: just_m.start()].strip(" |")
 
-    return None
+    # Whatever remains is the answer
+    ans_m = re.search(r"(?:answer[\s:]+)?(.+)", body, re.IGNORECASE | re.DOTALL)
+    if ans_m:
+        answer = ans_m.group(1).strip()
 
-
-def format_action_options(
-    available_actions: list,
-    current_node: str,
-    budget: int
-) -> str:
-    """
-    Format available actions as a prompt for the model.
-
-    Args:
-        available_actions: List of (action_type, target, relation) tuples
-        current_node: Current node ID
-        budget: Remaining budget
-
-    Returns:
-        Formatted action menu string
-    """
-    lines = [
-        f"Current node: {current_node}",
-        f"Budget remaining: {budget} actions",
-        "",
-        "Available actions:",
-        "  - expand:<node_id> [via:<relation>] - Move to a connected node",
-        "  - inspect:<node_id> - Examine a node's features",
-        "  - backtrack - Return to previous node",
-        "  - submit - Submit your final answer",
-        "",
-        "Your action:"
-    ]
-
-    return "\n".join(lines)
+    return answer, justification, confidence

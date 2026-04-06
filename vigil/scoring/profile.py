@@ -1,12 +1,73 @@
 """
 Cognitive profile data structures.
 
-Provides structured representation of multi-metric cognitive assessments.
+Provides structured representation of multi-metric cognitive assessments,
+including human baseline comparison (Req 18.2, 18.3, 18.5).
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Any, List
-from math import sqrt
+from math import erf, sqrt
+from typing import Any, Dict, List, Optional
+
+
+@dataclass
+class HumanBaseline:
+    """
+    Human performance distribution for one scenario.
+
+    Stores per-participant VIS dimension scores collected under identical
+    environment conditions. Used to compute AI percentile rankings.
+
+    Attributes:
+        scenario_id: Which scenario this baseline covers
+        participants: List of per-participant score dicts (one per person)
+        n: Number of participants
+    """
+    scenario_id: str
+    participants: List[Dict[str, float]] = field(default_factory=list)
+    n: int = 0
+
+    def add_participant(self, scores: Dict[str, float]) -> None:
+        """Add one participant's scores."""
+        self.participants.append(scores)
+        self.n = len(self.participants)
+
+    def compute_percentile(self, vis_score: float, dimension: str = "vis") -> float:
+        """
+        Return the percentile rank of vis_score within the human distribution
+        for the given dimension.
+
+        Args:
+            vis_score: The AI score to rank
+            dimension: Which VIS dimension to compare against (default "vis")
+
+        Returns:
+            Percentile (0.0–100.0). Returns 50.0 if insufficient data.
+        """
+        values = [p.get(dimension, 0.0) for p in self.participants if dimension in p]
+        if len(values) < 2:
+            return 50.0
+        mean = sum(values) / len(values)
+        variance = sum((v - mean) ** 2 for v in values) / len(values)
+        std = sqrt(variance)
+        if std <= 0:
+            return 50.0
+        z = (vis_score - mean) / std
+        return round(0.5 * (1 + erf(z / sqrt(2))) * 100, 1)
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "scenario_id": self.scenario_id,
+            "n": self.n,
+            "participants": self.participants,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "HumanBaseline":
+        obj = cls(scenario_id=data["scenario_id"])
+        obj.participants = data.get("participants", [])
+        obj.n = len(obj.participants)
+        return obj
 
 
 @dataclass

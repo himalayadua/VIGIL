@@ -257,13 +257,3 @@ python run_kaggle_test.py
 ## License
 
 Apache 2.0
-
-## Team
-
-Vigil Team - Google DeepMind × Kaggle "Measuring AGI" Hackathon 2026
-
-## Deadlines
-
-- **Submission Deadline**: April 16, 2026
-- **Results Announced**: June 1, 2026
-- **Total Prize Pool**: $200,000

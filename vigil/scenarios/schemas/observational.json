@@ -2,43 +2,27 @@
   "scenario_id": "observational_learning_v1",
   "cognitive_track": "learning",
   "sub_ability": "observational_learning",
-  "description": "Model must learn by watching demonstrations",
+  "description": "Model must learn by watching demonstrations and apply strategy to transfer graph",
   "graph_config": {
-    "demo_count": 3,
-    "transfer_tests": 5
+    "num_nodes": 6
   },
   "hidden_rule": {
-    "type": "imitation_with_generalization",
-    "description": "Observe solution strategy and apply to isomorphic problem",
-    "verification_pattern": ["observed", "demonstration", "similar", "pattern"]
+    "type": "follow_sequence",
+    "description": "follow ascending sequence",
+    "verification_pattern": ["sequence", "ascending", "order", "chain", "follow"]
   },
   "scoring_weights": {
     "correctness": 0.50,
     "efficiency": 0.20,
-    "evidence_quality": 0.15,
-    "calibration": 0.15
+    "evidence_quality": 0.20,
+    "calibration": 0.10
   },
   "difficulty_levels": {
-    "1": {
-      "demo_count": 2,
-      "transfer_tests": 3
-    },
-    "2": {
-      "demo_count": 3,
-      "transfer_tests": 5
-    },
-    "3": {
-      "demo_count": 4,
-      "transfer_tests": 8
-    }
+    "1": {"num_nodes": 5},
+    "2": {"num_nodes": 7},
+    "3": {"num_nodes": 10}
   },
-  "budget": {
-    "base": 20,
-    "bonus_per_test": 3
-  },
-  "metadata": {
-    "version": "1.0.0",
-    "created": "2026-03-29",
-    "author": "Vigil Team"
-  }
+  "budget": {"base": 30},
+  "optimal_steps": 10,
+  "metadata": {"version": "1.0.0", "created": "2026-04-06", "author": "Vigil Team"}
 }

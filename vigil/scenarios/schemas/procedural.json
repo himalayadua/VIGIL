@@ -2,43 +2,28 @@
   "scenario_id": "procedural_learning_v1",
   "cognitive_track": "learning",
   "sub_ability": "procedural_learning",
-  "description": "Model must improve through repeated practice",
+  "description": "Model must learn valid move sequences through trial and error across 10+ trials",
   "graph_config": {
-    "practice_rounds": 5,
-    "task_variants": 10
+    "procedure_depth": 4,
+    "branching_factor": 2
   },
   "hidden_rule": {
-    "type": "skill_improvement",
-    "description": "Performance should improve across practice rounds",
-    "verification_pattern": ["improved", "practice", "faster", "efficient"]
+    "type": "procedure_sequence",
+    "description": "reach goal state via valid move sequence",
+    "verification_pattern": ["goal", "sequence", "procedure", "reach"]
   },
   "scoring_weights": {
-    "correctness": 0.30,
-    "efficiency": 0.30,
-    "improvement_rate": 0.25,
+    "correctness": 0.40,
+    "efficiency": 0.25,
+    "evidence_quality": 0.20,
     "calibration": 0.15
   },
   "difficulty_levels": {
-    "1": {
-      "practice_rounds": 3,
-      "task_complexity": "simple"
-    },
-    "2": {
-      "practice_rounds": 5,
-      "task_complexity": "moderate"
-    },
-    "3": {
-      "practice_rounds": 8,
-      "task_complexity": "complex"
-    }
+    "1": {"procedure_depth": 3, "branching_factor": 2},
+    "2": {"procedure_depth": 4, "branching_factor": 3},
+    "3": {"procedure_depth": 5, "branching_factor": 3}
   },
-  "budget": {
-    "base": 25,
-    "bonus_per_round": 3
-  },
-  "metadata": {
-    "version": "1.0.0",
-    "created": "2026-03-29",
-    "author": "Vigil Team"
-  }
+  "budget": {"base": 50},
+  "optimal_steps": 20,
+  "metadata": {"version": "1.0.0", "created": "2026-04-06", "author": "Vigil Team"}
 }

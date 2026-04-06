@@ -1,305 +1,268 @@
 """
-Track 1: Learning - Kaggle Benchmark Tasks
+Track 1: Learning — Kaggle Benchmark Tasks
 
-Implements cognitive graph environments for the Learning faculty:
-- Concept Formation
-- Associative Learning
-- Reinforcement Learning
+Architecture (Req 17):
+  - Six sub-tasks (store_task=False): one per learning sub-ability
+  - One primary aggregated task (store_task=True): vigil_learning_benchmark
+    Uses .evaluate() with a DataFrame of (scenario_type, difficulty, seed) rows.
+    Returns aggregate float to the leaderboard.
 
-Each task follows the Kaggle Benchmarks SDK pattern:
-- @kbench.task decorator
-- llm as first parameter
-- Proper return type annotations (-> float)
+SDK integration:
+  - schema=VigilAction passed to llm.prompt() for structured output
+  - Hard 20-turn cap (Req 17.8)
+  - Returns 0.0 on budget exhaustion or timeout (Req 17.7)
+  - Two-stage MC scoring: citation ratio + optional judge LLM (Req 10.8)
+  - %choose vigil_learning_benchmark for leaderboard (Req 17.5)
+
+Note: @kbench.task decorators are guarded by try/except so this module
+can be imported locally without kaggle_benchmarks installed.
+Task 11 is the final SDK integration — the decorators are active here.
 """
 
-import kaggle_benchmarks as kbench
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
-from vigil.environments.concept_formation import ConceptFormationEnv
+try:
+    import kaggle_benchmarks as kbench
+    import pandas as pd
+    _KBENCH_AVAILABLE = True
+except ImportError:
+    _KBENCH_AVAILABLE = False
+    kbench = None
+
+from vigil.actions.parser import parse_action
+from vigil.actions.schemas import SubmitAnswerAction, VigilAction
 from vigil.environments.associative import AssociativeLearningEnv
+from vigil.environments.concept_formation import ConceptFormationEnv
+from vigil.environments.language import LanguageLearningEnv
+from vigil.environments.observational import ObservationalLearningEnv
+from vigil.environments.procedural import ProceduralLearningEnv
 from vigil.environments.reinforcement import ReinforcementLearningEnv
 from vigil.scenarios.loader import ScenarioLoader
-from vigil.actions.parser import parse_action
-from vigil.actions.schemas import ActionType, GraphAction
+from vigil.scoring.vis import VISScorer
+
+_SCORER = VISScorer()
+_LOADER = ScenarioLoader()
+
+# Map scenario_type string → (env_class, scenario_name)
+_ENV_MAP = {
+    "concept_formation":   (ConceptFormationEnv,   "concept_formation"),
+    "associative":         (AssociativeLearningEnv, "associative"),
+    "reinforcement":       (ReinforcementLearningEnv, "reinforcement"),
+    "observational":       (ObservationalLearningEnv, "observational"),
+    "procedural":          (ProceduralLearningEnv,  "procedural"),
+    "language":            (LanguageLearningEnv,    "language"),
+}
 
 
-def _run_exploration_loop(
-    llm,
-    env,
-    state,
-    max_turns: int = 15
-) -> tuple[bool, str, Dict[str, float]]:
+# ---------------------------------------------------------------------------
+# Core episode runner (shared by all sub-tasks)
+# ---------------------------------------------------------------------------
+
+def _run_episode(llm: Any, env: Any, judge_llm: Any = None) -> float:
     """
-    Run the main exploration loop for any cognitive environment.
+    Run one episode of any CognitiveEnvironment.
 
-    Args:
-        llm: LLM to evaluate
-        env: Cognitive environment instance
-        state: Initial environment state
-        max_turns: Maximum exploration turns
-
-    Returns:
-        Tuple of (completed, final_answer, scores)
+    - Passes schema=VigilAction to llm.prompt() for structured output (Req 17.2)
+    - Hard 20-turn cap (Req 17.8)
+    - Returns 0.0 on budget exhaustion or timeout (Req 17.7)
+    - Two-stage MC scoring via VISScorer (Req 10.8)
     """
+    state = env.reset()
     final_answer = ""
+    justification = ""
 
-    for turn in range(max_turns):
-        if state.budget_remaining <= 0:
+    for _turn in range(20):  # Hard 20-turn cap (Req 17.8)
+        if state.episode_done or state.budget_remaining <= 0:
             break
 
-        # Present current state and get action
-        prompt = f"""
-You are exploring an unknown graph to discover a hidden pattern.
-The graph contains nodes belonging to hidden categories.
-Nodes in the same category share core features.
-Your task is to infer the categorization rule.
+        obs = env.render(state)
 
-{env.get_available_actions(state)}
+        # Req 17.2: pass schema=VigilAction for structured output
+        if _KBENCH_AVAILABLE:
+            action = llm.prompt(obs, schema=VigilAction)
+        else:
+            # Local testing fallback: parse from string response
+            response = llm.prompt(obs)
+            action = parse_action(response)
 
-Your action (use format 'expand:node_id' or 'submit' when ready):
-"""
-        response = llm.prompt(prompt)
+        state = env.execute_action(state, action)
 
-        # Parse action
-        action = parse_action(response)
+        if state.episode_done:
+            # Extract answer and justification from last submit event
+            last = state.action_history[-1] if state.action_history else None
+            if last and last.params:
+                final_answer = last.params.get("answer", "")
+                justification = last.params.get("justification", "")
+            elif isinstance(action, SubmitAnswerAction):
+                final_answer = action.answer
+                justification = action.justification
+            break
 
-        if action and action.is_valid():
-            success, obs = env.execute_action(state, action)
+    if not state.episode_done:
+        return 0.0  # Req 17.7: timeout/budget exhaustion → 0.0
 
-            if action.action_type == ActionType.SUBMIT:
-                # Get final hypothesis
-                final_prompt = """
-Based on your exploration, what is the hidden rule for how nodes are categorized?
-Describe the pattern you discovered.
-"""
-                final_answer = llm.prompt(final_prompt)
-                scores = env.score_exploration(state, final_answer)
-                return True, final_answer, scores
+    # Score the episode
+    episode_scores = env.score_episode(state, final_answer, justification)
+    outcome_score = episode_scores.get("correctness", 0.0)
 
-        # Update state display
-        state = env.reset() if not state else state
-
-    # Timeout - model didn't submit
-    return False, final_answer, {}
-
-
-@kbench.task(name="concept_formation_learning")
-def concept_formation_task(
-    llm,
-    difficulty: int = 2,
-    seed: int = 42
-) -> float:
-    """
-    Track 1 Learning: Concept Formation Test
-
-    Model must explore graph and infer latent categorization rule.
-    Scored 0.0 - 1.0 on correctness, efficiency, evidence, calibration.
-
-    Args:
-        llm: LLM to evaluate
-        difficulty: Difficulty level (1-3)
-        seed: Random seed for reproducibility
-
-    Returns:
-        Final score (0.0 - 1.0)
-    """
-    # Load scenario configuration
-    loader = ScenarioLoader()
-    config = loader.load("concept_formation")
-
-    # Initialize environment
-    env = ConceptFormationEnv(
-        scenario_config=config,
-        difficulty=difficulty,
-        seed=seed
+    # VIS scoring with two-stage MC (Req 10.8, 17.3)
+    scenario_config = env.scenario_config
+    vis_result = _SCORER.score_episode(
+        state=state,
+        final_answer=final_answer,
+        justification=justification,
+        scenario_config=scenario_config,
+        outcome_score=outcome_score,
+        judge_llm=judge_llm,
     )
-    state = env.reset()
-
-    # Exploration loop
-    max_turns = 15
-    for turn in range(max_turns):
-        if state.budget_remaining <= 0:
-            break
-
-        # Present current state
-        prompt = f"""
-You are exploring an unknown graph to discover a hidden pattern.
-The graph contains nodes belonging to hidden categories.
-Nodes in the same category share core features.
-Your task is to infer the categorization rule.
-
-{env.get_available_actions(state)}
-
-Your action:
-"""
-        response = llm.prompt(prompt)
-
-        # Parse and execute action
-        action = parse_action(response)
-
-        if action and action.is_valid():
-            success, obs = env.execute_action(state, action)
-
-            if action.action_type == ActionType.SUBMIT:
-                # Get final hypothesis
-                final_prompt = """
-Based on your exploration, what is the hidden rule for how nodes are categorized?
-Describe the pattern you discovered.
-"""
-                final_answer = llm.prompt(final_prompt)
-                scores = env.score_exploration(state, final_answer)
-                return scores["final_score"]
-
-    # Timeout - model didn't submit
-    return 0.0
+    return float(vis_result["vis"])
 
 
-@kbench.task(name="associative_learning")
-def associative_learning_task(
-    llm,
-    difficulty: int = 2,
-    seed: int = 42
-) -> float:
-    """
-    Track 1 Learning: Associative Learning Test
+# ---------------------------------------------------------------------------
+# Sub-task factory
+# ---------------------------------------------------------------------------
 
-    Model must learn relationships between co-occurring events.
-    Scored 0.0 - 1.0.
+def _make_sub_task(scenario_type: str):
+    """Create a sub-task function for a given scenario type."""
+    env_class, scenario_name = _ENV_MAP[scenario_type]
 
-    Args:
-        llm: LLM to evaluate
-        difficulty: Difficulty level (1-3)
-        seed: Random seed
+    def sub_task(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load(scenario_name)
+        env = env_class(scenario_config=config, difficulty=difficulty, seed=seed)
+        judge = getattr(kbench, "judge_llm", None) if _KBENCH_AVAILABLE else None
+        return _run_episode(llm, env, judge_llm=judge)
 
-    Returns:
-        Final score (0.0 - 1.0)
-    """
-    # Load scenario configuration
-    loader = ScenarioLoader()
-    config = loader.load("associative")
-
-    # Initialize environment
-    env = AssociativeLearningEnv(
-        scenario_config=config,
-        difficulty=difficulty,
-        seed=seed
-    )
-    state = env.reset()
-
-    # Exploration loop
-    max_turns = 12
-    for turn in range(max_turns):
-        if state.budget_remaining <= 0:
-            break
-
-        prompt = f"""
-You are exploring to discover associations between nodes.
-Certain nodes appear together in pairs - your task is to find the pattern.
-
-{env.get_available_actions(state)}
-
-Your action:
-"""
-        response = llm.prompt(prompt)
-        action = parse_action(response)
-
-        if action and action.is_valid():
-            success, obs = env.execute_action(state, action)
-
-            if action.action_type == ActionType.SUBMIT:
-                final_prompt = """
-Based on your exploration, describe the association pattern you discovered.
-"""
-                final_answer = llm.prompt(final_prompt)
-                scores = env.score_exploration(state, final_answer)
-                return scores["final_score"]
-
-    return 0.0
+    sub_task.__name__ = f"{scenario_type}_sub"
+    sub_task.__doc__ = f"Track 1 Learning: {scenario_type.replace('_', ' ').title()} sub-task. Returns VIS float."
+    return sub_task
 
 
-@kbench.task(name="reinforcement_learning")
-def reinforcement_learning_task(
-    llm,
-    difficulty: int = 2,
-    seed: int = 42
-) -> float:
-    """
-    Track 1 Learning: Reinforcement Learning Test
+# ---------------------------------------------------------------------------
+# Six sub-tasks (store_task=False — internal, not leaderboard entries)
+# ---------------------------------------------------------------------------
 
-    Model must learn from rewards and punishments.
-    Scored 0.0 - 1.0.
+if _KBENCH_AVAILABLE:
+    concept_formation_sub = kbench.task(
+        name="concept_formation_sub", store_task=False
+    )(_make_sub_task("concept_formation"))
 
-    Args:
-        llm: LLM to evaluate
-        difficulty: Difficulty level (1-3)
-        seed: Random seed
+    associative_sub = kbench.task(
+        name="associative_sub", store_task=False
+    )(_make_sub_task("associative"))
 
-    Returns:
-        Final score (0.0 - 1.0)
-    """
-    # Load scenario configuration
-    loader = ScenarioLoader()
-    config = loader.load("reinforcement")
+    reinforcement_sub = kbench.task(
+        name="reinforcement_sub", store_task=False
+    )(_make_sub_task("reinforcement"))
 
-    # Initialize environment
-    env = ReinforcementLearningEnv(
-        scenario_config=config,
-        difficulty=difficulty,
-        seed=seed
-    )
-    state = env.reset()
+    observational_sub = kbench.task(
+        name="observational_sub", store_task=False
+    )(_make_sub_task("observational"))
 
-    # Exploration loop
-    max_turns = 15
-    for turn in range(max_turns):
-        if state.budget_remaining <= 0:
-            break
+    procedural_sub = kbench.task(
+        name="procedural_sub", store_task=False
+    )(_make_sub_task("procedural"))
 
-        prompt = f"""
-You are navigating an environment with rewards and penalties.
-Find the reward nodes and avoid penalty nodes.
-Maximize your total reward.
+    language_sub = kbench.task(
+        name="language_sub", store_task=False
+    )(_make_sub_task("language"))
 
-{env.get_available_actions(state)}
+    _SUB_TASKS = {
+        "concept_formation": concept_formation_sub,
+        "associative":       associative_sub,
+        "reinforcement":     reinforcement_sub,
+        "observational":     observational_sub,
+        "procedural":        procedural_sub,
+        "language":          language_sub,
+    }
 
-Your action:
-"""
-        response = llm.prompt(prompt)
-        action = parse_action(response)
+    # -----------------------------------------------------------------------
+    # Primary aggregated leaderboard task (store_task=True)
+    # -----------------------------------------------------------------------
 
-        if action and action.is_valid():
-            success, obs = env.execute_action(state, action)
+    @kbench.task(name="vigil_learning_benchmark")
+    def vigil_learning_benchmark(llm) -> float:
+        """
+        Vigil: Don't Ask — Watch. Track 1: Learning.
 
-            if action.action_type == ActionType.SUBMIT:
-                final_prompt = """
-Based on your exploration, describe the reward structure you discovered.
-"""
-                final_answer = llm.prompt(final_prompt)
-                scores = env.score_exploration(state, final_answer)
-                return scores["final_score"]
+        Aggregates all 6 learning sub-ability environments across multiple
+        difficulty levels and seeds. Returns mean VIS score as the leaderboard float.
 
-    return 0.0
+        Req 17.4: uses .evaluate() with a (scenario_type, difficulty, seed) DataFrame.
+        Req 17.5: %choose vigil_learning_benchmark for leaderboard submission.
+        """
+        # Build evaluation DataFrame: 3 seeds × 2 difficulties × 6 scenarios = 36 runs
+        rows = []
+        for scenario_type in _ENV_MAP:
+            for difficulty in [1, 2]:
+                for seed in [42, 137, 999]:
+                    rows.append({
+                        "scenario_type": scenario_type,
+                        "difficulty": difficulty,
+                        "seed": seed,
+                    })
+        df = pd.DataFrame(rows)
 
+        # Run all sub-tasks via .evaluate()
+        all_scores = []
+        for scenario_type, sub_task in _SUB_TASKS.items():
+            scenario_df = df[df["scenario_type"] == scenario_type][["difficulty", "seed"]]
+            with kbench.client.enable_cache():
+                runs = sub_task.evaluate(
+                    llm=[llm],
+                    evaluation_data=scenario_df,
+                    n_jobs=2,
+                    timeout=300,
+                )
+            eval_df = runs.as_dataframe()
+            if len(eval_df) > 0:
+                all_scores.extend(eval_df["result"].tolist())
 
-@kbench.task(name="concept_formation_dataset")
-def concept_formation_dataset_task(
-    llm,
-    difficulty: int,
-    seed: int
-) -> bool:
-    """
-    Single instance task for dataset evaluation.
+        if not all_scores:
+            return 0.0
+        return float(sum(all_scores) / len(all_scores))
 
-    Returns True if score > 0.5, False otherwise.
-    Used with .evaluate() for running multiple graph instances.
+else:
+    # Local fallback: plain functions without SDK decorators
+    def concept_formation_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("concept_formation")
+        env = ConceptFormationEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
 
-    Args:
-        llm: LLM to evaluate
-        difficulty: Difficulty level
-        seed: Random seed
+    def associative_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("associative")
+        env = AssociativeLearningEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
 
-    Returns:
-        bool: True if passed (score > 0.5)
-    """
-    score = concept_formation_task.run(llm, difficulty=difficulty, seed=seed)
-    return score > 0.5
+    def reinforcement_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("reinforcement")
+        env = ReinforcementLearningEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
+
+    def observational_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("observational")
+        env = ObservationalLearningEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
+
+    def procedural_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("procedural")
+        env = ProceduralLearningEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
+
+    def language_sub(llm, difficulty: int = 2, seed: int = 42) -> float:
+        config = _LOADER.load("language")
+        env = LanguageLearningEnv(scenario_config=config, difficulty=difficulty, seed=seed)
+        return _run_episode(llm, env)
+
+    _SUB_TASKS = {
+        "concept_formation": concept_formation_sub,
+        "associative":       associative_sub,
+        "reinforcement":     reinforcement_sub,
+        "observational":     observational_sub,
+        "procedural":        procedural_sub,
+        "language":          language_sub,
+    }
+
+    def vigil_learning_benchmark(llm) -> float:
+        """Local fallback: runs all 6 sub-tasks with default params."""
+        scores = [fn(llm) for fn in _SUB_TASKS.values()]
+        return sum(scores) / len(scores) if scores else 0.0

@@ -2,45 +2,27 @@
   "scenario_id": "language_learning_v1",
   "cognitive_track": "learning",
   "sub_ability": "language_learning",
-  "description": "Model must learn new syntax or vocabulary",
+  "description": "Model must learn a novel FSM grammar from exemplars and classify paths",
   "graph_config": {
-    "vocabulary_size": 10,
-    "grammar_rules": 3,
-    "test_sentences": 5
+    "num_states": 5
   },
   "hidden_rule": {
-    "type": "syntax_acquisition",
-    "description": "Learn and apply novel grammatical rules",
-    "verification_pattern": ["syntax", "grammar", "rule", "pattern"]
+    "type": "fsm_grammar",
+    "description": "grammatical path through FSM",
+    "verification_pattern": ["grammatical", "grammar", "pattern", "rule"]
   },
   "scoring_weights": {
-    "correctness": 0.45,
+    "correctness": 0.50,
     "efficiency": 0.20,
-    "evidence_quality": 0.15,
-    "calibration": 0.10,
-    "generalization": 0.10
+    "evidence_quality": 0.20,
+    "calibration": 0.10
   },
   "difficulty_levels": {
-    "1": {
-      "vocabulary_size": 5,
-      "grammar_rules": 2
-    },
-    "2": {
-      "vocabulary_size": 10,
-      "grammar_rules": 3
-    },
-    "3": {
-      "vocabulary_size": 15,
-      "grammar_rules": 5
-    }
+    "1": {"num_states": 4},
+    "2": {"num_states": 5},
+    "3": {"num_states": 7}
   },
-  "budget": {
-    "base": 15,
-    "bonus_per_rule": 2
-  },
-  "metadata": {
-    "version": "1.0.0",
-    "created": "2026-03-29",
-    "author": "Vigil Team"
-  }
+  "budget": {"base": 40},
+  "optimal_steps": 25,
+  "metadata": {"version": "1.0.0", "created": "2026-04-06", "author": "Vigil Team"}
 }

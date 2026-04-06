@@ -1,344 +1,191 @@
 """
-Concept Formation Environment for Track 1: Learning.
+Concept Formation Environment — Track 1: Learning (WCST analog).
 
-Implements the Concept Formation cognitive test where models must:
-- Explore nodes with features
-- Infer latent category rules
-- Demonstrate concept abstraction ability
+Fixes applied (Task 5):
+  5.1 — Neighbor validation in _execute_explore (no teleportation)
+  5.2 — Category leak removed from _execute_inspect
+  5.3 — evidence_nodes populated on inspect
 """
 
 import random
-from typing import Dict, List, Any, Optional, Tuple, Set
-from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
 from vigil.environments.base import (
-    CognitiveEnvironment,
-    EnvironmentState,
-    GraphAction,
-    ActionType
+    CognitiveEnvironment, EnvironmentState, EventType, TraversalEvent,
 )
-from vigil.graphs.core import CognitiveGraph, GraphNode, GraphEdge
-
-
-@dataclass
-class ConceptFormationState(EnvironmentState):
-    """Extended state for concept formation tasks."""
-    current_hypothesis: Optional[str] = None
-    category_guesses: List[str] = None
-
-    def __post_init__(self):
-        if self.category_guesses is None:
-            self.category_guesses = []
+from vigil.graphs.core import CognitiveGraph, GraphEdge, GraphNode, NodeVisibility
 
 
 class ConceptFormationEnv(CognitiveEnvironment):
-    """
-    Environment for testing concept formation ability.
 
-    The model must explore nodes, observe their features,
-    and infer the latent categorization rule.
-
-    Scenario:
-    - Graph contains nodes belonging to hidden categories
-    - Nodes in same category share core features
-    - Model must discover the category structure through exploration
-    - Scoring based on correctness, efficiency, evidence quality
-    """
-
-    def __init__(
-        self,
-        scenario_config: Dict[str, Any],
-        difficulty: int = 2,
-        seed: Optional[int] = None
-    ):
-        """
-        Initialize concept formation environment.
-
-        Args:
-            scenario_config: Configuration from scenario JSON
-            difficulty: Difficulty level (1-3)
-            seed: Random seed for reproducibility
-        """
+    def __init__(self, scenario_config: Dict[str, Any], difficulty: int = 2, seed: Optional[int] = None):
         self.scenario_config = scenario_config
         self.difficulty = difficulty
-        self.seed = seed or random.randint(0, 10000)
-        random.seed(self.seed)
-
-        # Extract config values
+        self.seed = seed if seed is not None else random.randint(0, 10000)
+        self._rng = random.Random(self.seed)
         self._graph_config = self._get_difficulty_config()
         self._scoring_weights = scenario_config.get("scoring_weights", {})
-
-        # Generate the graph
-        self.graph = self._generate_graph()
-        self.state: Optional[ConceptFormationState] = None
-
-        # Track hidden rule
         self._hidden_rule = scenario_config.get("hidden_rule", {})
-        self._correct_categories = self._get_correct_categories()
+        self.graph = self._generate_graph()
+        self._evidence_relevant = set(self.graph.nodes.keys())
 
     def _get_difficulty_config(self) -> Dict[str, Any]:
-        """Get configuration for current difficulty level."""
         levels = self.scenario_config.get("difficulty_levels", {})
         return levels.get(str(self.difficulty), levels.get("2", {}))
 
     def _generate_graph(self) -> CognitiveGraph:
-        """
-        Generate graph with latent category structure.
-
-        Nodes in the same category share core features.
-        """
         num_nodes = self._graph_config.get("num_nodes", 15)
         num_categories = self._graph_config.get("num_categories", 3)
         features_per_node = self._graph_config.get("features_per_node", 5)
-        core_features_per_category = self._graph_config.get("core_features_per_category", 3)
-        feature_pool_size = self._graph_config.get("feature_pool_size", 30)
+        core_per_cat = self._graph_config.get("core_features_per_category", 3)
+        pool_size = self._graph_config.get("feature_pool_size", 30)
 
-        # Create feature pool
-        feature_pool = [f"feature_{i}" for i in range(feature_pool_size)]
+        feature_pool = [f"feature_{i}" for i in range(pool_size)]
+        self._rng.shuffle(feature_pool)
 
-        # Assign core features to each category
-        category_core_features = {}
-        remaining_features = feature_pool.copy()
-
+        category_core: Dict[str, set] = {}
+        remaining = feature_pool.copy()
         for cat_idx in range(num_categories):
-            # Each category gets unique core features
-            num_core = min(core_features_per_category, len(remaining_features))
-            core_features = set(random.sample(remaining_features, num_core))
-            category_core_features[f"cat_{cat_idx}"] = core_features
-            remaining_features = [f for f in remaining_features if f not in core_features]
+            core = set(remaining[:core_per_cat])
+            category_core[f"cat_{cat_idx}"] = core
+            remaining = remaining[core_per_cat:]
 
-        # Generate nodes
         graph = CognitiveGraph()
-        nodes = []
-
+        nodes: List[GraphNode] = []
         for i in range(num_nodes):
             category = f"cat_{i % num_categories}"
-            core_feats = category_core_features[category].copy()
-
-            # Add noise features
+            core_feats = category_core[category].copy()
             noise_count = features_per_node - len(core_feats)
-            noise_feats = set(random.sample(
-                remaining_features,
-                min(noise_count, len(remaining_features))
-            ))
-
-            node = GraphNode(
-                node_id=f"node_{i}",
-                features=core_feats | noise_feats,
-                category=category
-            )
+            noise = set(self._rng.sample(remaining, min(noise_count, len(remaining))))
+            node = GraphNode(node_id=f"node_{i}", features=core_feats | noise, category=category)
             graph.add_node(node)
             nodes.append(node)
 
-        # Create edges between nodes (random connectivity for exploration)
         for i, node in enumerate(nodes):
-            # Connect to a few random other nodes
-            num_connections = random.randint(2, min(5, len(nodes) - 1))
-            targets = random.sample(
-                [n for j, n in enumerate(nodes) if j != i],
-                num_connections
-            )
-
+            num_conn = self._rng.randint(2, min(5, len(nodes) - 1))
+            targets = self._rng.sample([n for j, n in enumerate(nodes) if j != i], num_conn)
             for target in targets:
-                edge = GraphEdge(
-                    source=node.node_id,
-                    target=target.node_id,
-                    relation_type="connected_to"
-                )
-                graph.add_edge(node.node_id, edge)
+                graph.add_edge(node.node_id, GraphEdge(source=node.node_id, target=target.node_id, relation_type="connected_to"))
 
-        # Store hidden rule
-        graph.hidden_rule = f"Nodes in same category share core features: {category_core_features}"
-        graph.metadata = {
-            "num_categories": num_categories,
-            "core_features": category_core_features
-        }
-
+        graph.hidden_rule = f"category_by_core_features | {category_core}"
+        graph.metadata = {"num_categories": num_categories, "category_core_features": category_core}
+        graph.init_visibility(nodes[0].node_id)
         return graph
 
-    def _get_correct_categories(self) -> Dict[str, str]:
-        """Get mapping of nodes to their correct categories."""
-        return {
-            node.node_id: node.category
-            for node in self.graph.nodes.values()
-        }
+    def reset(self) -> EnvironmentState:
+        budget = self.scenario_config.get("budget", {}).get("base", 10)
+        start = self.graph.get_all_node_ids()[0]
+        state = EnvironmentState(current_node=start, budget_remaining=budget)
+        state.visited_nodes.append(start)
+        return state
 
-    def reset(self) -> ConceptFormationState:
-        """Reset environment to initial state."""
-        self.state = ConceptFormationState(
-            current_node=self.graph.get_all_node_ids()[0],
-            budget_remaining=self.scenario_config.get("budget", {}).get("base", 10)
+    def render(self, state: EnvironmentState) -> str:
+        view = self.graph.get_agent_view()
+        if len(state.action_history) > 15:
+            history_str = f"[Compressed: {len(state.action_history)} actions, {len(state.evidence_nodes)} evidence nodes]"
+        else:
+            history_str = f"{len(state.action_history)} actions taken"
+        return (
+            f"=== Concept Formation ===\n"
+            f"Current: {state.current_node} | Budget: {state.budget_remaining}\n"
+            f"Expanded: {len(view['expanded'])} | Discovered: {len(view['discovered'])}\n"
+            f"Evidence: {len(state.evidence_nodes)} | {history_str}\n"
+            f"Actions: explore:<node_id>(cost 2) | inspect:<node_id>(cost 1) | get_context | submit_answer\n"
+            f"Goal: Infer the hidden rule grouping nodes into categories."
         )
-        return self.state
 
-    def get_available_actions(self, state: ConceptFormationState) -> str:
-        """Generate action menu for the model."""
-        current = self.graph.get_node(state.current_node)
+    def execute_action(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        from vigil.actions.schemas import (
+            ActionParseError, ExploreAction, GetContextAction, InspectAction, SubmitAnswerAction,
+        )
+        if isinstance(action, ActionParseError):
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Parse error: {action.error}"))
+            return state
+        if isinstance(action, ExploreAction):
+            return self._execute_explore(state, action)
+        if isinstance(action, InspectAction):
+            return self._execute_inspect(state, action)
+        if isinstance(action, GetContextAction):
+            return self._execute_get_context(state)
+        if isinstance(action, SubmitAnswerAction):
+            return self._execute_submit(state, action)
+        state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Unknown action: {type(action)}"))
+        return state
+
+    def _execute_explore(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        # FIX 5.1: validate neighbor, no budget deduction on error
+        if state.budget_remaining < 2:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, "Need 2 budget for explore", node_id=action.node_id))
+            return state
         neighbors = self.graph.get_neighbors(state.current_node)
+        if action.node_id not in neighbors:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"'{action.node_id}' is not a neighbor of '{state.current_node}'", node_id=action.node_id))
+            return state
+        if action.node_id not in self.graph.nodes:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Node '{action.node_id}' does not exist", node_id=action.node_id))
+            return state
+        state.current_node = action.node_id
+        state.visited_nodes.append(action.node_id)
+        state.budget_remaining -= 2
+        self.graph.set_visibility(action.node_id, NodeVisibility.EXPANDED)
+        for nid in self.graph.get_neighbors(action.node_id):
+            self.graph.set_visibility(nid, NodeVisibility.DISCOVERED)
+        obs = f"Moved to {action.node_id}. Neighbors: {self.graph.get_neighbors(action.node_id)}"
+        state.action_history.append(TraversalEvent.make(EventType.EXPLORE, obs, node_id=action.node_id, budget_delta=-2))
+        return state
 
-        lines = [
-            f"Current node: {state.current_node}",
-            f"Budget: {state.budget_remaining}",
-            "",
-            "Actions:",
-            "  expand:<node_id> - Move to connected node",
-            "  inspect - Examine current node features",
-            "  backtrack - Return to previous node",
-            "  submit - Submit category rule hypothesis",
-            "",
-            f"Visited: {len(state.visited_nodes)} nodes"
-        ]
-
-        if neighbors:
-            lines.append(f"Visible neighbors: {', '.join(neighbors[:5])}")
-
-        return "\n".join(lines)
-
-    def execute_action(
-        self,
-        state: ConceptFormationState,
-        action: GraphAction
-    ) -> Tuple[bool, str]:
-        """Execute action and return observation."""
-        if action.action_type == ActionType.EXPAND:
-            return self._execute_expand(state, action)
-        elif action.action_type == ActionType.INSPECT:
-            return self._execute_inspect(state)
-        elif action.action_type == ActionType.BACKTRACK:
-            return self._execute_backtrack(state)
-        elif action.action_type == ActionType.SUBMIT:
-            return self._execute_submit(state)
-
-        return False, "Unknown action"
-
-    def _execute_expand(
-        self,
-        state: ConceptFormationState,
-        action: GraphAction
-    ) -> Tuple[bool, str]:
-        """Execute expand action."""
-        if state.budget_remaining <= 0:
-            return False, "No budget remaining"
-
-        target = action.target_node
-        if not target:
-            return False, "Must specify target node"
-
-        current_node = self.graph.get_node(state.current_node)
-        if not current_node:
-            return False, "Invalid current node"
-
-        # Check if target is a valid neighbor
-        neighbors = self.graph.get_neighbors(state.current_node)
-        if target not in neighbors:
-            return False, f"Node {target} is not connected to current node"
-
-        # Move to target
-        state.current_node = target
-        state.visited_nodes.append(target)
+    def _execute_inspect(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        # FIX 5.2: no category. FIX 5.3: populate evidence_nodes
+        if state.budget_remaining < 1:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, "Need 1 budget for inspect", node_id=action.node_id))
+            return state
+        if self.graph.get_visibility(action.node_id) == NodeVisibility.UNEXPLORED:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Cannot inspect UNEXPLORED node '{action.node_id}'", node_id=action.node_id))
+            return state
+        node = self.graph.get_node(action.node_id)
+        if node is None:
+            state.action_history.append(TraversalEvent.make(EventType.ERROR, f"Node '{action.node_id}' not found", node_id=action.node_id))
+            return state
+        # FIX 5.2: get_visible_features() — never category
+        visible = sorted(node.get_visible_features())
+        obs = f"Node {action.node_id} features: {visible}"
+        self.graph.set_visibility(action.node_id, NodeVisibility.EXPANDED)
         state.budget_remaining -= 1
-        state.action_history.append(action)
+        # FIX 5.3: evidence_nodes
+        evidence_added = []
+        if action.node_id in self._evidence_relevant and action.node_id not in state.evidence_nodes:
+            state.evidence_nodes.append(action.node_id)
+            evidence_added.append(action.node_id)
+        state.action_history.append(TraversalEvent.make(EventType.INSPECT, obs, node_id=action.node_id, budget_delta=-1, evidence_added=evidence_added))
+        return state
 
-        # Get target node info
-        target_node = self.graph.get_node(target)
-        return True, f"Moved to {target}. Features: {target_node.features}"
+    def _execute_get_context(self, state: EnvironmentState) -> EnvironmentState:
+        view = self.graph.get_agent_view()
+        obs = f"At {state.current_node} | Budget: {state.budget_remaining} | Expanded: {len(view['expanded'])} | Discovered: {len(view['discovered'])} | Evidence: {len(state.evidence_nodes)}"
+        state.action_history.append(TraversalEvent.make(EventType.GET_CONTEXT, obs))
+        return state
 
-    def _execute_inspect(
-        self,
-        state: ConceptFormationState
-    ) -> Tuple[bool, str]:
-        """Execute inspect action."""
-        node = self.graph.get_node(state.current_node)
-        if not node:
-            return False, "Invalid node"
+    def _execute_submit(self, state: EnvironmentState, action: Any) -> EnvironmentState:
+        state.confidence_history.append(action.confidence)
+        state.episode_done = True
+        obs = f"Submitted: '{action.answer}' (confidence={action.confidence:.2f})"
+        state.action_history.append(TraversalEvent.make(EventType.SUBMIT_ANSWER, obs, episode_done=True))
+        return state
 
-        state.action_history.append(GraphAction(
-            action_type=ActionType.INSPECT,
-            target_node=state.current_node
-        ))
-
-        return True, f"Node {state.current_node} features: {node.features}\nCategory (hidden): {node.category}"
-
-    def _execute_backtrack(
-        self,
-        state: ConceptFormationState
-    ) -> Tuple[bool, str]:
-        """Execute backtrack action."""
-        if len(state.visited_nodes) < 2:
-            return False, "No previous node to backtrack to"
-
-        # Go back to previous node
-        state.visited_nodes.pop()  # Remove current
-        previous = state.visited_nodes[-1] if state.visited_nodes else state.current_node
-        state.current_node = previous
-        state.budget_remaining -= 1
-        state.action_history.append(GraphAction(
-            action_type=ActionType.BACKTRACK
-        ))
-
-        return True, f"Backtracked to {previous}"
-
-    def _execute_submit(
-        self,
-        state: ConceptFormationState
-    ) -> Tuple[bool, str]:
-        """Execute submit action - model provides hypothesis."""
-        state.budget_remaining = 0  # End episode
-        return True, "Hypothesis submitted. Episode complete."
-
-    def score_exploration(
-        self,
-        state: ConceptFormationState,
-        final_answer: str
-    ) -> Dict[str, float]:
-        """Score the complete exploration."""
-        from vigil.scoring.metrics import (
-            compute_correctness,
-            compute_efficiency,
-            compute_evidence_quality,
-            compute_calibration,
-            compute_weighted_score
-        )
-
-        # Correctness - did they identify the rule?
-        correctness = compute_correctness(
-            final_answer,
-            self._hidden_rule.get("description", ""),
-            self.verify_rule
-        )
-
-        # Efficiency - optimal path vs actual
-        optimal_visits = self._graph_config.get("num_categories", 3) * 2
-        efficiency = compute_efficiency(state, optimal_visits)
-
-        # Evidence quality - did they visit enough nodes?
-        required_evidence = self._graph_config.get("num_categories", 3)
-        evidence_quality = compute_evidence_quality(state, required_evidence)
-
-        # Calibration - confidence vs correctness
-        calibration = compute_calibration(state, bool(correctness))
-
-        # Recovery - not as relevant for concept formation
-        recovery = 0.5  # Neutral
-
+    def score_episode(self, state: EnvironmentState, final_answer: str, justification: str = "") -> Dict[str, float]:
+        from vigil.scoring.metrics import compute_correctness, compute_efficiency, compute_evidence_quality, compute_calibration, compute_weighted_score
+        correctness = compute_correctness(final_answer, self._hidden_rule.get("description", ""), self.verify_answer)
+        optimal = self._graph_config.get("num_categories", 3) * 2
         scores = {
             "correctness": correctness,
-            "efficiency": efficiency,
-            "evidence_quality": evidence_quality,
-            "calibration": calibration,
-            "recovery": recovery
+            "efficiency": compute_efficiency(state, optimal),
+            "evidence_quality": compute_evidence_quality(state, self._graph_config.get("num_categories", 3)),
+            "calibration": compute_calibration(state, bool(correctness)),
+            "recovery": 0.5,
         }
-
-        # Weighted final score
         scores["final_score"] = compute_weighted_score(scores, self._scoring_weights)
-
         return scores
 
-    def verify_rule(self, answer: str) -> bool:
-        """Verify if answer correctly identifies the category rule."""
-        answer_lower = answer.lower()
-        patterns = self._hidden_rule.get("verification_pattern", [
-            "core features", "shared features", "category", "same group"
-        ])
-
-        return any(pattern in answer_lower for pattern in patterns)
+    def verify_answer(self, answer: str) -> bool:
+        patterns = self._hidden_rule.get("verification_pattern", ["core features", "shared features", "category", "same group"])
+        return any(p in answer.lower() for p in patterns)

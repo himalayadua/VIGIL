@@ -1,105 +1,121 @@
 """
-Action schema definitions.
+Pydantic action models for the Vigil benchmark Action API.
 
-Provides the structured action format for model interactions.
+The model interacts with the environment through exactly four structured tools:
+
+  explore(node_id)                          — reveal neighbors, costs 2 budget
+  inspect(node_id)                          — reveal node content, costs 1 budget
+  get_context()                             — current state summary, free
+  submit_answer(answer, justification, confidence) — end episode, free
+
+All four are Pydantic BaseModel subclasses discriminated by action_type.
+The VigilAction union is what gets passed to llm.prompt(schema=VigilAction)
+in the Kaggle SDK game loop.
+
+An ACTION_PARSE_ERROR sentinel is returned by parse_action() when the LLM
+output cannot be parsed into any valid action — the environment must still
+append a TraversalEvent(event_type=ERROR) in that case.
 """
 
-from dataclasses import dataclass
-from typing import Optional
-from enum import Enum
+from typing import Annotated, Any, Literal, Union
+
+from pydantic import BaseModel, Field
 
 
-class ActionType(Enum):
+# ---------------------------------------------------------------------------
+# Individual action models
+# ---------------------------------------------------------------------------
+
+class ExploreAction(BaseModel):
     """
-    Types of actions available in cognitive graph environments.
+    Move to a neighboring node and reveal its neighbors.
 
-    EXPAND: Move to a connected node (costs budget)
-    INSPECT: Examine current node details (free)
-    BACKTRACK: Return to previous node (costs budget)
-    SUBMIT: Submit final answer (ends episode)
+    Budget cost: 2
+    Effect: sets node_id to EXPANDED, all its neighbors to at least DISCOVERED.
     """
-    EXPAND = "expand"
-    INSPECT = "inspect"
-    BACKTRACK = "backtrack"
-    SUBMIT = "submit"
-
-    @classmethod
-    def from_string(cls, s: str) -> Optional["ActionType"]:
-        """Parse ActionType from string."""
-        s = s.lower().strip()
-        try:
-            return cls(s)
-        except ValueError:
-            return None
+    action_type: Literal["explore"]
+    node_id: str = Field(..., description="ID of the neighbor node to move to")
 
 
-@dataclass
-class GraphAction:
+class InspectAction(BaseModel):
     """
-    Structured action for graph navigation.
+    Reveal the full content of a DISCOVERED or EXPANDED node.
 
-    This is the primary way models interact with the cognitive environment.
-    The model outputs natural language which is parsed into this structured format.
-
-    Attributes:
-        action_type: Type of action to perform
-        target_node: Target node ID (for expand/inspect)
-        relation_type: Relation type to follow (for expand)
-        confidence: Model's confidence (0.0-1.0)
-        reasoning: Optional natural language explanation
-
-    Example:
-        action = GraphAction(
-            action_type=ActionType.EXPAND,
-            target_node="node_5",
-            relation_type="causes",
-            confidence=0.8
-        )
+    Budget cost: 1
+    Effect: sets node_id to EXPANDED, may add to evidence_nodes.
+    Cannot be used on UNEXPLORED nodes.
     """
-    action_type: ActionType
-    target_node: Optional[str] = None
-    relation_type: Optional[str] = None
-    confidence: float = 0.5
-    reasoning: str = ""
+    action_type: Literal["inspect"]
+    node_id: str = Field(..., description="ID of the node to inspect (must not be UNEXPLORED)")
 
-    def to_dict(self) -> dict:
-        """Convert to dictionary for serialization."""
-        return {
-            "action_type": self.action_type.value,
-            "target_node": self.target_node,
-            "relation_type": self.relation_type,
-            "confidence": self.confidence,
-            "reasoning": self.reasoning
-        }
 
-    @classmethod
-    def from_dict(cls, data: dict) -> "GraphAction":
-        """Create from dictionary."""
-        action_type = data.get("action_type")
-        if isinstance(action_type, str):
-            action_type = ActionType.from_string(action_type)
+class GetContextAction(BaseModel):
+    """
+    Get a compressed summary of the current exploration state.
 
-        return cls(
-            action_type=action_type or ActionType.SUBMIT,
-            target_node=data.get("target_node"),
-            relation_type=data.get("relation_type"),
-            confidence=data.get("confidence", 0.5),
-            reasoning=data.get("reasoning", "")
-        )
+    Budget cost: 0
+    Returns: current position, known graph summary, remaining budget.
+    """
+    action_type: Literal["get_context"]
 
-    def is_valid(self) -> bool:
-        """
-        Check if action has required fields for its type.
 
-        Returns:
-            True if action is valid.
-        """
-        if self.action_type == ActionType.EXPAND:
-            return self.target_node is not None
-        elif self.action_type == ActionType.INSPECT:
-            return True  # Can inspect current node without target
-        elif self.action_type == ActionType.BACKTRACK:
-            return True  # Always valid
-        elif self.action_type == ActionType.SUBMIT:
-            return True  # Always valid
-        return False
+class SubmitAnswerAction(BaseModel):
+    """
+    Submit a final answer and end the episode.
+
+    Budget cost: 0
+    Effect: sets episode_done = True.
+    """
+    action_type: Literal["submit_answer"]
+    answer: str = Field(..., description="The model's answer to the hidden rule/task")
+    justification: str = Field(
+        ...,
+        description="Explanation citing specific nodes and observations from the traversal",
+    )
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Model's confidence in the answer (0.0 = no confidence, 1.0 = certain)",
+    )
+
+
+# ---------------------------------------------------------------------------
+# Union type — pass this as schema= to llm.prompt()
+# ---------------------------------------------------------------------------
+
+VigilAction = Annotated[
+    Union[ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction],
+    Field(discriminator="action_type"),
+]
+
+
+# ---------------------------------------------------------------------------
+# Parse error sentinel
+# ---------------------------------------------------------------------------
+
+class ActionParseError:
+    """
+    Returned by parse_action() when LLM output cannot be parsed.
+
+    The environment must still append a TraversalEvent(event_type=ERROR)
+    and NOT modify state or deduct budget.
+    """
+    def __init__(self, raw: Any, error: str):
+        self.raw = raw
+        self.error = error
+
+    def __repr__(self) -> str:
+        return f"ActionParseError(error={self.error!r})"
+
+
+# ---------------------------------------------------------------------------
+# Budget costs (used by execute_action implementations)
+# ---------------------------------------------------------------------------
+
+ACTION_BUDGET_COST: dict[str, int] = {
+    "explore": 2,
+    "inspect": 1,
+    "get_context": 0,
+    "submit_answer": 0,
+}
