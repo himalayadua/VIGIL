@@ -1,0 +1,2642 @@
+[
+  {
+    "scenario_id": "vigil_exec_mireglass_bloom_shift_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "cognitive_flexibility",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "inhibitory_control",
+      "working_memory"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-01 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-01",
+    "scenario_title": "The Mireglass Bloom Shift",
+    "synthetic_domain": "freshwater_ecology_investigation",
+    "scenario_summary": "Fish crash across Mireglass Marsh after a dramatic seasonal bloom. Construction noise, rainfall spikes, and the bloom peak itself all look causal. The real backbone is a post-peak community transition that changes oxygen dynamics and food structure. The scenario tests whether the agent can manage a multi-step environmental investigation without prematurely closing on the most salient event.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stop at the vivid bloom peak and never inspect the post-peak transition window.",
+      "required_pivot": "After toxicity fails, switch to timing, succession, and post-peak oxygen instability.",
+      "process_scoring_focus": [
+        "pivot_latency_after_peak_toxicity_failure",
+        "evidence_ordering",
+        "red_herring_suppression",
+        "goal_maintenance"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Fish crash across Mireglass Marsh after a dramatic seasonal bloom. Construction noise, rainfall spikes, and the bloom peak itself all look causal. The real backbone is a post-peak community transition that changes oxygen dynamics and food structure. The scenario tests whether the agent can manage a multi-step environmental investigation without prematurely closing on the most salient event."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Blame lethal toxins released during the peak bloom."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Peak-bloom toxin assays come back below lethal thresholds, and the fish crash occurs after the peak during species turnover."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The proximate killer is the bloom-succession transition: a post-peak shift in dominant algae restructures oxygen and food availability."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "Nutrient overload remains the root driver, but the actionable mechanism is succession shock rather than peak toxicity."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_grayspine_scavenger_gap_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "cognitive_flexibility",
+      "conflict_resolution"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "goal_setting_and_maintenance"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-02 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-02",
+    "scenario_title": "The Grayspine Scavenger Gap",
+    "synthetic_domain": "ecology_public_health_cascade",
+    "scenario_summary": "A health board sees rising bite-fever deaths near livestock routes and treats the problem as chemical exposure or sanitation failure. The synthetic case hides a four-step cascade: veterinary residue kills a keystone scavenger, carcasses accumulate, substitute scavengers surge, and human mortality rises through the replacement species. The agent must integrate wildlife and health evidence rather than stay in one silo.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stay inside a direct human-exposure frame because that is the most legible endpoint.",
+      "required_pivot": "Reframe from toxicology to ecosystem replacement once the geography stops matching the human-only theory.",
+      "process_scoring_focus": [
+        "cross-domain_hypothesis_management",
+        "switch_cost",
+        "multi-hop_planning",
+        "global_goal_maintenance"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A health board sees rising bite-fever deaths near livestock routes and treats the problem as chemical exposure or sanitation failure. The synthetic case hides a four-step cascade: veterinary residue kills a keystone scavenger, carcasses accumulate, substitute scavengers surge, and human mortality rises through the replacement species. The agent must integrate wildlife and health evidence rather than stay in one silo."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Investigate only direct human toxicology near cattle zones."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Mortality maps match former scavenger range rather than pesticide intensity or sanitation gradients."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A functional replacement cascade links contaminated carcasses to scavenger collapse, substitute scavenger growth, and human bite-fever deaths."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is residue in carcasses -> scavenger collapse -> substitute scavenger boom -> human mortality rise."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_coralreach_nitrogen_bridge_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "working_memory"
+    ],
+    "secondary_sub_abilities": [
+      "cognitive_flexibility",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-03 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-03",
+    "scenario_title": "The Coralreach Nitrogen Bridge",
+    "synthetic_domain": "cross_ecosystem_ecology",
+    "scenario_summary": "Fish biomass collapses around some islands but not others. Marine heat, fishing pressure, and bleaching are plausible, yet the spatial pattern only resolves when the agent tracks a nutrient bridge from island bird colonies to nearshore reefs. The scenario stresses keeping terrestrial and marine clues active together instead of debugging each ecosystem separately.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stay inside reef-only monitoring because all visible damage is marine.",
+      "required_pivot": "Switch to cross-ecosystem reasoning once marine variables fail to explain the island-by-island pattern.",
+      "process_scoring_focus": [
+        "parallel_state_tracking",
+        "comparison_plan_quality",
+        "premature_closure_inhibition",
+        "cross-boundary_reframing"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Fish biomass collapses around some islands but not others. Marine heat, fishing pressure, and bleaching are plausible, yet the spatial pattern only resolves when the agent tracks a nutrient bridge from island bird colonies to nearshore reefs. The scenario stresses keeping terrestrial and marine clues active together instead of debugging each ecosystem separately."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat the problem as a purely marine reef decline."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Marine stressors fail to explain why decline clusters only near islands where nesting birds have disappeared."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A terrestrial predator removed seabirds, cutting the guano nitrogen subsidy that had been supporting adjacent reefs."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is island predator -> seabird collapse -> guano subsidy loss -> reef fish decline."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_rustwillow_trait_shift_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "inhibitory_control",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-04 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-04",
+    "scenario_title": "The Rustwillow Grazing Shift",
+    "synthetic_domain": "invasive_species_ecology",
+    "scenario_summary": "Plant diversity shifts after a new predator arrives. The obvious predator-prey model predicts herbivore decline, but herbivore counts remain normal. The executive test is whether the agent can suppress the population-count heuristic and inspect behavior change instead.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Lock onto abundance and never inspect trait or route changes.",
+      "required_pivot": "Pivot from counts to behavior once the numeric explanation breaks.",
+      "process_scoring_focus": [
+        "anchor_inhibition",
+        "pivot_after_count_disconfirmation",
+        "behavioral_reframing",
+        "comparison_strategy"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Plant diversity shifts after a new predator arrives. The obvious predator-prey model predicts herbivore decline, but herbivore counts remain normal. The executive test is whether the agent can suppress the population-count heuristic and inspect behavior change instead."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Explain the plant shift through herbivore population decline."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Herbivore abundance remains near baseline despite severe vegetation change."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The predator changed herbivore behavior, redistributing browsing pressure without reducing total herbivore numbers."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is predator arrival -> herbivore avoidance behavior -> altered grazing map -> plant community restructuring."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_embermere_internal_debt_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "goal_setting_and_maintenance",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "working_memory"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-05 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-05",
+    "scenario_title": "The Embermere Internal Debt Case",
+    "synthetic_domain": "lake_policy_investigation",
+    "scenario_summary": "A nutrient-reduction policy succeeds on external inflow metrics, yet the lake keeps blooming. Political actors push for more enforcement. The task checks whether the agent can maintain the real evaluation goal and shift from visible current inflow to hidden internal loading.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Keep escalating enforcement after the external source has already been corrected.",
+      "required_pivot": "Re-open source dominance and inspect internal sediment release once compliance is verified.",
+      "process_scoring_focus": [
+        "goal_maintenance_after_partial_success",
+        "external_vs_internal_conflict_resolution",
+        "evidence_ordering",
+        "time-scale_tracking"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A nutrient-reduction policy succeeds on external inflow metrics, yet the lake keeps blooming. Political actors push for more enforcement. The task checks whether the agent can maintain the real evaluation goal and shift from visible current inflow to hidden internal loading."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Assume the policy failed because polluters are still cheating."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "External nutrient audits confirm the policy lowered inflow, but bloom severity does not improve."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Historical nutrient accumulation in sediments now dominates loading during warm stratified periods."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is past accumulation -> internal release -> persistent bloom despite external cuts."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_silverfen_life_stage_crush_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "inhibitory_control"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-06 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-06",
+    "scenario_title": "The Silverfen Life-Stage Crush",
+    "synthetic_domain": "freshwater_species_investigation",
+    "scenario_summary": "Several specialist species collapse while the dominant species looks numerically stable. The scenario requires the agent to hold total abundance, size structure, and juvenile competition apart rather than treating one headline count as sufficient.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stop at total counts and never decompose the focal population internally.",
+      "required_pivot": "Switch from abundance to age-structure analysis once the simple competition story fails.",
+      "process_scoring_focus": [
+        "multi-representation_working_memory",
+        "abundance_heuristic_inhibition",
+        "pivot_quality",
+        "resource_overlap_tracking"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Several specialist species collapse while the dominant species looks numerically stable. The scenario requires the agent to hold total abundance, size structure, and juvenile competition apart rather than treating one headline count as sufficient."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Assume the dominant species simply became more abundant and outcompeted the rest."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Total abundance of the dominant species is normal even as the specialist flock disappears."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A shift in the dominant species' age structure increases juvenile competition on a shared nursery resource."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is environmental pressure -> life-stage skew -> juvenile resource competition -> specialist collapse."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_sunspoke_larval_release_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "conflict_resolution",
+      "working_memory"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-07 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-07",
+    "scenario_title": "The Sunspoke Outbreak",
+    "synthetic_domain": "reef_outbreak_investigation",
+    "scenario_summary": "A coral predator outbreak devastates reef sectors. The intuitive story blames missing adult predators. The correct explanation sits at the larval stage, where nutrient-rich runoff removes a survival bottleneck. The task tests whether the agent can shift from top-down to bottom-up control logic.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stay in adult predator management because it feels like the natural reef-control story.",
+      "required_pivot": "Pivot to larval ecology and runoff once predator data stop differentiating affected zones.",
+      "process_scoring_focus": [
+        "top_down_vs_bottom_up_conflict_resolution",
+        "hypothesis_switch_cost",
+        "life-stage_state_tracking",
+        "test_ordering"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A coral predator outbreak devastates reef sectors. The intuitive story blames missing adult predators. The correct explanation sits at the larval stage, where nutrient-rich runoff removes a survival bottleneck. The task tests whether the agent can shift from top-down to bottom-up control logic."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Blame the outbreak entirely on loss of adult predators."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Predator counts are similar in outbreak and non-outbreak zones, breaking the top-down account."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Runoff boosts larval survival, causing recruitment explosions even without predator collapse."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is catchment enrichment -> larval survival surge -> adult outbreak -> coral loss."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_orphic_reef_hidden_layer_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "inhibitory_control",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "cognitive_flexibility",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-08 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-08",
+    "scenario_title": "The Orphic Reef Hidden Layer",
+    "synthetic_domain": "reef_function_investigation",
+    "scenario_summary": "A reef looks structurally healthy because coral cover remains high, yet herbivore biomass and productivity collapse. The executive trap is salience: dashboards say the reef is fine. The scenario measures whether the agent can suppress the structure-equals-health shortcut and inspect a hidden turf layer.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Trust the visible coral metric and stop early.",
+      "required_pivot": "Shift from structure to process once the function panel contradicts the coral-cover panel.",
+      "process_scoring_focus": [
+        "visual_heuristic_inhibition",
+        "diagnostic_replanning",
+        "structure_vs_function_conflict_resolution",
+        "evidence_sequence"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A reef looks structurally healthy because coral cover remains high, yet herbivore biomass and productivity collapse. The executive trap is salience: dashboards say the reef is fine. The scenario measures whether the agent can suppress the structure-equals-health shortcut and inspect a hidden turf layer."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Declare the reef healthy once coral structure checks out."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Function metrics remain disastrous despite stable coral cover."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Sediment accumulated inside the turf layer between corals, blocking herbivore feeding and collapsing function before structure failed."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is runoff pulses -> turf sediment loading -> feeding failure -> functional collapse without immediate coral loss."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_bramblecross_masked_pollination_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "working_memory",
+      "conflict_resolution"
+    ],
+    "secondary_sub_abilities": [
+      "cognitive_flexibility",
+      "planning"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-09 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-09",
+    "scenario_title": "The Bramblecross Masked Pollination Case",
+    "synthetic_domain": "agricultural_ecology_investigation",
+    "scenario_summary": "Plant biomass stays stable while pollinators fall, creating a misleading signal that nothing is wrong. Pest decline temporarily masks the effect. The task tests whether the agent can keep abundance and reproduction separate and resolve conflicting plant metrics.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Collapse all plant health into one visible biomass variable.",
+      "required_pivot": "Pivot from plant presence to plant reproduction once the metric conflict appears.",
+      "process_scoring_focus": [
+        "metric_separation",
+        "conflict_resolution_between_biomass_and_seed_set",
+        "pivot_latency",
+        "lead_integration"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Plant biomass stays stable while pollinators fall, creating a misleading signal that nothing is wrong. Pest decline temporarily masks the effect. The task tests whether the agent can keep abundance and reproduction separate and resolve conflicting plant metrics."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Use stable plant biomass as proof that pollinator decline is harmless."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Seed-set and reproductive output fall even while plant biomass appears stable."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A masked cascade is operating: the same stressor reduces pests and pollinators, with early pest relief hiding pollination failure."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is shared stressor -> pest and pollinator decline -> temporary biomass stability -> later reproductive collapse."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_hollowplain_bystander_exposure_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "inhibitory_control"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ECO-10 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ECO-10",
+    "scenario_title": "The Hollowplain Bystander Exposure Case",
+    "synthetic_domain": "agricultural_toxicology_investigation",
+    "scenario_summary": "Pollinators decline around crops that do not even depend on them. Teams keep focusing on the obvious bee-managed specialty crop, but the true path is incidental exposure from a much larger treated acreage nearby. The agent must suppress semantic closeness and compare magnitude correctly.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Chase the semantically obvious crop instead of the numerically dominant exposure source.",
+      "required_pivot": "Shift from crop semantics to acreage and foraging-overlap analysis once the magnitude check fails.",
+      "process_scoring_focus": [
+        "semantic_heuristic_inhibition",
+        "acreage_working_memory",
+        "evidence_prioritization",
+        "switch_quality"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Pollinators decline around crops that do not even depend on them. Teams keep focusing on the obvious bee-managed specialty crop, but the true path is incidental exposure from a much larger treated acreage nearby. The agent must suppress semantic closeness and compare magnitude correctly."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Investigate only the crop that visibly uses managed bees."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "The bee-managed crop accounts for only a tiny share of treated acreage and cannot explain the spatial pattern."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Pollinators are exposed as bystanders around heavily treated non-target field crops."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is field-crop treatment -> incidental landscape exposure -> pollinator decline."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_ravelink_sink_reservoir_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "cognitive_flexibility",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-01 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-01",
+    "scenario_title": "The Ravelink Drain Reservoir",
+    "synthetic_domain": "hospital_outbreak_investigation",
+    "scenario_summary": "A rare resistant pathogen appears in scattered patients across months and wards. Imported cases and direct contact spread both look plausible. The scenario tests whether the agent can hold dispersed cases together long enough to pivot to infrastructure once genome matching collapses the independent-case story.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Keep searching people and devices instead of the built environment.",
+      "required_pivot": "Pivot from human-source tracing to infrastructure search once genomic sameness appears.",
+      "process_scoring_focus": [
+        "case-linkage_working_memory",
+        "pivot_after_genomic_disconfirmation",
+        "search_order_quality",
+        "source_frame_switching"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A rare resistant pathogen appears in scattered patients across months and wards. Imported cases and direct contact spread both look plausible. The scenario tests whether the agent can hold dispersed cases together long enough to pivot to infrastructure once genome matching collapses the independent-case story."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat each patient as a separate import or as routine patient-to-patient spread."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Whole-genome analysis shows all isolates are effectively the same strain despite sparse temporal overlap."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A colonized sink drain acts as a persistent abiotic reservoir that intermittently seeds nearby patients."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is drain colonization -> splash-zone exposure -> scattered but genetically linked infections."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_morvale_prescribing_cascade_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "inhibitory_control",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "goal_setting_and_maintenance"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-02 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-02",
+    "scenario_title": "The Morvale Prescribing Cascade",
+    "synthetic_domain": "clinical_pharmacology_case",
+    "scenario_summary": "A patient accumulates medications because an initial side effect is misread as a new disease. Each later step makes the original mistake harder to recover. The scenario measures whether the agent can inhibit forward-only thinking and rewind the medication timeline when interactions appear.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Escalate treatment for the invented disease instead of revisiting the first decision.",
+      "required_pivot": "Rewind to the original prescription once downstream evidence stops fitting the forward story.",
+      "process_scoring_focus": [
+        "timeline_working_memory",
+        "rewind_replanning",
+        "anchor_inhibition",
+        "origin-cause_goal_maintenance"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A patient accumulates medications because an initial side effect is misread as a new disease. Each later step makes the original mistake harder to recover. The scenario measures whether the agent can inhibit forward-only thinking and rewind the medication timeline when interactions appear."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat every new symptom as a new disease and keep prescribing forward."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Later interaction warnings appear, but the earliest symptom matches a rare adverse effect of the first drug."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "An iatrogenic masquerade turned a side effect into a fake disease and triggered a self-reinforcing prescribing cascade."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is drug A side effect -> drug B added -> interaction and worsening -> deeper misattribution."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_novarine_trial_integrity_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "conflict_resolution",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "inhibitory_control"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-03 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-03",
+    "scenario_title": "The Novarine Trial Integrity Failure",
+    "synthetic_domain": "clinical_trial_audit",
+    "scenario_summary": "A late-stage memory-loss trial appears negative, but the placebo arm improves in a disease that should not spontaneously reverse. The scenario tests whether the agent can detect impossibility and switch from efficacy interpretation to process-audit mode.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Keep debating biology when the data have already stopped being scientifically interpretable.",
+      "required_pivot": "Escalate from scientific reasoning to trial-integrity audit once the result becomes medically impossible.",
+      "process_scoring_focus": [
+        "impossibility_detection",
+        "science_vs_process_conflict_resolution",
+        "pivot_latency",
+        "branch_selection"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A late-stage memory-loss trial appears negative, but the placebo arm improves in a disease that should not spontaneously reverse. The scenario tests whether the agent can detect impossibility and switch from efficacy interpretation to process-audit mode."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat the result as an ordinary scientific failure and stop at efficacy analysis."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "The placebo arm improves in a clinically progressive disorder, which should be impossible under clean trial conditions."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The trial is contaminated by site-level process failure and data-integrity breakdown, not simply by lack of efficacy."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is site failure and nonadministration -> impossible data -> meaningless efficacy readout."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_valecrest_placebo_noise_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-04 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-04",
+    "scenario_title": "The Valecrest Site-Noise Trial",
+    "synthetic_domain": "clinical_trial_site_variability",
+    "scenario_summary": "A mood-disorder trial misses its endpoint, but high-quality sites look different from noisy ones. The agent must plan a stratified review, keep site covariates active, and resolve the conflict between an aggregate null and subgroup structure.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stop at the top-line p-value and never open the site layer.",
+      "required_pivot": "Shift from pooled interpretation to site-quality analysis when the aggregate masks structured heterogeneity.",
+      "process_scoring_focus": [
+        "aggregate_vs_site_conflict_resolution",
+        "stratification_plan_quality",
+        "site_covariate_working_memory",
+        "switch_cost"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A mood-disorder trial misses its endpoint, but high-quality sites look different from noisy ones. The agent must plan a stratified review, keep site covariates active, and resolve the conflict between an aggregate null and subgroup structure."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Accept the pooled non-significant result as the whole story."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Site-stratified analysis shows a signal at high-quality sites and heavy placebo response at weak sites."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Site noise and contaminated enrollment dilute a real signal in the aggregate analysis."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is poor site quality -> inflated placebo response -> diluted pooled outcome."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_ardengate_plasmid_bridge_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "cognitive_flexibility",
+      "working_memory"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-05 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-05",
+    "scenario_title": "The Ardengate Plasmid Bridge",
+    "synthetic_domain": "hospital_microbiology_outbreak",
+    "scenario_summary": "Resistant infections appear across different bacterial species and lineages, so a standard clonal outbreak review says there is no outbreak. The executive task is to abandon the organism-as-unit frame and hold clone data and plasmid data separately until the right unit of spread becomes obvious.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stay trapped in the organism-centered model because it is the standard workflow.",
+      "required_pivot": "Switch the unit of analysis from organism to mobile element once clone similarity fails but plasmid similarity holds.",
+      "process_scoring_focus": [
+        "unit_of_analysis_switch",
+        "parallel_genomic_state_tracking",
+        "pivot_quality",
+        "frame_conflict_resolution"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Resistant infections appear across different bacterial species and lineages, so a standard clonal outbreak review says there is no outbreak. The executive task is to abandon the organism-as-unit frame and hold clone data and plasmid data separately until the right unit of spread becomes obvious."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Close the case because the organisms are not clonally related."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Plasmid sequences converge across otherwise unrelated isolates and environmental samples."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A mobile resistance plasmid is the spreading unit, moving across species through a hospital transfer network."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is environmental plasmid reservoir -> cross-species transfer -> new resistant infections."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_briarward_catheter_source_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "inhibitory_control",
+      "goal_setting_and_maintenance"
+    ],
+    "secondary_sub_abilities": [
+      "cognitive_flexibility",
+      "planning"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-06 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-06",
+    "scenario_title": "The Briarward Line Source",
+    "synthetic_domain": "icu_patient_safety_case",
+    "scenario_summary": "A critically ill patient deteriorates after treatment begins, and teams anchor on the admitting illness. The correct move is to keep the diagnostic goal alive, inhibit that anchor, and pivot to an iatrogenic device source when organism identity stops fitting the first narrative.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stick with the most available clinical storyline because it already owns the chart.",
+      "required_pivot": "Inspect devices introduced during care once the pathogen mismatch appears.",
+      "process_scoring_focus": [
+        "anchor_inhibition",
+        "diagnostic_goal_maintenance",
+        "pivot_after_pathogen_mismatch",
+        "search_order_quality"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A critically ill patient deteriorates after treatment begins, and teams anchor on the admitting illness. The correct move is to keep the diagnostic goal alive, inhibit that anchor, and pivot to an iatrogenic device source when organism identity stops fitting the first narrative."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Blame worsening of the original condition and escalate treatment in the same direction."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Blood cultures grow a skin commensal that does not match the expected pathogen profile for the admitting illness."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A central line seeded the infection, but symptoms were misread as disease progression."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is line placement -> colonization -> bloodstream infection -> sepsis misattributed to the original disease."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_galebrook_horizontal_vector_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "working_memory"
+    ],
+    "secondary_sub_abilities": [
+      "conflict_resolution",
+      "inhibitory_control"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-07 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-07",
+    "scenario_title": "The Galebrook Ice Vector",
+    "synthetic_domain": "outbreak_epidemiology_case",
+    "scenario_summary": "A banquet illness cluster tempts the agent to name the most common entr\u00e9e. The real mechanism is a contamination vector shared across multiple foods and drinks. The scenario measures whether the agent can compare subgroup rates correctly and inhibit early closure.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Chase the raw-overlap food item and ignore the non-entr\u00e9e cases.",
+      "required_pivot": "Move from single-item attack rates to cross-cutting vector analysis once subgroup rates break the entr\u00e9e theory.",
+      "process_scoring_focus": [
+        "attack_rate_working_memory",
+        "subgroup_comparison",
+        "premature_closure_inhibition",
+        "vector_reframing"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A banquet illness cluster tempts the agent to name the most common entr\u00e9e. The real mechanism is a contamination vector shared across multiple foods and drinks. The scenario measures whether the agent can compare subgroup rates correctly and inhibit early closure."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Name the most commonly eaten entr\u00e9e as the sole source."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "People who skipped the entr\u00e9e are still ill at a substantial rate, so it cannot explain all cases."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The contamination vehicle is a shared ice system touching multiple items rather than a single dish."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is ice-system contamination -> widespread cross-item exposure -> outbreak cluster."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_pinewatch_anchor_break_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "inhibitory_control",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "goal_setting_and_maintenance",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-08 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-08",
+    "scenario_title": "The Pinewatch Anchor Break",
+    "synthetic_domain": "diagnostic_bias_case",
+    "scenario_summary": "A benign explanation for chest symptoms becomes sticky because the patient profile and early tests feel reassuring. The scenario tests whether the agent can inhibit the first plausible diagnosis and treat treatment failure as a cue to reopen the case.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Use demographic fit and partial relief as permission to stop thinking.",
+      "required_pivot": "Reopen the diagnostic search when the trajectory stops fitting the original frame.",
+      "process_scoring_focus": [
+        "anchor_inhibition",
+        "reopen_decision_quality",
+        "demographics_vs_progression_conflict_resolution",
+        "goal_reset"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A benign explanation for chest symptoms becomes sticky because the patient profile and early tests feel reassuring. The scenario tests whether the agent can inhibit the first plausible diagnosis and treat treatment failure as a cue to reopen the case."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Keep strengthening the benign anxiety-based diagnosis as symptoms evolve."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "The patient worsens despite treatment that should have helped if the first diagnosis were right."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "An anchoring cascade is warping interpretation of later evidence and delaying recognition of the true cardiac process."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is plausible benign anchor -> biased interpretation of returns -> delayed recognition of serious disease."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_nightglass_detection_gap_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "conflict_resolution",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "working_memory"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-09 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-09",
+    "scenario_title": "The Nightglass Detection Gap",
+    "synthetic_domain": "public_health_surveillance_case",
+    "scenario_summary": "A neighborhood overdose cluster keeps testing positive for the familiar synthetic opioid, but clinical response patterns do not behave like that drug. The task measures whether the agent can resolve conflict between assay output and bedside behavior and escalate to a meta-diagnostic investigation.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Over-trust the default instrument just because it returned a familiar label.",
+      "required_pivot": "Move from compound tracing to assay-blindness analysis when clinical behavior contradicts the standard panel.",
+      "process_scoring_focus": [
+        "instrument_vs_clinical_conflict_resolution",
+        "meta-diagnostic_switch",
+        "response_pattern_working_memory",
+        "evidence_ordering"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A neighborhood overdose cluster keeps testing positive for the familiar synthetic opioid, but clinical response patterns do not behave like that drug. The task measures whether the agent can resolve conflict between assay output and bedside behavior and escalate to a meta-diagnostic investigation."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Trust the standard panel completely and keep searching the usual supply chain."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Reversal-response patterns do not fit the reported compound, forcing doubt about the default assay."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The surveillance system is blind to a second, newer compound that is actually driving the cluster."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is undetected analog in supply -> misclassification by standard testing -> delayed recognition of the real contamination route."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_redcamp_infrastructure_assumption_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "goal_setting_and_maintenance"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted CLIN-10 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "CLIN-10",
+    "scenario_title": "The Redcamp Water Assumption",
+    "synthetic_domain": "environmental_health_outbreak",
+    "scenario_summary": "An outbreak team tests the shared wells, gets negatives, and is tempted to close the case. The correct executive behavior is to keep the source-finding goal active after a clean negative and remap actual infrastructure instead of assumed categories.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Let one negative category-level test end the investigation.",
+      "required_pivot": "Re-map exact infrastructure connections once continuing cases conflict with the clean shared-system result.",
+      "process_scoring_focus": [
+        "goal_maintenance_after_negative_test",
+        "mapping_plan_quality",
+        "assumption_inhibition",
+        "topology_working_memory"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "An outbreak team tests the shared wells, gets negatives, and is tempted to close the case. The correct executive behavior is to keep the source-finding goal active after a clean negative and remap actual infrastructure instead of assumed categories."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Assume all relevant locations share the same community water system and stop after those tests are negative."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "New cases continue to emerge from one campsite despite clean results for the tested wells."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The campsite runs on a separate private line that was never included because investigators assumed it belonged to the main system."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is private supply line contamination -> campsite-linked exposure -> continued outbreak."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_skyweave_safety_valve_omission_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "secondary_sub_abilities": [
+      "goal_setting_and_maintenance",
+      "working_memory"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ENG-01 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ENG-01",
+    "scenario_title": "The Skyweave Safety-Valve Omission",
+    "synthetic_domain": "cloud_outage_investigation",
+    "scenario_summary": "A shared control service failure cascades across dependent platforms. Attack and hardware explanations dominate the first hour. The real amplifier is procedural: a recent software change lacked the fast-disable mechanism that should have contained the fault. The scenario tests whether the agent can separate trigger from containment failure.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Treat the most dramatic external explanation as the whole root cause.",
+      "required_pivot": "Switch from 'what failed' to 'why couldn't it be stopped' once the obvious causes fail telemetry checks.",
+      "process_scoring_focus": [
+        "root_cause_vs_amplifier_conflict_resolution",
+        "rollback-state_working_memory",
+        "triage_order",
+        "system_goal_maintenance"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A shared control service failure cascades across dependent platforms. Attack and hardware explanations dominate the first hour. The real amplifier is procedural: a recent software change lacked the fast-disable mechanism that should have contained the fault. The scenario tests whether the agent can separate trigger from containment failure."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Diagnose a coordinated attack or hardware fault because many services fall together."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Core infrastructure load and request patterns remain normal, which breaks both attack and hardware stories."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The outage becomes catastrophic because the faulty deployment shipped without a safety valve for rapid rollback."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is bad control-plane change + missing disable gate -> prolonged multi-service outage."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_veilgrid_foundation_blindspot_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "goal_setting_and_maintenance",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ENG-02 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ENG-02",
+    "scenario_title": "The Veilgrid Foundation Blindspot",
+    "synthetic_domain": "infra_foundational_layer_outage",
+    "scenario_summary": "Many unrelated applications fail simultaneously, and each service team sees only its own symptoms. The scenario measures whether the agent can maintain a system-level goal and pivot from application debugging to a foundational service nobody expected to fail.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Fragment into many local investigations because each surface symptom looks app-specific.",
+      "required_pivot": "Elevate from app-centric debugging to a common dependency once the local internals remain normal everywhere.",
+      "process_scoring_focus": [
+        "local_vs_global_conflict_resolution",
+        "cross-team_goal_maintenance",
+        "comparison_strategy",
+        "reframing_speed"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Many unrelated applications fail simultaneously, and each service team sees only its own symptoms. The scenario measures whether the agent can maintain a system-level goal and pivot from application debugging to a foundational service nobody expected to fail."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Let each service team stay inside its own application logs."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Application internals look clean across the affected services, yet all fail in the same window."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A taken-for-granted foundational lookup layer failed, making downstream apps appear broken while their own logic remained healthy."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is foundational lookup failure -> backup overload -> broad dependent-service outage."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_stonepath_trust_inheritance_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "conflict_resolution",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ENG-03 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ENG-03",
+    "scenario_title": "The Stonepath Delegated-Trust Breach",
+    "synthetic_domain": "saas_supply_chain_security_case",
+    "scenario_summary": "Many customer organizations see suspicious access, yet none show direct compromise. The executive task is to resolve the conflict between clean customer perimeters and real downstream abuse, then trace authority inheritance through a shared integration layer.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Center the investigation on the visible victims instead of the hidden delegator.",
+      "required_pivot": "Move from perimeter review to credential-lineage tracing once the victims themselves keep coming back clean.",
+      "process_scoring_focus": [
+        "principal_vs_delegate_conflict_resolution",
+        "credential_lineage_working_memory",
+        "upstream_dependency_planning",
+        "pivot_quality"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Many customer organizations see suspicious access, yet none show direct compromise. The executive task is to resolve the conflict between clean customer perimeters and real downstream abuse, then trace authority inheritance through a shared integration layer."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Keep hunting direct breaches in each affected customer environment."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Customer forensics stay clean while the suspicious sessions all rely on delegated credentials issued through one shared integration service."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Attackers compromised the trust bridge and inherited access through delegated authorization rather than compromising each victim directly."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is upstream integration compromise -> delegated token theft -> multi-customer downstream access."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_nordhollow_centralization_cascade_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "cognitive_flexibility",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "conflict_resolution",
+      "goal_setting_and_maintenance"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ENG-04 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ENG-04",
+    "scenario_title": "The Nordhollow Shared-Service Cascade",
+    "synthetic_domain": "shared_vendor_ransomware_case",
+    "scenario_summary": "Hundreds of municipalities lose payroll and HR tooling at once, making it look like a coordinated national cyber event. The real issue is shared-service centralization. The scenario checks whether the agent can collapse many apparent local incidents into one upstream dependency failure.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Multiply the incident count because the symptoms are geographically distributed.",
+      "required_pivot": "Pivot from many-victim reasoning to shared-dependency reasoning once the local forensic story stays empty.",
+      "process_scoring_focus": [
+        "shared_dependency_reframing",
+        "multi-cause_inhibition",
+        "cross-org_goal_maintenance",
+        "grouping_quality"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Hundreds of municipalities lose payroll and HR tooling at once, making it look like a coordinated national cyber event. The real issue is shared-service centralization. The scenario checks whether the agent can collapse many apparent local incidents into one upstream dependency failure."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat every municipality as a separate direct victim."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Local municipal environments show no direct intrusion, yet the same outsourced functions are disabled everywhere."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Operational centralization created a single upstream point of failure with hundreds of downstream victims."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is shared vendor compromise -> platform outage -> simultaneous municipal paralysis."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_ironstrand_concentration_reveal_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "goal_setting_and_maintenance"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted ENG-05 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "ENG-05",
+    "scenario_title": "The Ironstrand Concentration Reveal",
+    "synthetic_domain": "industrial_supply_chain_case",
+    "scenario_summary": "A manufacturing ecosystem begins shutting lines after export controls hit a narrow set of materials. Teams argue about tariffs and shipping. The scenario tests whether the agent can keep availability separate from price and uncover hidden single-source dependence.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Use price and transit as proxies for resilience without checking supplier concentration.",
+      "required_pivot": "Switch from cost analysis to dependency mapping once alternative sourcing proves structurally unavailable.",
+      "process_scoring_focus": [
+        "availability_vs_cost_conflict_resolution",
+        "supplier_map_working_memory",
+        "dependency_audit_planning",
+        "longer-horizon_goal_maintenance"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A manufacturing ecosystem begins shutting lines after export controls hit a narrow set of materials. Teams argue about tariffs and shipping. The scenario tests whether the agent can keep availability separate from price and uncover hidden single-source dependence."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Treat the disruption as a cost shock or freight problem."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Qualified substitute suppliers do not exist for multiple halted components, breaking the logistics-only account."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Efficiency-driven concentration had created a near-monopoly input dependency that stayed invisible until disruption."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is export restriction -> concentration-risk revelation -> line stoppages and second-order losses."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_lakehaven_wrong_target_policy_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "goal_setting_and_maintenance",
+      "cognitive_flexibility"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted GOV-01 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "GOV-01",
+    "scenario_title": "The Lakehaven Wrong-Target Policy",
+    "synthetic_domain": "governance_policy_evaluation",
+    "scenario_summary": "A nutrient-control policy succeeded on the source it targeted, yet the lake still fails. The scenario checks whether the agent can maintain the outcome-focused evaluation goal instead of collapsing into bureaucratic satisfaction once implementation metrics turn green.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Confuse policy compliance with causal sufficiency.",
+      "required_pivot": "Re-open source dominance once implementation success and outcome failure diverge.",
+      "process_scoring_focus": [
+        "implementation_vs_outcome_conflict_resolution",
+        "goal_maintenance_after_partial_success",
+        "evidence_ordering",
+        "source_shift_reframing"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A nutrient-control policy succeeded on the source it targeted, yet the lake still fails. The scenario checks whether the agent can maintain the outcome-focused evaluation goal instead of collapsing into bureaucratic satisfaction once implementation metrics turn green."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Demand more enforcement on the same already-corrected source."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Compliance is high and external loads are near baseline, yet blooms persist."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "The dominant cause shifted over time from current inflow to historical internal loading, so the policy now hits the wrong source."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is policy success on old target -> dominance shift to internal source -> persistent failure."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_quarrygate_revolving_shadow_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "conflict_resolution",
+      "working_memory"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted GOV-02 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "GOV-02",
+    "scenario_title": "The Quarrygate Revolving Shadow",
+    "synthetic_domain": "regulatory_governance_case",
+    "scenario_summary": "Review timelines are selectively slower for firms linked to a consulting network, even though no regulator is currently employed by those firms. The agent must resolve formal compliance against structural influence and keep prior and current affiliations distinct.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Mistake legal surface compliance for absence of influence.",
+      "required_pivot": "Shift from current-role checks to temporal-network tracing once the pattern survives a clean formal-compliance review.",
+      "process_scoring_focus": [
+        "temporal_relationship_working_memory",
+        "formal_vs_structural_conflict_resolution",
+        "network_trace_planning",
+        "pivot_quality"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "Review timelines are selectively slower for firms linked to a consulting network, even though no regulator is currently employed by those firms. The agent must resolve formal compliance against structural influence and keep prior and current affiliations distinct."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Stop once you verify there is no current dual employment."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Delays still correlate strongly with prior-industry consultants who now advise both regulator and reviewed firms."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Temporal displacement hides the conflict: prior employment and consulting ties preserve influence without breaking the literal present-tense rule."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is revolving-door consulting -> asymmetric review behavior -> systematic delay."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_stoneharbor_scope_manufacture_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "working_memory",
+      "planning"
+    ],
+    "secondary_sub_abilities": [
+      "inhibitory_control",
+      "conflict_resolution"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted GOV-03 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "GOV-03",
+    "scenario_title": "The Stoneharbor Scope-Manufacture Case",
+    "synthetic_domain": "public_procurement_case",
+    "scenario_summary": "A project doubles in cost through individually plausible scope additions. The scenario measures whether the agent can aggregate approvals across time, resist judging each request in isolation, and detect the same beneficiary behind the supposedly random discoveries.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Use local plausibility as a substitute for pattern analysis.",
+      "required_pivot": "Move from one-request-at-a-time evaluation to beneficiary-pattern analysis once concentration becomes too extreme to ignore.",
+      "process_scoring_focus": [
+        "cross-episode_pattern_working_memory",
+        "myopic_approval_inhibition",
+        "beneficiary_analysis_planning",
+        "local_vs_global_conflict_resolution"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A project doubles in cost through individually plausible scope additions. The scenario measures whether the agent can aggregate approvals across time, resist judging each request in isolation, and detect the same beneficiary behind the supposedly random discoveries."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Approve each scope addition as a locally plausible one-off."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Every major scope change benefits the same subcontractor despite that firm controlling only a minority of the project area."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A manufactured-discovery cascade is generating serial justifications for profitable scope expansions."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is staged 'discoveries' -> repeated approvals -> cost explosion for one favored subcontractor."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_halcyon_definition_arbitrage_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "conflict_resolution",
+      "goal_setting_and_maintenance"
+    ],
+    "secondary_sub_abilities": [
+      "planning",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "very_hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted GOV-04 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "GOV-04",
+    "scenario_title": "The Halcyon Definition Arbitrage Case",
+    "synthetic_domain": "regulatory_reporting_case",
+    "scenario_summary": "A hospital looks exceptionally safe on self-report, yet outside auditors find much more harm. The executive task is to keep the measurement-validity goal alive, resolve self-report against audit, and inspect definitional boundaries instead of just blaming staff or software.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Stay on incident-level blame and never inspect the category boundary itself.",
+      "required_pivot": "Switch from workflow troubleshooting to definition tracing once audit and self-report diverge dramatically.",
+      "process_scoring_focus": [
+        "audit_vs_self-report_conflict_resolution",
+        "measurement_goal_maintenance",
+        "definition_trace_planning",
+        "system_boundary_reframing"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A hospital looks exceptionally safe on self-report, yet outside auditors find much more harm. The executive task is to keep the measurement-validity goal alive, resolve self-report against audit, and inspect definitional boundaries instead of just blaming staff or software."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Accept low self-reported harm as genuine excellence or isolated documentation sloppiness."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Independent chart review finds far more harm than the internal reporting system captures."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "Systematic underreporting is driven by a self-serving narrow operational definition of 'harm.'"
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is narrow definition -> non-capture of events -> no remediation -> recurring hidden harm."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  },
+  {
+    "scenario_id": "vigil_exec_merrow_pipeline_compounding_v1",
+    "version": "1.0",
+    "cognitive_track": "executive_functions",
+    "primary_sub_abilities": [
+      "planning",
+      "goal_setting_and_maintenance"
+    ],
+    "secondary_sub_abilities": [
+      "working_memory",
+      "cognitive_flexibility"
+    ],
+    "difficulty_tier": "hard",
+    "_changelog_from_skeleton_v0": [
+      "Converted GOV-05 causal skeleton into a fully synthetic executive-functions scenario.",
+      "Removed all real entities and replaced them with synthetic places, species, systems, organizations, and products.",
+      "Added executive-control pressure: finite investigation budget, competing hypotheses, tempting red-herring routes, and a mandatory pivot after disconfirmation.",
+      "Preserved the original causal backbone, red herrings, hidden mechanism, and disconfirmation structure."
+    ],
+    "source_skeleton_id": "GOV-05",
+    "scenario_title": "The Merrow Pipeline Compounding Case",
+    "synthetic_domain": "science_policy_case",
+    "scenario_summary": "A science-funding shock is first assessed only in same-year budget terms. The hidden damage compounds through abandoned experiments, lost staff, missing publications, and weakened review networks. The scenario tests long-horizon executive control rather than short-horizon accounting.",
+    "executive_design_notes": {
+      "tempting_wrong_path": "Use the current-year ledger as the only representation of harm.",
+      "required_pivot": "Expand the causal horizon once downstream capacity losses start appearing outside the budget window.",
+      "process_scoring_focus": [
+        "long-horizon_goal_maintenance",
+        "pipeline_working_memory",
+        "immediate_vs_downstream_conflict_resolution",
+        "causal_horizon_planning"
+      ]
+    },
+    "nodes": [
+      {
+        "id": "n0",
+        "type": "brief",
+        "label": "Entry Brief",
+        "description": "A science-funding shock is first assessed only in same-year budget terms. The hidden damage compounds through abandoned experiments, lost staff, missing publications, and weakened review networks. The scenario tests long-horizon executive control rather than short-horizon accounting."
+      },
+      {
+        "id": "n1",
+        "type": "red_herring",
+        "label": "Tempting Wrong Path",
+        "description": "Measure the damage only as the amount of money removed this year."
+      },
+      {
+        "id": "n2",
+        "type": "evidence",
+        "label": "Disconfirmation Moment",
+        "description": "Interrupted experiments, trainee exits, and review slowdowns continue propagating well after the fiscal cut."
+      },
+      {
+        "id": "n3",
+        "type": "mechanism",
+        "label": "Hidden Mechanism",
+        "description": "A pipeline compounding cascade destroys previously built capacity and future output, so the loss exceeds the nominal budget cut."
+      },
+      {
+        "id": "n4",
+        "type": "resolution",
+        "label": "True Resolution",
+        "description": "The true chain is funding shock -> lab interruption and training loss -> reduced future output and review capacity."
+      }
+    ],
+    "edges": [
+      {
+        "from": "n0",
+        "to": "n1",
+        "relation": "suggests_obvious_explanation"
+      },
+      {
+        "from": "n1",
+        "to": "n2",
+        "relation": "is_tested_and_breaks"
+      },
+      {
+        "from": "n2",
+        "to": "n3",
+        "relation": "forces_executive_pivot"
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "relation": "supports_final_diagnosis"
+      }
+    ]
+  }
+]

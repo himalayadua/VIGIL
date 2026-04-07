@@ -257,3 +257,115 @@ class TestScenarioConfigModel:
         bad["scoring_weights"] = {"correctness": 0.3, "efficiency": 0.3}
         with pytest.raises(ValidationError):
             ScenarioConfig(**bad)
+
+
+# ---------------------------------------------------------------------------
+# Task 16: Backward compatibility regression tests
+# ---------------------------------------------------------------------------
+
+class TestScenarioLoaderBackwardCompat:
+    """
+    Regression tests confirming the old ScenarioLoader.load() interface
+    still works after the catalog delegation was added.
+
+    Requirements: 18
+    """
+
+    def test_load_concept_formation_returns_dict(self):
+        """Old interface: load('concept_formation') must return a dict."""
+        loader = ScenarioLoader()
+        config = loader.load("concept_formation")
+        assert isinstance(config, dict)
+
+    def test_load_associative_returns_dict(self):
+        loader = ScenarioLoader()
+        config = loader.load("associative")
+        assert isinstance(config, dict)
+
+    def test_load_reinforcement_returns_dict(self):
+        loader = ScenarioLoader()
+        config = loader.load("reinforcement")
+        assert isinstance(config, dict)
+
+    def test_load_observational_returns_dict(self):
+        loader = ScenarioLoader()
+        config = loader.load("observational")
+        assert isinstance(config, dict)
+
+    def test_load_procedural_returns_dict(self):
+        loader = ScenarioLoader()
+        config = loader.load("procedural")
+        assert isinstance(config, dict)
+
+    def test_load_language_returns_dict(self):
+        loader = ScenarioLoader()
+        config = loader.load("language")
+        assert isinstance(config, dict)
+
+    def test_load_unknown_raises_file_not_found(self):
+        """Old interface: unknown scenario_name must raise FileNotFoundError."""
+        loader = ScenarioLoader()
+        with pytest.raises(FileNotFoundError):
+            loader.load("does_not_exist_anywhere")
+
+    def test_load_caches_result(self):
+        """Second load() call must return same object from cache."""
+        loader = ScenarioLoader()
+        config1 = loader.load("concept_formation")
+        config2 = loader.load("concept_formation")
+        # Both are copies but from the same cached source
+        assert config1 == config2
+
+    def test_load_returns_dict_with_scenario_id(self):
+        """Returned dict must have scenario_id key."""
+        loader = ScenarioLoader()
+        config = loader.load("concept_formation")
+        assert "scenario_id" in config
+
+    def test_load_returns_dict_with_cognitive_track(self):
+        """Returned dict must have cognitive_track key."""
+        loader = ScenarioLoader()
+        config = loader.load("concept_formation")
+        assert "cognitive_track" in config
+
+    def test_six_bespoke_envs_still_instantiate(self):
+        """
+        All six bespoke Track 1 environment classes must still instantiate
+        without errors using the old ScenarioLoader interface.
+        """
+        from vigil.environments.concept_formation import ConceptFormationEnv
+        from vigil.environments.associative import AssociativeLearningEnv
+        from vigil.environments.reinforcement import ReinforcementLearningEnv
+        from vigil.environments.observational import ObservationalLearningEnv
+        from vigil.environments.procedural import ProceduralLearningEnv
+        from vigil.environments.language import LanguageLearningEnv
+
+        loader = ScenarioLoader()
+        env_map = {
+            "concept_formation": ConceptFormationEnv,
+            "associative": AssociativeLearningEnv,
+            "reinforcement": ReinforcementLearningEnv,
+            "observational": ObservationalLearningEnv,
+            "procedural": ProceduralLearningEnv,
+            "language": LanguageLearningEnv,
+        }
+        for name, env_class in env_map.items():
+            config = loader.load(name)
+            env = env_class(scenario_config=config, difficulty=1, seed=42)
+            assert env is not None
+
+    def test_six_bespoke_envs_can_reset(self):
+        """All six bespoke environments must be able to reset() without errors."""
+        from vigil.environments.concept_formation import ConceptFormationEnv
+        from vigil.environments.associative import AssociativeLearningEnv
+
+        loader = ScenarioLoader()
+        for name, env_class in [
+            ("concept_formation", ConceptFormationEnv),
+            ("associative", AssociativeLearningEnv),
+        ]:
+            config = loader.load(name)
+            env = env_class(scenario_config=config, difficulty=1, seed=42)
+            state = env.reset()
+            assert state is not None
+            assert state.current_node is not None

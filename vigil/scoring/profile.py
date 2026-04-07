@@ -19,13 +19,19 @@ class HumanBaseline:
     environment conditions. Used to compute AI percentile rankings.
 
     Attributes:
-        scenario_id: Which scenario this baseline covers
-        participants: List of per-participant score dicts (one per person)
-        n: Number of participants
+        scenario_id:          Which scenario this baseline covers
+        participants:         List of per-participant score dicts (one per person)
+        n:                    Number of participants
+        track_dimensions:     TrackScorer output for the human session
+                              (e.g. {"correctness": 0.7, "evidence_coverage": 0.8})
+        evaluation_conditions: Conditions under which the session was run.
+                              Must match the AI evaluation conditions for valid comparison.
     """
     scenario_id: str
     participants: List[Dict[str, float]] = field(default_factory=list)
     n: int = 0
+    track_dimensions: Dict[str, float] = field(default_factory=dict)
+    evaluation_conditions: Dict[str, Any] = field(default_factory=dict)
 
     def add_participant(self, scores: Dict[str, float]) -> None:
         """Add one participant's scores."""
@@ -60,6 +66,8 @@ class HumanBaseline:
             "scenario_id": self.scenario_id,
             "n": self.n,
             "participants": self.participants,
+            "track_dimensions": self.track_dimensions,
+            "evaluation_conditions": self.evaluation_conditions,
         }
 
     @classmethod
@@ -67,6 +75,8 @@ class HumanBaseline:
         obj = cls(scenario_id=data["scenario_id"])
         obj.participants = data.get("participants", [])
         obj.n = len(obj.participants)
+        obj.track_dimensions = data.get("track_dimensions", {})
+        obj.evaluation_conditions = data.get("evaluation_conditions", {})
         return obj
 
 

@@ -4,7 +4,12 @@ Scenario loader with Pydantic validation.
 Loads scenario JSON files and validates them against ScenarioConfig.
 Raises descriptive errors on missing fields or invalid weights.
 
-Requirements: 19.1, 19.2, 19.3, 19.4
+This module maintains backward compatibility with the old filename-stem interface.
+Internally, load() now delegates to ScenarioCatalog when the scenario_id is found
+in the authored packs. Falls back to the old file-based approach for test fixtures
+in vigil/scenarios/schemas/*.json.
+
+Requirements: 18, 19.1, 19.2, 19.3, 19.4
 """
 
 import json
@@ -91,8 +96,14 @@ class ScenarioLoader:
         """
         Load and validate a scenario by name.
 
+        Delegation order:
+          1. Try ScenarioCatalog.load(scenario_name) — returns RuntimeScenarioSpec
+             converted to dict via to_scenario_config_dict() for backward compat.
+          2. Fall back to the old file-based approach (vigil/scenarios/schemas/*.json)
+             for test fixtures and legacy scenarios not in the authored packs.
+
         Args:
-            scenario_name: Filename stem (without .json)
+            scenario_name: Filename stem (without .json) or scenario_id
 
         Returns:
             Plain dict of the validated scenario config.
@@ -104,6 +115,29 @@ class ScenarioLoader:
         if scenario_name in self._cache:
             return self._cache[scenario_name].copy()
 
+        # Try catalog first (authored packs)
+        try:
+            from vigil.scenarios.catalog import ScenarioCatalog
+            catalog = ScenarioCatalog()
+            spec = catalog.load(scenario_name)
+            # Convert RuntimeScenarioSpec to dict for backward compat
+            raw = spec.to_scenario_config_dict()
+            # Add fields expected by old environments
+            raw.setdefault("scenario_id", spec.scenario_id)
+            raw.setdefault("cognitive_track", spec.cognitive_track)
+            raw.setdefault("sub_ability", spec.cognitive_track)
+            raw.setdefault("graph_config", {})
+            raw.setdefault("hidden_rule", {"type": "unknown", "description": ""})
+            raw.setdefault("scoring_weights", spec.scoring_weights)
+            raw.setdefault("difficulty_levels", {"medium": {}})
+            raw.setdefault("budget", {"max_steps": spec.runtime_config.action_budget})
+            raw.setdefault("optimal_steps", spec.optimal_steps)
+            self._cache[scenario_name] = raw
+            return raw.copy()
+        except Exception:
+            pass  # Fall through to file-based approach
+
+        # Fall back: load from vigil/scenarios/schemas/*.json (test fixtures)
         scenario_path = self.scenarios_dir / f"{scenario_name}.json"
 
         if not scenario_path.exists():

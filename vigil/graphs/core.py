@@ -278,3 +278,75 @@ class CognitiveGraph:
         for node_id, vis_str in data.get("visibility", {}).items():
             graph._visibility[node_id] = NodeVisibility(vis_str)
         return graph
+
+    @classmethod
+    def from_spec(cls, spec: Any) -> "CognitiveGraph":
+        """
+        Build a CognitiveGraph from a RuntimeScenarioSpec.
+
+        Uses RuntimeNode/RuntimeEdge canonical fields — never raw authored keys.
+        Visibility is NOT initialised here; call init_visibility_from_spec()
+        after construction (done by GraphScenarioEnvironment.reset()).
+
+        Args:
+            spec: A RuntimeScenarioSpec instance.
+
+        Returns:
+            CognitiveGraph with all nodes and edges loaded, visibility uninitialised.
+        """
+        graph = cls()
+
+        for rn in spec.nodes:
+            node = GraphNode(
+                node_id=rn.node_id,
+                features={rn.summary_text} if rn.summary_text else set(),
+                category=None,  # never expose category to model
+                metadata={
+                    "label": rn.label,
+                    "summary_text": rn.summary_text,
+                    "inspection_detail": rn.inspection_detail,
+                    "node_type": rn.node_type,
+                    "initial_visibility": rn.initial_visibility,
+                    **rn.metadata,
+                },
+            )
+            graph.add_node(node)
+
+        for re in spec.edges:
+            edge = GraphEdge(
+                source=re.from_id,
+                target=re.to_id,
+                relation_type=re.relation,
+                weight=float(re.traversal_cost),
+                metadata={
+                    "reveal_text": re.reveal_text,
+                    "traversal_cost": re.traversal_cost,
+                    **re.metadata,
+                },
+            )
+            graph.add_edge(re.from_id, edge)
+
+        return graph
+
+    def init_visibility_from_spec(self, spec: Any) -> None:
+        """
+        Initialise visibility from RuntimeScenarioSpec.initial_visibility fields.
+
+        Nodes with initial_visibility in ("visible", "initial") start as EXPANDED.
+        All other nodes start as UNEXPLORED.
+
+        Args:
+            spec: A RuntimeScenarioSpec instance.
+        """
+        # First set all to UNEXPLORED
+        for node_id in self.nodes:
+            self._visibility[node_id] = NodeVisibility.UNEXPLORED
+
+        # Then upgrade nodes that start visible/initial
+        for rn in spec.nodes:
+            if rn.initial_visibility in ("visible", "initial"):
+                self._visibility[rn.node_id] = NodeVisibility.EXPANDED
+                # Also reveal their neighbors as DISCOVERED
+                for neighbor_id in self.get_neighbors(rn.node_id):
+                    if self._visibility.get(neighbor_id) == NodeVisibility.UNEXPLORED:
+                        self._visibility[neighbor_id] = NodeVisibility.DISCOVERED

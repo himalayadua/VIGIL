@@ -42,9 +42,17 @@ class VISScorer:
         outcome_score: Optional[float] = None,
         judge_llm: Any = None,
         human_baseline: Optional[Dict[str, Any]] = None,
+        scorecard: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Compute the full VIS score dict for one episode.
+
+        Two paths:
+          1. scorecard=None (backward compat): compute all 7 base dimensions
+             from state, using outcome_score as the correctness signal.
+          2. scorecard provided: use scorecard["outcome_score"] and
+             scorecard["process_score"] directly; merge scorecard dimension
+             scores into result. Still always runs compute_contamination_risk().
 
         Args:
             state: Final EnvironmentState after episode ends
@@ -52,16 +60,129 @@ class VISScorer:
             justification: Model's submitted justification string
             scenario_config: Scenario JSON config (for optimal_steps, weights)
             outcome_score: Pre-computed correctness score (0.0–1.0).
-                           If None, defaults to 0.0.
+                           If None and no scorecard, defaults to 0.0.
+                           Ignored when scorecard is provided.
             judge_llm: Optional judge LLM for MC stage 2. If None, MC uses
                        citation ratio only (deterministic).
             human_baseline: Optional dict with 'mean' and 'std' for percentile.
+            scorecard: Optional pre-computed ScoreCard from a TrackScorer.
+                       When provided, outcome_score and process_score are taken
+                       from the scorecard. All scorecard dimension scores are
+                       merged into the returned result.
 
         Returns:
-            Dict with keys: vis, outcome_score, process_score,
-            exploration_efficiency, learning_rate, adaptivity, recovery,
-            stopping_quality, metacognition, contamination_risk,
-            contamination_warning, and optionally human_percentile.
+            Dict with keys: vis, outcome_score, process_score, track_id,
+            contamination_risk, contamination_warning, and either the 7 base
+            VIS dimensions (no scorecard) or the scorecard dimensions (with
+            scorecard), plus optionally human_percentile.
+        """
+        # --- Contamination risk: always computed from state trace ---
+        cr = self.compute_contamination_risk(state)
+
+        if scorecard is not None:
+            return self._score_with_scorecard(
+                state=state,
+                justification=justification,
+                scenario_config=scenario_config,
+                scorecard=scorecard,
+                judge_llm=judge_llm,
+                human_baseline=human_baseline,
+                cr=cr,
+            )
+
+        # --- Backward-compat path: compute all 7 base dimensions ---
+        return self._score_base_dimensions(
+            state=state,
+            final_answer=final_answer,
+            justification=justification,
+            scenario_config=scenario_config,
+            outcome_score=outcome_score,
+            judge_llm=judge_llm,
+            human_baseline=human_baseline,
+            cr=cr,
+        )
+
+    def _score_with_scorecard(
+        self,
+        state: EnvironmentState,
+        justification: str,
+        scenario_config: Dict[str, Any],
+        scorecard: Dict[str, Any],
+        judge_llm: Any,
+        human_baseline: Optional[Dict[str, Any]],
+        cr: float,
+    ) -> Dict[str, Any]:
+        """
+        Build VISResult from a pre-computed TrackScorer ScoreCard.
+
+        Uses scorecard["outcome_score"] and scorecard["process_score"] directly.
+        Merges all scorecard dimension scores into the result.
+        Always applies contamination_risk override if cr > 0.8.
+        Runs two-stage MC scoring if judge_llm is provided.
+        """
+        outcome_score = float(scorecard.get("outcome_score", 0.0))
+        process_score = float(scorecard.get("process_score", 0.0))
+
+        # VIS = 0.3 × outcome + 0.7 × process (invariant across all tracks)
+        vis = 0.3 * outcome_score + 0.7 * process_score
+        vis = max(0.0, min(1.0, vis))
+
+        # Contamination warning: scorecard value OR cr > 0.8 override
+        contamination_warning = scorecard.get("contamination_warning", False)
+        if cr > 0.8:
+            contamination_warning = True
+
+        # track_id from scorecard, fallback to scenario_config
+        track_id = scorecard.get(
+            "track_id",
+            scenario_config.get("cognitive_track", "unknown"),
+        )
+
+        # Two-stage MC scoring when judge_llm provided
+        mc_score: Optional[float] = None
+        if judge_llm is not None:
+            citation_ratio = self._compute_citation_ratio(state, justification)
+            judge_score = self._compute_judge_score(state, justification, judge_llm)
+            mc_score = (citation_ratio + judge_score) / 2.0
+
+        # Build result: start with all scorecard dimensions, then add VIS fields
+        result: Dict[str, Any] = {
+            k: v for k, v in scorecard.items()
+            if k not in ("vis",)  # never let scorecard inject a vis key
+        }
+        result.update({
+            "vis": round(vis, 4),
+            "outcome_score": round(outcome_score, 4),
+            "process_score": round(process_score, 4),
+            "contamination_risk": round(cr, 4),
+            "contamination_warning": contamination_warning,
+            "track_id": track_id,
+        })
+        if mc_score is not None:
+            result["metacognition"] = round(mc_score, 4)
+
+        # Human percentile if baseline provided
+        if human_baseline and "mean" in human_baseline and "std" in human_baseline:
+            result["human_percentile"] = self._compute_percentile(
+                vis, human_baseline["mean"], human_baseline["std"]
+            )
+
+        return result
+
+    def _score_base_dimensions(
+        self,
+        state: EnvironmentState,
+        final_answer: str,
+        justification: str,
+        scenario_config: Dict[str, Any],
+        outcome_score: Optional[float],
+        judge_llm: Any,
+        human_baseline: Optional[Dict[str, Any]],
+        cr: float,
+    ) -> Dict[str, Any]:
+        """
+        Original 7-dimension scoring path (backward compat, no scorecard).
+        Identical to the pre-refactor implementation.
         """
         if outcome_score is None:
             outcome_score = 0.0
@@ -83,10 +204,9 @@ class VISScorer:
         re_ = self.compute_recovery(state)
         sq  = self.compute_stopping_quality(state, optimal_steps)
         mc  = self.compute_metacognition(state, justification, judge_llm)
-        cr  = self.compute_contamination_risk(state)
+        # cr already computed by caller
 
         # Process score — weighted combination of EE, LR, AD, RE, SQ, MC
-        # CR is a flag, not a weight
         process_dims = {
             "exploration_efficiency": ee,
             "learning_rate":          lr,
@@ -120,6 +240,7 @@ class VISScorer:
             "metacognition": round(mc, 4),
             "contamination_risk": round(cr, 4),
             "contamination_warning": cr > 0.8,
+            "track_id": scenario_config.get("cognitive_track", "unknown"),
         }
 
         # Human percentile if baseline provided

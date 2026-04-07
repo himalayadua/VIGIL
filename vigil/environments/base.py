@@ -17,11 +17,21 @@ from typing import Any, Dict, List, Optional, Tuple
 
 class EventType(Enum):
     """All action types that produce a TraversalEvent."""
+    # Model actions
     EXPLORE = "explore"
     INSPECT = "inspect"
     GET_CONTEXT = "get_context"
     SUBMIT_ANSWER = "submit_answer"
     ERROR = "error"
+    # System events — appended by the environment, never consume budget
+    CONTRADICTION = "contradiction"           # Track 1, Track 2 (Metacognition)
+    RELEVANCE_SHIFT = "relevance_shift"       # Track 3 (Attention)
+    SUBGOAL_COMPLETE = "subgoal_complete"     # Track 4 (Executive Functions)
+    REPLAN_TRIGGERED = "replan_triggered"     # Track 4 (Executive Functions)
+    CONSTRAINT_VIOLATED = "constraint_violated"  # Track 4 (Executive Functions)
+    HELP_REQUESTED = "help_requested"         # Track 2 (Metacognition)
+    MESSAGE_SENT = "message_sent"             # Track 5 (Social Cognition)
+    COMMITMENT_MADE = "commitment_made"       # Track 5 (Social Cognition)
 
 
 @dataclass
@@ -100,13 +110,32 @@ class EnvironmentState:
     Attributes:
         current_node: ID of the node the model is currently at
         visited_nodes: Ordered list of node IDs the model has moved to
-        budget_remaining: Remaining action budget (explore costs 2, inspect costs 1)
-        evidence_nodes: Node IDs that are relevant to the hidden rule (populated on inspect)
+        budget_remaining: Remaining action budget
+        evidence_nodes: Node IDs relevant to the hidden rule (populated on inspect)
         action_history: Complete ordered list of every TraversalEvent in this episode
         confidence_history: Confidence values from submit_answer calls
         episode_done: True once submit_answer is called or budget exhausted
         cumulative_reward: Running reward total (used by ReinforcementLearningEnv)
         trial_move_counts: Move count per trial (used by ProceduralLearningEnv)
+
+        --- Authored-scenario tracking (added for GraphScenarioEnvironment) ---
+        discovered_nodes: Node IDs whose existence is known (DISCOVERED or EXPANDED)
+        inspected_nodes: Node IDs whose inspection_detail has been read
+        disconfirmation_hits: Node IDs that triggered a contradiction event
+        dead_end_hits: Node IDs identified as dead ends from authored metadata
+
+        --- Track-specific state (added for Tracks 2–5) ---
+        track_state: Generic overflow bucket for track-specific mutable state
+        contradiction_events: Accumulated CONTRADICTION TraversalEvents
+        relevance_shifts_triggered: Accumulated relevance shift event dicts
+        completed_subgoals: Subgoal IDs completed during the episode
+        constraint_violations: Accumulated constraint violation event dicts
+        help_requests: Accumulated help request event dicts
+        source_claims: Accumulated source attribution claims
+        confidence_checkpoints: Named confidence checkpoint records
+        commitments: Accumulated commitment event dicts (Track 5)
+        messages_sent: Accumulated message event dicts (Track 5)
+        partner_model_updates: Accumulated partner model inference dicts (Track 5)
     """
     current_node: str
     visited_nodes: List[str] = field(default_factory=list)
@@ -118,9 +147,29 @@ class EnvironmentState:
     cumulative_reward: float = 0.0
     trial_move_counts: List[int] = field(default_factory=list)
 
+    # --- Authored-scenario tracking ---
+    discovered_nodes: List[str] = field(default_factory=list)
+    inspected_nodes: List[str] = field(default_factory=list)
+    disconfirmation_hits: List[str] = field(default_factory=list)
+    dead_end_hits: List[str] = field(default_factory=list)
+
+    # --- Track-specific state ---
+    track_state: Dict[str, Any] = field(default_factory=dict)
+    contradiction_events: List[Any] = field(default_factory=list)
+    relevance_shifts_triggered: List[Dict[str, Any]] = field(default_factory=list)
+    completed_subgoals: List[str] = field(default_factory=list)
+    constraint_violations: List[Dict[str, Any]] = field(default_factory=list)
+    help_requests: List[Dict[str, Any]] = field(default_factory=list)
+    source_claims: List[Dict[str, Any]] = field(default_factory=list)
+    confidence_checkpoints: Dict[str, List[Dict[str, Any]]] = field(default_factory=dict)
+    commitments: List[Dict[str, Any]] = field(default_factory=list)
+    messages_sent: List[Dict[str, Any]] = field(default_factory=list)
+    partner_model_updates: List[Dict[str, Any]] = field(default_factory=list)
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert state to dictionary for JSON serialization."""
         return {
+            # Original fields
             "current_node": self.current_node,
             "visited_nodes": self.visited_nodes,
             "budget_remaining": self.budget_remaining,
@@ -130,6 +179,26 @@ class EnvironmentState:
             "episode_done": self.episode_done,
             "cumulative_reward": self.cumulative_reward,
             "trial_move_counts": self.trial_move_counts,
+            # Authored-scenario tracking
+            "discovered_nodes": self.discovered_nodes,
+            "inspected_nodes": self.inspected_nodes,
+            "disconfirmation_hits": self.disconfirmation_hits,
+            "dead_end_hits": self.dead_end_hits,
+            # Track-specific state
+            "track_state": self.track_state,
+            "contradiction_events": [
+                e.to_dict() if hasattr(e, "to_dict") else e
+                for e in self.contradiction_events
+            ],
+            "relevance_shifts_triggered": self.relevance_shifts_triggered,
+            "completed_subgoals": self.completed_subgoals,
+            "constraint_violations": self.constraint_violations,
+            "help_requests": self.help_requests,
+            "source_claims": self.source_claims,
+            "confidence_checkpoints": self.confidence_checkpoints,
+            "commitments": self.commitments,
+            "messages_sent": self.messages_sent,
+            "partner_model_updates": self.partner_model_updates,
         }
 
 
@@ -215,6 +284,21 @@ class CognitiveEnvironment(ABC):
         for event in events:
             if event.event_type == EventType.ERROR:
                 # Error events don't carry a valid action — skip replay
+                continue
+
+            # Skip system events — they are re-triggered by the primary actions
+            # during replay, not re-executed as model actions
+            _SYSTEM_EVENTS = {
+                EventType.CONTRADICTION,
+                EventType.RELEVANCE_SHIFT,
+                EventType.SUBGOAL_COMPLETE,
+                EventType.REPLAN_TRIGGERED,
+                EventType.CONSTRAINT_VIOLATED,
+                EventType.HELP_REQUESTED,
+                EventType.MESSAGE_SENT,
+                EventType.COMMITMENT_MADE,
+            }
+            if event.event_type in _SYSTEM_EVENTS:
                 continue
 
             params = event.params or {}
@@ -303,7 +387,12 @@ class CognitiveEnvironment(ABC):
         Run one episode with a human participant instead of an LLM.
 
         Uses the same episode loop as model evaluation, ensuring identical
-        conditions for human baseline collection (Req 18.1).
+        conditions for human baseline collection per the DeepMind 3-stage protocol.
+
+        Supports all action types including the track-specific ones:
+          - AskForHelpAction (Track 2 / Metacognition)
+          - SendMessageAction (Track 5 / Social Cognition)
+          - MakeCommitmentAction (Track 5 / Social Cognition)
 
         Args:
             input_fn: Callable that accepts an observation string and returns

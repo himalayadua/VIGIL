@@ -16,16 +16,22 @@ from pydantic import TypeAdapter, ValidationError
 
 from vigil.actions.schemas import (
     ActionParseError,
+    AskForHelpAction,
     ExploreAction,
     GetContextAction,
     InspectAction,
+    MakeCommitmentAction,
+    SendMessageAction,
     SubmitAnswerAction,
     VigilAction,
 )
 
-# TypeAdapter lets us validate the discriminated union directly
+# TypeAdapter validates the full VigilAction discriminated union (all 7 types)
 _adapter: TypeAdapter[VigilAction] = TypeAdapter(
-    Union[ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction]
+    Union[
+        ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction,
+        AskForHelpAction, SendMessageAction, MakeCommitmentAction,
+    ]
 )
 
 
@@ -47,7 +53,10 @@ def parse_action(raw: Any) -> Union[VigilAction, ActionParseError]:
         return ActionParseError(raw, "Input is None")
 
     # Already a valid action model — pass through
-    if isinstance(raw, (ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction)):
+    if isinstance(raw, (
+        ExploreAction, InspectAction, GetContextAction, SubmitAnswerAction,
+        AskForHelpAction, SendMessageAction, MakeCommitmentAction,
+    )):
         return raw
 
     # Dict — validate directly
@@ -93,6 +102,39 @@ def _heuristic_parse(text: str) -> Union[VigilAction, ActionParseError]:
     # get_context — no arguments needed
     if lower.startswith("get_context") or lower == "context":
         return GetContextAction(action_type="get_context")
+
+    # ask_for_help <question>
+    if lower.startswith("ask_for_help") or lower.startswith("ask for help"):
+        question = _extract_first_token_after(text, "ask_for_help") or text
+        return AskForHelpAction(
+            action_type="ask_for_help",
+            question=question,
+            help_type="clarification",
+        )
+
+    # send_message <target_agent_id> <content>
+    if lower.startswith("send_message") or lower.startswith("send message"):
+        parts = text.split(None, 2)
+        target = parts[1] if len(parts) > 1 else "unknown"
+        content = parts[2] if len(parts) > 2 else ""
+        return SendMessageAction(
+            action_type="send_message",
+            target_agent_id=target,
+            content=content,
+            message_type="assertion",
+        )
+
+    # make_commitment <target_agent_id> <text>
+    if lower.startswith("make_commitment") or lower.startswith("make commitment"):
+        parts = text.split(None, 2)
+        target = parts[1] if len(parts) > 1 else "unknown"
+        commitment_text = parts[2] if len(parts) > 2 else ""
+        return MakeCommitmentAction(
+            action_type="make_commitment",
+            target_agent_id=target,
+            commitment_text=commitment_text,
+            commitment_type="promise",
+        )
 
     # explore <node_id>
     if lower.startswith("explore"):
