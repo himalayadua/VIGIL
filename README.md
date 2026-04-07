@@ -23,7 +23,7 @@ Instead of static QA benchmarks, Vigil places models in interactive graph enviro
 | 2 | Metacognition | ✅ Implemented |
 | 3 | Attention | ✅ Implemented |
 | 4 | Executive Function | ✅ Implemented |
-| 5 | Social Cognition | 🔲 Blocked on scenario authoring |
+| 5 | Social Cognition | ✅ Implemented |
 
 ## Quick Start
 
@@ -75,7 +75,8 @@ vigil/
 │   │   ├── learning_adapter.py      # Track 1
 │   │   ├── metacognition_adapter.py # Track 2
 │   │   ├── attention_adapter.py     # Track 3
-│   │   └── executive_adapter.py     # Track 4
+│   │   ├── executive_adapter.py     # Track 4
+│   │   └── social_adapter.py        # Track 5
 │   └── packs/                   # Authored JSON scenario packs
 ├── actions/
 │   ├── parser.py                # Parse model actions from JSON or string
@@ -91,7 +92,7 @@ vigil/
 │   └── track1_learning.py       # vigil_learning_benchmark (Track 1 wrapper)
 ├── baselines/
 │   └── collector.py             # Human baseline collection
-└── tests/                       # Full test suite (764+ tests)
+└── tests/                       # Full test suite (760 tests)
 ```
 
 ### Key Components
