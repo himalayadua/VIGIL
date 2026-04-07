@@ -27,6 +27,7 @@ from vigil.scenarios.adapters.learning_adapter import LearningAdapter
 from vigil.scenarios.adapters.metacognition_adapter import MetacognitionAdapter
 from vigil.scenarios.adapters.attention_adapter import AttentionAdapter
 from vigil.scenarios.adapters.executive_adapter import ExecutiveAdapter
+from vigil.scenarios.adapters.social_adapter import SocialAdapter
 
 
 # ---------------------------------------------------------------------------
@@ -49,6 +50,7 @@ _LEARNING_ADAPTER = LearningAdapter()
 _METACOGNITION_ADAPTER = MetacognitionAdapter()
 _ATTENTION_ADAPTER = AttentionAdapter()
 _EXECUTIVE_ADAPTER = ExecutiveAdapter()
+_SOCIAL_ADAPTER = SocialAdapter()
 
 
 def _validate_learning(raw: Dict[str, Any], scenario_id: str) -> None:
@@ -71,71 +73,9 @@ def _validate_executive_functions(raw: Dict[str, Any], scenario_id: str) -> None
     _EXECUTIVE_ADAPTER.validate(raw, scenario_id)
 
 
-def _validate_metacognition(raw: Dict[str, Any], scenario_id: str) -> None:
-    """Validate Track 2 (metacognition) authored schema."""
-    required = [
-        "scenario_id", "cognitive_track", "blind_task_prompt",
-        "object_level_goal", "meta_level_goal", "metacognitive_layers",
-        "scoring_focus", "nodes", "edges",
-    ]
-    for field in required:
-        if field not in raw:
-            raise ValueError(
-                f"Scenario '{scenario_id}' (metacognition) missing required field '{field}'"
-            )
-
-
-def _validate_attention(raw: Dict[str, Any], scenario_id: str) -> None:
-    """Validate Track 3 (attention) authored schema."""
-    required = [
-        "scenario_id", "cognitive_track", "blind_task_prompt",
-        "attention_design", "critical_evidence_node_ids",
-        "target_conclusion", "nodes", "edges",
-    ]
-    for field in required:
-        if field not in raw:
-            raise ValueError(
-                f"Scenario '{scenario_id}' (attention) missing required field '{field}'"
-            )
-
-
-def _validate_executive_functions(raw: Dict[str, Any], scenario_id: str) -> None:
-    """Validate Track 4 (executive_functions) authored schema."""
-    required = ["scenario_id", "cognitive_track", "executive_design_notes", "nodes", "edges"]
-    for field in required:
-        if field not in raw:
-            raise ValueError(
-                f"Scenario '{scenario_id}' (executive_functions) missing required field '{field}'"
-            )
-    ed = raw["executive_design_notes"]
-    for sub in ("tempting_wrong_path", "required_pivot", "process_scoring_focus"):
-        if sub not in ed:
-            raise ValueError(
-                f"Scenario '{scenario_id}' executive_design_notes missing '{sub}'"
-            )
-
-
 def _validate_social_cognition(raw: Dict[str, Any], scenario_id: str) -> None:
-    """Validate Track 5 (social_cognition) authored schema."""
-    required = [
-        "scenario_id", "cognitive_track", "blind_task_prompt",
-        "agent_nodes", "nodes", "edges",
-    ]
-    for field in required:
-        if field not in raw:
-            raise ValueError(
-                f"Scenario '{scenario_id}' (social_cognition) missing required field '{field}'"
-            )
-    # Safety check: deceptive agents require safety_sandboxed
-    metadata = raw.get("metadata", {})
-    for agent in raw.get("agent_nodes", []):
-        profile = agent.get("agent_profile", {})
-        if profile.get("deceptive") is True:
-            if not metadata.get("safety_sandboxed"):
-                raise ValueError(
-                    f"Scenario '{scenario_id}': agent node with 'deceptive: true' "
-                    f"requires metadata.safety_sandboxed = true"
-                )
+    """Delegate to SocialAdapter.validate()."""
+    _SOCIAL_ADAPTER.validate(raw, scenario_id)
 
 
 _VALIDATORS: Dict[str, Any] = {
@@ -171,227 +111,10 @@ def _compile_executive_functions(raw: Dict[str, Any]) -> RuntimeScenarioSpec:
     return _EXECUTIVE_ADAPTER.compile(raw)
 
 
-def _compile_metacognition(raw: Dict[str, Any]) -> RuntimeScenarioSpec:
-    """Compile a metacognition scenario into RuntimeScenarioSpec."""
-    nodes = [
-        RuntimeNode(
-            node_id=n["node_id"],
-            label=n.get("label", n["node_id"]),
-            summary_text=n.get("content", ""),
-            inspection_detail=n.get("content", ""),
-            node_type=n.get("node_type", "standard"),
-            initial_visibility=_map_visibility(n.get("visibility", "hidden")),
-            metadata={"meta_relevance": n.get("meta_relevance", "")},
-        )
-        for n in raw["nodes"]
-    ]
-
-    edges = [
-        RuntimeEdge(
-            from_id=e["from"],
-            to_id=e["to"],
-            relation=e.get("edge_type", e.get("relation", "")),
-            reveal_text=e.get("description", ""),
-        )
-        for e in raw["edges"]
-    ]
-
-    entry_nodes = [n.node_id for n in nodes if n.initial_visibility in ("visible", "initial")]
-    if not entry_nodes:
-        entry_nodes = [nodes[0].node_id] if nodes else []
-
-    return RuntimeScenarioSpec(
-        scenario_id=raw["scenario_id"],
-        cognitive_track="metacognition",
-        opening_prompt=raw["blind_task_prompt"],
-        nodes=nodes,
-        edges=edges,
-        entry_node_ids=entry_nodes,
-        answer_targets={
-            "object_level_goal": raw["object_level_goal"],
-            "meta_level_goal": raw["meta_level_goal"],
-        },
-        evidence_targets=[],
-        optimal_path=[],
-        optimal_steps=0,
-        runtime_config=RuntimeConfig(action_budget=20),
-        scoring_weights={
-            "object_score": 0.3,
-            "meta_score": 0.7,
-        },
-        track_metadata={
-            "metacognitive_layers": raw.get("metacognitive_layers", []),
-            "scoring_focus": raw.get("scoring_focus", []),
-            "hidden_mechanism": raw.get("hidden_mechanism", ""),
-            "disconfirmation_moment": raw.get("disconfirmation_moment", ""),
-            "recommended_meta_actions": raw.get("recommended_meta_actions", []),
-        },
-    )
-
-
-def _compile_attention(raw: Dict[str, Any]) -> RuntimeScenarioSpec:
-    """Compile an attention scenario into RuntimeScenarioSpec."""
-    nodes = [
-        RuntimeNode(
-            node_id=n["id"],
-            label=n.get("label", n["id"]),
-            summary_text=n.get("content", ""),
-            inspection_detail=n.get("content", ""),
-            node_type=n.get("kind", "standard"),
-            initial_visibility=_map_visibility(n.get("initial_visibility", "hidden")),
-            metadata={
-                "salience": n.get("salience", ""),
-                "diagnosticity": n.get("diagnosticity", ""),
-            },
-        )
-        for n in raw["nodes"]
-    ]
-
-    edges = [
-        RuntimeEdge(
-            from_id=e["source"],
-            to_id=e["target"],
-            relation=e.get("relation", ""),
-            metadata={"attention_role": e.get("attention_role", "")},
-        )
-        for e in raw["edges"]
-    ]
-
-    entry_nodes = [n.node_id for n in nodes if n.initial_visibility in ("visible", "initial")]
-    if not entry_nodes:
-        entry_nodes = [nodes[0].node_id] if nodes else []
-
-    return RuntimeScenarioSpec(
-        scenario_id=raw["scenario_id"],
-        cognitive_track="attention",
-        opening_prompt=raw["blind_task_prompt"],
-        nodes=nodes,
-        edges=edges,
-        entry_node_ids=entry_nodes,
-        answer_targets={"target_conclusion": raw["target_conclusion"]},
-        evidence_targets=list(raw.get("critical_evidence_node_ids", [])),
-        optimal_path=[],
-        optimal_steps=0,
-        runtime_config=RuntimeConfig(action_budget=20),
-        scoring_weights={
-            "correctness": 0.3,
-            "target_hit_rate": 0.25,
-            "distractor_chase_rate": 0.2,
-            "reorientation_latency": 0.15,
-            "cue_coverage": 0.1,
-        },
-        track_metadata={
-            "attention_design": raw.get("attention_design", {}),
-            "hidden_mechanism": raw.get("hidden_mechanism", ""),
-            "disconfirmation_moment": raw.get("disconfirmation_moment", ""),
-        },
-    )
-
-
-def _compile_executive_functions(raw: Dict[str, Any]) -> RuntimeScenarioSpec:
-    """Compile an executive_functions scenario into RuntimeScenarioSpec."""
-    nodes = [
-        RuntimeNode(
-            node_id=n["id"],
-            label=n.get("label", n["id"]),
-            summary_text=n.get("description", ""),
-            inspection_detail=n.get("description", ""),
-            node_type=n.get("type", "standard"),
-            initial_visibility="hidden",
-        )
-        for n in raw["nodes"]
-    ]
-
-    edges = [
-        RuntimeEdge(
-            from_id=e["from"],
-            to_id=e["to"],
-            relation=e.get("relation", ""),
-        )
-        for e in raw["edges"]
-    ]
-
-    # Entry node is the first node (entry brief)
-    entry_nodes = [nodes[0].node_id] if nodes else []
-
-    return RuntimeScenarioSpec(
-        scenario_id=raw["scenario_id"],
-        cognitive_track="executive_functions",
-        opening_prompt=nodes[0].summary_text if nodes else "",
-        nodes=nodes,
-        edges=edges,
-        entry_node_ids=entry_nodes,
-        answer_targets={
-            "required_pivot": raw["executive_design_notes"].get("required_pivot", ""),
-        },
-        evidence_targets=[],
-        optimal_path=[],
-        optimal_steps=0,
-        runtime_config=RuntimeConfig(action_budget=20),
-        scoring_weights={
-            "correctness": 0.3,
-            "inhibition_failures": 0.25,
-            "pivot_quality": 0.25,
-            "process_scoring_focus_alignment": 0.2,
-        },
-        track_metadata={"executive_design_notes": raw["executive_design_notes"]},
-    )
-
 
 def _compile_social_cognition(raw: Dict[str, Any]) -> RuntimeScenarioSpec:
-    """Compile a social_cognition scenario into RuntimeScenarioSpec."""
-    nodes = [
-        RuntimeNode(
-            node_id=n.get("id", n.get("node_id", "")),
-            label=n.get("label", ""),
-            summary_text=n.get("content", n.get("description", "")),
-            inspection_detail=n.get("content", n.get("description", "")),
-            node_type=n.get("node_type", n.get("type", "standard")),
-            initial_visibility=_map_visibility(n.get("visibility", "hidden")),
-            metadata=n.get("metadata", {}),
-        )
-        for n in raw["nodes"]
-    ]
-
-    edges = [
-        RuntimeEdge(
-            from_id=e.get("from", e.get("source", "")),
-            to_id=e.get("to", e.get("target", "")),
-            relation=e.get("relation", e.get("edge_type", "")),
-            reveal_text=e.get("description", e.get("reveal", "")),
-        )
-        for e in raw["edges"]
-    ]
-
-    entry_nodes = [n.node_id for n in nodes if n.initial_visibility in ("visible", "initial")]
-    if not entry_nodes:
-        entry_nodes = [nodes[0].node_id] if nodes else []
-
-    return RuntimeScenarioSpec(
-        scenario_id=raw["scenario_id"],
-        cognitive_track="social_cognition",
-        opening_prompt=raw.get("blind_task_prompt", ""),
-        nodes=nodes,
-        edges=edges,
-        entry_node_ids=entry_nodes,
-        answer_targets={},
-        evidence_targets=[],
-        optimal_path=[],
-        optimal_steps=0,
-        runtime_config=RuntimeConfig(action_budget=20),
-        scoring_weights={
-            "partner_model_accuracy": 0.25,
-            "social_repair_quality": 0.2,
-            "trust_calibration": 0.2,
-            "communication_appropriateness": 0.2,
-            "information_asymmetry_exploitation": 0.15,
-        },
-        track_metadata={
-            "agent_nodes": raw.get("agent_nodes", []),
-            "private_knowledge": raw.get("private_knowledge", {}),
-            "agent_responses": raw.get("agent_responses", {}),
-        },
-    )
+    """Delegate to SocialAdapter.compile()."""
+    return _SOCIAL_ADAPTER.compile(raw)
 
 
 _COMPILERS: Dict[str, Any] = {
@@ -582,6 +305,23 @@ class ScenarioCatalog:
                 sid = data["scenario_id"]
                 if sid not in self._index:
                     self._index[sid] = (path, None)
+            elif isinstance(data, dict):
+                # Handle wrapper dicts like {"scenarios": [...]}
+                # Find the first key whose value is a list of scenario dicts
+                for key, val in data.items():
+                    if isinstance(val, list):
+                        for idx, item in enumerate(val):
+                            if isinstance(item, dict) and "scenario_id" in item:
+                                sid = item["scenario_id"]
+                                if sid in self._index:
+                                    warnings.warn(
+                                        f"ScenarioCatalog: duplicate scenario_id '{sid}' "
+                                        f"in {path} (index {idx}); keeping first occurrence.",
+                                        stacklevel=2,
+                                    )
+                                else:
+                                    self._index[sid] = (path, (key, idx))
+                        break
 
     def _load_raw(self, scenario_id: str) -> Dict[str, Any]:
         """Load the raw dict for a scenario_id from disk."""
@@ -598,9 +338,16 @@ class ScenarioCatalog:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        if array_idx is not None:
+        if array_idx is None:
+            # Single-scenario dict
+            return data
+        elif isinstance(array_idx, tuple):
+            # Wrapped array: (key, idx) e.g. ("scenarios", 3)
+            key, idx = array_idx
+            return data[key][idx]
+        else:
+            # Bare array: integer index
             return data[array_idx]
-        return data
 
     def _compile(self, raw: Dict[str, Any], scenario_id: str) -> RuntimeScenarioSpec:
         """Validate and compile a raw dict into a RuntimeScenarioSpec."""

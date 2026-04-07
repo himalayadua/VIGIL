@@ -6,15 +6,18 @@ model evaluation, then saves results as JSON for percentile computation.
 
 Usage:
     from vigil.baselines.collector import collect_human_session, load_baseline
-    from vigil.environments.concept_formation import ConceptFormationEnv
+    from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+    from vigil.scenarios.catalog import ScenarioCatalog
 
-    env = ConceptFormationEnv(scenario_config=config, difficulty=1, seed=42)
+    catalog = ScenarioCatalog()
+    spec = catalog.load("vigil_eco_01_kethara_succession")
+    env = GraphScenarioEnvironment(spec)
 
     # Collect one participant's session (interactive terminal input)
     state = collect_human_session(env, participant_id="p001")
 
     # Load all collected baselines for a scenario
-    baseline = load_baseline("concept_formation_v1")
+    baseline = load_baseline("vigil_eco_01_kethara_succession")
     percentile = baseline.compute_percentile(0.72, "vis")
 
 Requirements: 18.1, 18.4

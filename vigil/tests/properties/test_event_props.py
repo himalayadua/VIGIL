@@ -26,36 +26,66 @@ from vigil.actions.schemas import (
     SubmitAnswerAction,
 )
 from vigil.environments.base import EventType, TraversalEvent
-from vigil.environments.concept_formation import ConceptFormationEnv
-from vigil.graphs.core import NodeVisibility
+from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+from vigil.scenarios.runtime_spec import (
+    EvaluationConditions,
+    RuntimeConfig,
+    RuntimeEdge,
+    RuntimeNode,
+    RuntimeScenarioSpec,
+)
 
 # ---------------------------------------------------------------------------
-# Minimal scenario config for testing
+# Minimal spec factory for property tests
 # ---------------------------------------------------------------------------
 
-_SCENARIO = {
-    "scenario_id": "test_cf",
-    "cognitive_track": "learning",
-    "sub_ability": "concept_formation",
-    "hidden_rule": {
-        "type": "category_by_core_features",
-        "description": "Nodes share core features",
-        "verification_pattern": ["core features", "category"],
-    },
-    "scoring_weights": {"correctness": 0.5, "efficiency": 0.2, "evidence_quality": 0.2, "calibration": 0.1},
-    "difficulty_levels": {
-        "1": {"num_nodes": 6, "num_categories": 2, "features_per_node": 3, "core_features_per_category": 2, "feature_pool_size": 20},
-    },
-    "budget": {"base": 20},
-}
+def _make_spec(seed: int = 42, n_nodes: int = 6) -> RuntimeScenarioSpec:
+    nodes = [
+        RuntimeNode(
+            node_id=f"n{i}",
+            label=f"Node {i}",
+            summary_text=f"Summary {i}",
+            inspection_detail=f"Detail {i}",
+            initial_visibility="visible" if i == 0 else "hidden",
+        )
+        for i in range(n_nodes)
+    ]
+    edges = [
+        RuntimeEdge(f"n{i}", f"n{i+1}", "leads_to", traversal_cost=1)
+        for i in range(n_nodes - 1)
+    ]
+    return RuntimeScenarioSpec(
+        scenario_id=f"prop_test_{seed}",
+        cognitive_track="learning",
+        opening_prompt="Find the root cause.",
+        nodes=nodes,
+        edges=edges,
+        entry_node_ids=["n0"],
+        answer_targets={"correct_root_cause": "X"},
+        evidence_targets=[f"n{i}" for i in range(1, min(3, n_nodes))],
+        optimal_path=["n0", "n1", "n2"],
+        optimal_steps=2,
+        runtime_config=RuntimeConfig(action_budget=20),
+        scoring_weights={"correctness": 0.5, "path_efficiency": 0.3, "evidence_coverage": 0.2},
+        track_metadata={
+            "scoring_config": {
+                "max_steps": 20,
+                "weights": {"correctness": 0.5, "path_efficiency": 0.3, "evidence_coverage": 0.2},
+                "correctness_tiers": {"full_1.0": "X"},
+            },
+            "behavioral_signatures": {},
+            "anti_shortcutting_audit": {},
+            "graph_metadata": {"entry_nodes": ["n0"]},
+        },
+    )
 
 
-def _make_env(seed: int = 42) -> ConceptFormationEnv:
-    return ConceptFormationEnv(scenario_config=_SCENARIO, difficulty=1, seed=seed)
+def _make_env(seed: int = 42) -> GraphScenarioEnvironment:
+    return GraphScenarioEnvironment(_make_spec(seed))
 
 
-def _get_valid_neighbor(env: ConceptFormationEnv, state) -> str | None:
-    """Return a neighbor of the current node that is not UNEXPLORED, or None."""
+def _get_valid_neighbor(env: GraphScenarioEnvironment, state) -> str | None:
+    """Return a neighbor of the current node, or None."""
     neighbors = env.graph.get_neighbors(state.current_node)
     return neighbors[0] if neighbors else None
 
@@ -223,18 +253,16 @@ def test_property_10_inspect_populates_evidence_nodes(seed):
     env = _make_env(seed)
     state = env.reset()
 
-    # The start node is EXPANDED — inspect it directly
-    start = state.current_node
-    assert start in env._evidence_relevant, (
-        "Start node should be evidence-relevant in ConceptFormationEnv"
-    )
+    # n1 is in evidence_targets; explore to it first so it's visible
+    state = env.execute_action(state, ExploreAction(action_type="explore", node_id="n1"))
+    assert "n1" in env.spec.evidence_targets, "n1 must be in evidence_targets"
 
     before_evidence = list(state.evidence_nodes)
-    state = env.execute_action(state, InspectAction(action_type="inspect", node_id=start))
+    state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n1"))
 
-    # start node must now be in evidence_nodes
-    assert start in state.evidence_nodes, (
-        f"seed={seed}: inspecting evidence-relevant node '{start}' "
+    # n1 must now be in evidence_nodes
+    assert "n1" in state.evidence_nodes, (
+        f"seed={seed}: inspecting evidence-relevant node 'n1' "
         f"did not add it to evidence_nodes. evidence_nodes={state.evidence_nodes}"
     )
 
@@ -255,14 +283,16 @@ def test_property_10_inspect_idempotent_for_evidence(seed):
     """
     env = _make_env(seed)
     state = env.reset()
-    start = state.current_node
+
+    # Explore to n1 (evidence target) then inspect twice
+    state = env.execute_action(state, ExploreAction(action_type="explore", node_id="n1"))
 
     # First inspect
-    state = env.execute_action(state, InspectAction(action_type="inspect", node_id=start))
+    state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n1"))
     count_after_first = len(state.evidence_nodes)
 
     # Second inspect of same node
-    state = env.execute_action(state, InspectAction(action_type="inspect", node_id=start))
+    state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n1"))
     count_after_second = len(state.evidence_nodes)
 
     assert count_after_first == count_after_second, (

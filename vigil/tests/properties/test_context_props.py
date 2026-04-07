@@ -6,7 +6,7 @@ Properties tested:
   P17: Hard 20-turn cap
   P18: Observation token budget
 
-Requirements: 17.7, 17.8, 20.1, 20.4, 20.5
+Requirements: 15, 17.7, 17.8, 20.1, 20.4, 20.5
 """
 
 import sys
@@ -17,28 +17,56 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from vigil.environments.concept_formation import ConceptFormationEnv
-from vigil.scenarios.loader import ScenarioLoader
-from vigil.tasks.track1_learning import _run_episode
+from vigil.environments.base import EnvironmentState, EventType, TraversalEvent
+from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+from vigil.scenarios.runtime_spec import (
+    RuntimeConfig,
+    RuntimeEdge,
+    RuntimeNode,
+    RuntimeScenarioSpec,
+)
+from vigil.tasks.vigil_benchmark import _run_episode
 
-_LOADER = ScenarioLoader()
 
-_SCENARIO = {
-    "scenario_id": "prop_test",
-    "cognitive_track": "learning",
-    "sub_ability": "concept_formation",
-    "hidden_rule": {
-        "type": "category_by_core_features",
-        "description": "Nodes share core features",
-        "verification_pattern": ["core features", "category"],
-    },
-    "scoring_weights": {"correctness": 0.5, "efficiency": 0.2, "evidence_quality": 0.2, "calibration": 0.1},
-    "difficulty_levels": {
-        "1": {"num_nodes": 6, "num_categories": 2, "features_per_node": 3, "core_features_per_category": 2, "feature_pool_size": 20},
-    },
-    "budget": {"base": 20},
-    "optimal_steps": 6,
-}
+def _make_spec(budget: int = 20) -> RuntimeScenarioSpec:
+    nodes = [
+        RuntimeNode(
+            node_id=f"n{i}",
+            label=f"Node {i}",
+            summary_text=f"Summary {i}",
+            inspection_detail=f"Detail {i}",
+            initial_visibility="visible" if i == 0 else "hidden",
+        )
+        for i in range(6)
+    ]
+    edges = [
+        RuntimeEdge(f"n{i}", f"n{i+1}", "leads_to", traversal_cost=1)
+        for i in range(5)
+    ]
+    return RuntimeScenarioSpec(
+        scenario_id="prop_test",
+        cognitive_track="learning",
+        opening_prompt="Find the root cause.",
+        nodes=nodes,
+        edges=edges,
+        entry_node_ids=["n0"],
+        answer_targets={"correct_root_cause": "X"},
+        evidence_targets=["n1", "n2"],
+        optimal_path=["n0", "n1", "n2"],
+        optimal_steps=2,
+        runtime_config=RuntimeConfig(action_budget=budget),
+        scoring_weights={"correctness": 0.5, "path_efficiency": 0.3, "evidence_coverage": 0.2},
+        track_metadata={
+            "scoring_config": {
+                "max_steps": budget,
+                "weights": {"correctness": 0.5, "path_efficiency": 0.3, "evidence_coverage": 0.2},
+                "correctness_tiers": {"full_1.0": "X"},
+            },
+            "behavioral_signatures": {},
+            "anti_shortcutting_audit": {},
+            "graph_metadata": {"entry_nodes": ["n0"]},
+        },
+    )
 
 
 class NeverSubmitLLM:
@@ -74,15 +102,16 @@ def test_property_16_no_submit_returns_zero(seed):
     Feature: vigil-benchmark, Property 16: Budget exhaustion returns 0.0
 
     When the episode ends without a submit_answer call (either budget
-    exhausted or 20-turn cap hit), _run_episode returns 0.0.
+    exhausted or 20-turn cap hit), _run_episode returns vis=0.0.
 
-    Validates: Requirements 17.7
+    Validates: Requirements 15
     """
-    env = ConceptFormationEnv(scenario_config=_SCENARIO, difficulty=1, seed=seed)
+    spec = _make_spec(budget=20)
+    env = GraphScenarioEnvironment(spec)
     llm = NeverSubmitLLM()
-    result = _run_episode(llm, env)
-    assert result == 0.0, (
-        f"seed={seed}: expected 0.0 when no submit, got {result}"
+    result = _run_episode(llm, env, spec, seed=seed)
+    assert result["vis"] == 0.0, (
+        f"seed={seed}: expected vis=0.0 when no submit, got {result['vis']}"
     )
 
 
@@ -100,11 +129,12 @@ def test_property_17_hard_20_turn_cap(seed):
     The game loop terminates after at most 20 iterations of llm.prompt,
     regardless of remaining budget.
 
-    Validates: Requirements 17.8
+    Validates: Requirements 15
     """
-    env = ConceptFormationEnv(scenario_config=_SCENARIO, difficulty=1, seed=seed)
+    spec = _make_spec(budget=200)  # large budget so only turn cap fires
+    env = GraphScenarioEnvironment(spec)
     llm = NeverSubmitLLM()
-    _run_episode(llm, env)
+    _run_episode(llm, env, spec, seed=seed)
     assert llm.call_count <= 20, (
         f"seed={seed}: llm.prompt called {llm.call_count} times, expected ≤ 20"
     )
@@ -129,9 +159,8 @@ def test_property_18_observation_token_budget(seed):
 
     Validates: Requirements 20.1, 20.5
     """
-    from vigil.environments.base import EnvironmentState, EventType, TraversalEvent
-
-    env = ConceptFormationEnv(scenario_config=_SCENARIO, difficulty=1, seed=seed)
+    spec = _make_spec(budget=20)
+    env = GraphScenarioEnvironment(spec)
     state = env.reset()
 
     # Test render with short history
@@ -146,7 +175,7 @@ def test_property_18_observation_token_budget(seed):
         state.action_history.append(TraversalEvent.make(
             event_type=EventType.EXPLORE,
             observation="test",
-            node_id=f"n{i}",
+            node_id=f"n{i % 6}",
         ))
 
     obs_long = env.render(state)

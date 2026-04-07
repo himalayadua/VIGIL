@@ -27,9 +27,12 @@ from typing import Any, Dict, List, Optional
 
 from vigil.actions.schemas import (
     ActionParseError,
+    AskForHelpAction,
     ExploreAction,
     GetContextAction,
     InspectAction,
+    MakeCommitmentAction,
+    SendMessageAction,
     SubmitAnswerAction,
 )
 from vigil.environments.base import (
@@ -150,6 +153,12 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             return self._execute_get_context(state, action)
         elif isinstance(action, SubmitAnswerAction):
             return self._execute_submit(state, action)
+        elif isinstance(action, AskForHelpAction):
+            return self._execute_ask_for_help(state, action)
+        elif isinstance(action, SendMessageAction):
+            return self._execute_send_message(state, action)
+        elif isinstance(action, MakeCommitmentAction):
+            return self._execute_make_commitment(state, action)
         else:
             # Unknown action type — treat as error
             state.action_history.append(TraversalEvent.make(
@@ -375,8 +384,8 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             if self.graph.get_visibility(nb) == NodeVisibility.UNEXPLORED:
                 self.graph.set_visibility(nb, NodeVisibility.DISCOVERED)
                 visibility_changes[nb] = "discovered"
-                if nb not in state.discovered_nodes if hasattr(state, "discovered_nodes") else True:
-                    pass
+                if hasattr(state, "discovered_nodes") and nb not in state.discovered_nodes:
+                    state.discovered_nodes.append(nb)
 
         # Build observation
         reveal_text = edge.metadata.get("reveal_text", "") if edge else ""
@@ -517,6 +526,117 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             params=action.model_dump(),
             episode_done=True,
         ))
+        return state
+
+    def _execute_ask_for_help(
+        self, state: EnvironmentState, action: AskForHelpAction
+    ) -> EnvironmentState:
+        """Request help. Deducts ask_for_help cost, records in state.help_requests."""
+        cost = self.spec.runtime_config.action_costs.get("ask_for_help", 1)
+        if state.budget_remaining < cost:
+            state.action_history.append(TraversalEvent.make(
+                event_type=EventType.ERROR,
+                observation=f"[ERROR] Insufficient budget ({state.budget_remaining}) for ask_for_help (cost {cost}).",
+                params=action.model_dump(),
+            ))
+            return state
+
+        state.budget_remaining -= cost
+        observation = f"[Help requested: {action.help_type}] {action.question}"
+
+        if hasattr(state, "help_requests"):
+            state.help_requests.append({
+                "question": action.question,
+                "help_type": action.help_type,
+                "budget_remaining": state.budget_remaining,
+            })
+
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.HELP_REQUESTED,
+            observation=observation,
+            params=action.model_dump(),
+            budget_delta=-cost,
+        ))
+
+        if state.budget_remaining <= 0:
+            state.episode_done = True
+        return state
+
+    def _execute_send_message(
+        self, state: EnvironmentState, action: SendMessageAction
+    ) -> EnvironmentState:
+        """Send a message to a social agent. Deducts communication cost."""
+        cost = self.spec.runtime_config.action_costs.get("communication", 1)
+        if state.budget_remaining < cost:
+            state.action_history.append(TraversalEvent.make(
+                event_type=EventType.ERROR,
+                observation=f"[ERROR] Insufficient budget ({state.budget_remaining}) for send_message (cost {cost}).",
+                params=action.model_dump(),
+            ))
+            return state
+
+        state.budget_remaining -= cost
+        observation = (
+            f"[Message sent to {action.target_agent_id}] "
+            f"Type: {action.message_type} | {action.content[:100]}"
+        )
+
+        if hasattr(state, "messages_sent"):
+            state.messages_sent.append({
+                "target_agent_id": action.target_agent_id,
+                "content": action.content,
+                "message_type": action.message_type,
+                "target": action.target_agent_id,
+            })
+
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.MESSAGE_SENT,
+            observation=observation,
+            params=action.model_dump(),
+            budget_delta=-cost,
+        ))
+
+        if state.budget_remaining <= 0:
+            state.episode_done = True
+        return state
+
+    def _execute_make_commitment(
+        self, state: EnvironmentState, action: MakeCommitmentAction
+    ) -> EnvironmentState:
+        """Make a commitment to a social agent. Deducts communication cost."""
+        cost = self.spec.runtime_config.action_costs.get("communication", 1)
+        if state.budget_remaining < cost:
+            state.action_history.append(TraversalEvent.make(
+                event_type=EventType.ERROR,
+                observation=f"[ERROR] Insufficient budget ({state.budget_remaining}) for make_commitment (cost {cost}).",
+                params=action.model_dump(),
+            ))
+            return state
+
+        state.budget_remaining -= cost
+        observation = (
+            f"[Commitment to {action.target_agent_id}] "
+            f"Type: {action.commitment_type} | {action.commitment_text[:100]}"
+        )
+
+        if hasattr(state, "commitments"):
+            inspected_count = len(getattr(state, "inspected_nodes", state.visited_nodes))
+            state.commitments.append({
+                "target_agent_id": action.target_agent_id,
+                "commitment_text": action.commitment_text,
+                "commitment_type": action.commitment_type,
+                "inspected_count": inspected_count,
+            })
+
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.COMMITMENT_MADE,
+            observation=observation,
+            params=action.model_dump(),
+            budget_delta=-cost,
+        ))
+
+        if state.budget_remaining <= 0:
+            state.episode_done = True
         return state
 
     # ------------------------------------------------------------------

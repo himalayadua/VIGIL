@@ -330,42 +330,34 @@ class TestScenarioLoaderBackwardCompat:
 
     def test_six_bespoke_envs_still_instantiate(self):
         """
-        All six bespoke Track 1 environment classes must still instantiate
-        without errors using the old ScenarioLoader interface.
+        ScenarioLoader still loads all six Track 1 scenario configs
+        (bespoke env classes removed; catalog now handles compilation).
         """
-        from vigil.environments.concept_formation import ConceptFormationEnv
-        from vigil.environments.associative import AssociativeLearningEnv
-        from vigil.environments.reinforcement import ReinforcementLearningEnv
-        from vigil.environments.observational import ObservationalLearningEnv
-        from vigil.environments.procedural import ProceduralLearningEnv
-        from vigil.environments.language import LanguageLearningEnv
-
         loader = ScenarioLoader()
-        env_map = {
-            "concept_formation": ConceptFormationEnv,
-            "associative": AssociativeLearningEnv,
-            "reinforcement": ReinforcementLearningEnv,
-            "observational": ObservationalLearningEnv,
-            "procedural": ProceduralLearningEnv,
-            "language": LanguageLearningEnv,
-        }
-        for name, env_class in env_map.items():
+        for name in ["concept_formation", "associative", "reinforcement",
+                     "observational", "procedural", "language"]:
             config = loader.load(name)
-            env = env_class(scenario_config=config, difficulty=1, seed=42)
-            assert env is not None
+            assert config is not None
 
     def test_six_bespoke_envs_can_reset(self):
-        """All six bespoke environments must be able to reset() without errors."""
-        from vigil.environments.concept_formation import ConceptFormationEnv
-        from vigil.environments.associative import AssociativeLearningEnv
+        """ScenarioLoader loads Track 1 configs; GraphScenarioEnvironment can reset them."""
+        from vigil.scenarios.catalog import ScenarioCatalog
+        from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+        import os
 
-        loader = ScenarioLoader()
-        for name, env_class in [
-            ("concept_formation", ConceptFormationEnv),
-            ("associative", AssociativeLearningEnv),
-        ]:
-            config = loader.load(name)
-            env = env_class(scenario_config=config, difficulty=1, seed=42)
-            state = env.reset()
-            assert state is not None
-            assert state.current_node is not None
+        packs_dir = os.path.join(os.path.dirname(__file__), "..", "scenarios", "packs")
+        if not os.path.isdir(packs_dir):
+            import pytest
+            pytest.skip("Packs directory not found")
+
+        catalog = ScenarioCatalog(packs_dir=packs_dir)
+        ids = catalog.get_scenario_ids(track="learning")
+        if not ids:
+            import pytest
+            pytest.skip("No learning scenarios in packs")
+
+        spec = catalog.load(ids[0])
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        assert state is not None
+        assert state.current_node is not None

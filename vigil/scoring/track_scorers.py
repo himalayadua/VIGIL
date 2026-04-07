@@ -62,6 +62,7 @@ class TrackScorer(ABC):
             "metacognition": MetacognitionScorer,
             "attention": AttentionScorer,
             "executive_functions": ExecutiveScorer,
+            "social_cognition": SocialScorer,
         }
         scorer_cls = dispatch.get(cognitive_track, _StubScorer)
         return scorer_cls(spec)
@@ -1210,6 +1211,310 @@ class ExecutiveScorer(TrackScorer):
             "inhibition_failures": inhibition_score,
             "pivot_quality": pivot_quality,
             "process_scoring_focus_alignment": process_alignment,
+        }
+        total_w = sum(weights.get(k, 0.0) for k in dim_values)
+        if total_w <= 0:
+            return sum(dim_values.values()) / len(dim_values)
+        return sum(dim_values[k] * weights.get(k, 0.0) for k in dim_values) / total_w
+
+
+
+# ---------------------------------------------------------------------------
+# SocialScorer — Track 5 (social_cognition) full implementation
+# ---------------------------------------------------------------------------
+
+class SocialScorer(TrackScorer):
+    """
+    Track 5 (social_cognition) scorer — Kaggle Track 5.
+
+    Works with the real authored schema from
+    vigil_track5_social_scenarios_from_skeletons_v1.json.
+
+    The real scenarios express social cognition through causal graph structure:
+    agent_groups, evidence nodes, outcome nodes, and causal edges. The scorer
+    measures how well the model navigates this social causal graph.
+
+    Dimensions:
+      correctness                     — answer vs. hidden_mechanism (causal explanation)
+      evidence_coverage               — fraction of evidence nodes inspected
+      causal_chain_coverage           — fraction of causal chain steps touched
+      red_herring_avoidance           — fraction of actions NOT on red-herring nodes
+      disconfirmation_use             — whether disconfirmation_moment was reached
+
+    Behavioral signatures:
+      premature_conclusion, red_herring_fixation, disconfirmation_blindness,
+      shallow_exploration, social_collapse_after_contradiction
+
+    Requirements: 13
+    """
+
+    def score(
+        self,
+        state: Any,
+        final_answer: str,
+        justification: str,
+        spec: Any,
+    ) -> Dict[str, Any]:
+        """Compute SocialScorer ScoreCard."""
+        correctness = self._compute_correctness(final_answer, spec)
+        evidence_coverage = self._compute_evidence_coverage(state, spec)
+        causal_chain_coverage = self._compute_causal_chain_coverage(state, spec)
+        red_herring_avoidance = self._compute_red_herring_avoidance(state, spec)
+        disconfirmation_use = self._compute_disconfirmation_use(state, spec)
+        behavioral_signatures = self._compute_behavioral_signatures(
+            state, spec, correctness, red_herring_avoidance
+        )
+
+        weights = spec.scoring_weights
+        process_score = self._compute_process_score(
+            correctness=correctness,
+            evidence_coverage=evidence_coverage,
+            causal_chain_coverage=causal_chain_coverage,
+            red_herring_avoidance=red_herring_avoidance,
+            disconfirmation_use=disconfirmation_use,
+            weights=weights,
+        )
+
+        return {
+            "outcome_score": round(correctness, 4),
+            "process_score": round(process_score, 4),
+            "track_id": "social_cognition",
+            "correctness": round(correctness, 4),
+            "evidence_coverage": round(evidence_coverage, 4),
+            "causal_chain_coverage": round(causal_chain_coverage, 4),
+            "red_herring_avoidance": round(red_herring_avoidance, 4),
+            "disconfirmation_use": round(disconfirmation_use, 4),
+            "behavioral_signatures": behavioral_signatures,
+            "contamination_warning": False,
+        }
+
+    @staticmethod
+    def _compute_correctness(final_answer: str, spec: Any) -> float:
+        """
+        Correctness: answer vs. hidden_mechanism (string similarity).
+
+        Checks if the answer contains key phrases from the authored
+        hidden_mechanism explanation.
+        """
+        import re
+        mechanism = spec.answer_targets.get("hidden_mechanism", "")
+        if not mechanism or not final_answer:
+            return 0.0
+
+        answer_lower = final_answer.lower()
+        mechanism_lower = mechanism.lower()
+
+        # Extract significant words from the mechanism
+        words = [w for w in re.findall(r"\b[a-z]{5,}\b", mechanism_lower)
+                 if w not in {"which", "their", "these", "those", "about",
+                               "after", "before", "while", "where", "there",
+                               "being", "having", "would", "could", "should",
+                               "rather", "because", "through", "between"}]
+        if not words:
+            return 0.0
+
+        matches = sum(1 for w in words if w in answer_lower)
+        return min(1.0, matches / max(len(words) * 0.25, 1))
+
+    @staticmethod
+    def _compute_evidence_coverage(state: Any, spec: Any) -> float:
+        """
+        evidence_coverage: fraction of evidence-kind nodes inspected.
+
+        Evidence nodes are those with node_type == "evidence" in the spec.
+        """
+        evidence_nodes = [n.node_id for n in spec.nodes if n.node_type == "evidence"]
+        if not evidence_nodes:
+            return 1.0
+        inspected = set(getattr(state, "inspected_nodes", state.visited_nodes))
+        return len(set(evidence_nodes) & inspected) / len(evidence_nodes)
+
+    @staticmethod
+    def _compute_causal_chain_coverage(state: Any, spec: Any) -> float:
+        """
+        causal_chain_coverage: fraction of causal chain steps whose
+        corresponding nodes were visited.
+
+        The causal_chain is a list of text descriptions. We check if any
+        visited node's label appears in each chain step.
+        """
+        causal_chain = spec.track_metadata.get("causal_chain", [])
+        if not causal_chain:
+            return 0.5
+
+        visited_labels = {
+            n.label.lower() for n in spec.nodes
+            if n.node_id in set(state.visited_nodes)
+        }
+
+        covered = 0
+        for step in causal_chain:
+            step_lower = step.lower()
+            # Check if any visited node label appears in this causal step
+            if any(label in step_lower or step_lower in label
+                   for label in visited_labels if len(label) > 4):
+                covered += 1
+
+        return covered / len(causal_chain)
+
+    @staticmethod
+    def _compute_red_herring_avoidance(state: Any, spec: Any) -> float:
+        """
+        red_herring_avoidance: fraction of actions NOT on red-herring nodes.
+
+        Red herrings are identified by matching node labels against the
+        authored red_herrings list using word-level overlap.
+        """
+        from vigil.environments.base import EventType
+        import re
+
+        red_herrings = spec.track_metadata.get("red_herrings", [])
+        if not red_herrings:
+            return 1.0
+
+        # Build set of node_ids that match red herring descriptions via word overlap
+        rh_words: set = set()
+        for rh in red_herrings:
+            rh_words |= set(re.findall(r"\b[a-z]{4,}\b", rh.lower()))
+
+        rh_node_ids: set = set()
+        for node in spec.nodes:
+            node_words = set(re.findall(r"\b[a-z]{4,}\b", node.label.lower()))
+            if node_words & rh_words:
+                rh_node_ids.add(node.node_id)
+
+        history = state.action_history
+        action_events = [
+            e for e in history
+            if hasattr(e, "event_type") and e.event_type in (
+                EventType.EXPLORE, EventType.INSPECT
+            )
+        ]
+        if not action_events:
+            return 1.0
+
+        rh_hits = sum(
+            1 for e in action_events
+            if e.node_id and e.node_id in rh_node_ids
+        )
+        return 1.0 - (rh_hits / len(action_events))
+
+    @staticmethod
+    def _compute_disconfirmation_use(state: Any, spec: Any) -> float:
+        """
+        disconfirmation_use: 1.0 if the model visited a node whose label
+        shares words with the disconfirmation_moment text, else 0.0.
+
+        Returns 0.5 (neutral) when no disconfirmation moment is authored
+        or no matching node exists.
+        """
+        import re
+        disconf = spec.track_metadata.get("disconfirmation_moment", "")
+        if not disconf:
+            return 0.5
+
+        disconf_words = set(re.findall(r"\b[a-z]{4,}\b", disconf.lower()))
+        if not disconf_words:
+            return 0.5
+
+        # Find nodes whose labels share words with the disconfirmation moment
+        disconf_nodes = set()
+        for n in spec.nodes:
+            node_words = set(re.findall(r"\b[a-z]{4,}\b", n.label.lower()))
+            if node_words & disconf_words:
+                disconf_nodes.add(n.node_id)
+
+        if not disconf_nodes:
+            return 0.5
+
+        visited = set(state.visited_nodes)
+        return 1.0 if disconf_nodes & visited else 0.0
+
+    @staticmethod
+    def _compute_behavioral_signatures(
+        state: Any,
+        spec: Any,
+        correctness: float,
+        red_herring_avoidance: float,
+    ) -> Dict[str, Any]:
+        """Compute social behavioral signatures from trace."""
+        from vigil.environments.base import EventType
+
+        sigs: Dict[str, Any] = {}
+        history = state.action_history
+
+        # Premature conclusion: submitted with < 30% of nodes visited
+        total_nodes = max(len(spec.nodes), 1)
+        visited_count = len(set(state.visited_nodes))
+        if visited_count / total_nodes < 0.3 and any(
+            hasattr(e, "event_type") and e.event_type == EventType.SUBMIT_ANSWER
+            for e in history
+        ):
+            sigs["premature_conclusion"] = True
+
+        # Red herring fixation: > 40% of actions on red-herring nodes
+        if red_herring_avoidance < 0.6:
+            sigs["red_herring_fixation"] = True
+        # Disconfirmation blindness: never visited disconfirmation node
+        import re as _re
+        disconf = spec.track_metadata.get("disconfirmation_moment", "")
+        if disconf:
+            disconf_words = set(_re.findall(r"\b[a-z]{4,}\b", disconf.lower()))
+            disconf_nodes = {
+                n.node_id for n in spec.nodes
+                if set(_re.findall(r"\b[a-z]{4,}\b", n.label.lower())) & disconf_words
+            }
+            if disconf_nodes and not (disconf_nodes & set(state.visited_nodes)):
+                sigs["disconfirmation_blindness"] = True
+
+        # Shallow exploration: submitted after < 3 explore actions
+        explore_count = sum(
+            1 for e in history
+            if hasattr(e, "event_type") and e.event_type == EventType.EXPLORE
+        )
+        if explore_count < 3 and any(
+            hasattr(e, "event_type") and e.event_type == EventType.SUBMIT_ANSWER
+            for e in history
+        ):
+            sigs["shallow_exploration"] = True
+
+        # Social collapse after contradiction
+        contradiction_indices = [
+            i for i, e in enumerate(history)
+            if hasattr(e, "event_type") and e.event_type == EventType.CONTRADICTION
+        ]
+        if contradiction_indices:
+            last_contradiction = contradiction_indices[-1]
+            post_contradiction = history[last_contradiction + 1:]
+            social_actions = [
+                e for e in post_contradiction
+                if hasattr(e, "event_type") and e.event_type in (
+                    EventType.MESSAGE_SENT, EventType.COMMITMENT_MADE,
+                    EventType.EXPLORE, EventType.INSPECT,
+                )
+            ]
+            if not social_actions and len(post_contradiction) > 3:
+                sigs["social_collapse_after_contradiction"] = True
+
+        return sigs
+
+    @staticmethod
+    def _compute_process_score(
+        correctness: float,
+        evidence_coverage: float,
+        causal_chain_coverage: float,
+        red_herring_avoidance: float,
+        disconfirmation_use: float,
+        weights: Dict[str, float],
+    ) -> float:
+        """Weighted combination of social dimensions."""
+        dim_values = {
+            "correctness": correctness,
+            "partner_model_accuracy": evidence_coverage,       # maps to evidence_coverage
+            "social_repair_quality": causal_chain_coverage,    # maps to causal_chain_coverage
+            "trust_calibration": red_herring_avoidance,        # maps to red_herring_avoidance
+            "communication_appropriateness": disconfirmation_use,
+            "information_asymmetry_exploitation": evidence_coverage,
         }
         total_w = sum(weights.get(k, 0.0) for k in dim_values)
         if total_w <= 0:

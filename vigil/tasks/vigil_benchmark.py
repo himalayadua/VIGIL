@@ -266,10 +266,19 @@ def _vigil_benchmark_impl(
                 all_results.append(vis_result)
             except (AttributeError, KeyError):
                 # Fallback: reconstruct minimal result from float
+                sid = run.params.get("scenario_id", "")
+                # Look up track_id from catalog to avoid "unknown" bucket
+                track_id = "unknown"
+                if sid:
+                    try:
+                        raw = catalog._load_raw(sid)
+                        track_id = raw.get("cognitive_track", "unknown")
+                    except Exception:
+                        pass
                 all_results.append({
                     "vis": float(run.result or 0.0),
-                    "scenario_id": run.params.get("scenario_id", ""),
-                    "track_id": "unknown",
+                    "scenario_id": sid,
+                    "track_id": track_id,
                     "behavioral_signatures": {},
                     "contamination_warning": False,
                 })

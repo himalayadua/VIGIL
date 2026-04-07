@@ -1,258 +1,195 @@
-# Vigil: Stateful Cognitive Graph Benchmark Framework
+# Vigil: Multi-Track Cognitive Graph Benchmark
 
-**Track 1: Learning** - Google DeepMind × Kaggle "Measuring AGI" Hackathon
+**Tracks 1–5: Learning, Metacognition, Attention, Executive Function, Social Cognition**
+Google DeepMind × Kaggle "Measuring AGI" Hackathon
 
 ## Overview
 
-Vigil is a benchmark framework that creates **stateful cognitive graph environments** where AI models must explore, learn, and demonstrate cognitive abilities through their actions - not just answer questions.
+Vigil is a benchmark framework that places AI models in **stateful cognitive graph environments** where they must explore, reason, and demonstrate cognitive abilities through their actions — not just answer questions.
 
 ### Core Innovation
 
 Instead of static QA benchmarks, Vigil places models in interactive graph environments where they must:
-- Choose entry points
-- Navigate through nodes and edges
-- Make decisions based on discovered information
-- Submit conclusions with evidence
+- Navigate through authored scenario graphs
+- Collect evidence and form hypotheses
+- Submit conclusions with justification
+- Be scored on both outcome and process quality
 
-### Cognitive Abilities Tested (Track 1: Learning)
+### Cognitive Tracks (Kaggle Official)
 
-| Sub-ability | Description | Scenario |
-|-------------|-------------|----------|
-| **Concept Formation** | Abstracting key features to form categories | Nodes share hidden core features |
-| **Associative Learning** | Learning relationships between events | Paired associations |
-| **Reinforcement Learning** | Learning from rewards/punishments | Navigate to rewards, avoid penalties |
-| **Observational Learning** | Learning by watching demonstrations | *(coming soon)* |
-| **Procedural Learning** | Improving through practice | Skill acquisition over rounds |
-| **Language Learning** | Learning new syntax/vocabulary | Novel grammar rules |
+| Track | Cognitive Ability | Status |
+|-------|------------------|--------|
+| 1 | Learning | ✅ Implemented |
+| 2 | Metacognition | ✅ Implemented |
+| 3 | Attention | ✅ Implemented |
+| 4 | Executive Function | ✅ Implemented |
+| 5 | Social Cognition | 🔲 Blocked on scenario authoring |
 
 ## Quick Start
 
-### On Kaggle (Recommended)
+### On Kaggle
 
-1. **Create a new Kaggle notebook** at https://www.kaggle.com/benchmarks/tasks/new
-
-2. **Add the vigil package** by uploading the `vigil/` folder or using:
 ```python
-!pip install vigil  # or copy vigil/ folder
+import kaggle_benchmarks as kbench
+from vigil.tasks.vigil_benchmark import vigil_benchmark
+
+# Run the full multi-track benchmark
+%choose vigil_benchmark
 ```
-
-3. **Run the provided notebook**: `vigil_kaggle_notebook.ipynb`
-
-4. **Submit to leaderboard** - The notebook ends with `%choose concept_formation_learning`
 
 ### Local Testing
 
 ```bash
-# Run local tests
-cd vigil
-python run_kaggle_test.py
+# Run full test suite
+python -m pytest vigil/tests/ -q
 
-# Or run the full test suite
-python test_vigil.py
+# Run a single Track 1 scenario end-to-end
+python -c "
+from vigil.scenarios.catalog import ScenarioCatalog
+from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+catalog = ScenarioCatalog('vigil/scenarios/packs/')
+spec = catalog.load('vigil_eco_01_kethara_succession')
+env = GraphScenarioEnvironment(spec)
+state = env.reset()
+print('Reset OK, budget:', state.budget_remaining)
+"
 ```
-
-## Kaggle Integration
-
-### Task Definition Pattern
-
-Vigil uses the Kaggle Benchmarks SDK pattern:
-
-```python
-import kaggle_benchmarks as kbench
-from vigil.environments.concept_formation import ConceptFormationEnv
-
-@kbench.task(name="concept_formation_learning")
-def concept_formation_task(llm, difficulty: int = 2, seed: int = 42) -> float:
-    """
-    Track 1 Learning: Concept Formation Test
-
-    Returns:
-        Final score (0.0 - 1.0)
-    """
-    # Load environment
-    env = ConceptFormationEnv(difficulty=difficulty, seed=seed)
-    state = env.reset()
-
-    # Exploration loop
-    for turn in range(15):
-        if state.budget_remaining <= 0:
-            break
-
-        # Get action from LLM
-        response = llm.prompt(f"Your action: {env.get_available_actions(state)}")
-        action = parse_action(response)
-
-        if action.action_type == ActionType.SUBMIT:
-            final_answer = llm.prompt("What is the rule?")
-            scores = env.score_exploration(state, final_answer)
-            return scores["final_score"]
-
-    return 0.0  # Timeout
-```
-
-### Leaderboard Submission
-
-The final cell of the notebook uses the `%choose` magic:
-
-```python
-%choose concept_formation_learning
-```
-
-This designates which task is submitted to the Kaggle leaderboard.
 
 ## Architecture
 
 ### Directory Structure
 
-````
+```
 vigil/
-├── environments/         # Cognitive environment implementations
-│   ├── base.py          # CognitiveEnvironment ABC
-│   ├── concept_formation.py
-│   ├── associative.py
-│   └── reinforcement.py
-├── graphs/              # Graph data structures
-│   └── core.py          # CognitiveGraph, GraphNode, GraphEdge
-├── scenarios/           # Scenario definitions (JSON-based)
-│   ├── loader.py        # JSON scenario loader
-│   └── schemas/         # JSON scenario files (6 scenarios)
-├── actions/             # Action handling
-│   ├── parser.py        # Parse model actions
-│   └── schemas.py       # GraphAction dataclass
-├── scoring/             # Scoring engine
-│   ├── metrics.py       # Multi-metric scoring functions
-│   └── profile.py       # CognitiveProfile dataclass
-├── tasks/               # Kaggle task definitions
-│   └── track1_learning.py
-├── notebooks/           # Jupyter notebooks
-│   ├── vigil_kaggle_notebook.ipynb  # Main Kaggle notebook
-│   └── vigil_track1_learning.ipynb  # Original reference
-└── run_kaggle_test.py   # Local test runner
-````
+├── environments/
+│   ├── base.py                  # CognitiveEnvironment ABC, EnvironmentState, EventType
+│   └── graph_scenario_env.py    # GraphScenarioEnvironment (shared runtime for all tracks)
+├── graphs/
+│   ├── core.py                  # CognitiveGraph, from_spec()
+│   └── generators.py            # ProceduralGenerator (transfer perturbations)
+├── scenarios/
+│   ├── runtime_spec.py          # RuntimeScenarioSpec, RuntimeConfig, EvaluationConditions
+│   ├── catalog.py               # ScenarioCatalog — authored pack ingestion and dispatch
+│   ├── loader.py                # ScenarioLoader (backward-compat shim → catalog)
+│   ├── adapters/
+│   │   ├── learning_adapter.py      # Track 1
+│   │   ├── metacognition_adapter.py # Track 2
+│   │   ├── attention_adapter.py     # Track 3
+│   │   └── executive_adapter.py     # Track 4
+│   └── packs/                   # Authored JSON scenario packs
+├── actions/
+│   ├── parser.py                # Parse model actions from JSON or string
+│   └── schemas.py               # VigilAction union, TrackActionSchema
+├── scoring/
+│   ├── vis.py                   # VISScorer (0.3 × outcome + 0.7 × process)
+│   ├── track_scorers.py         # TrackScorer ABC + per-track implementations
+│   ├── faculty_profiler.py      # FacultyProfiler — two-stage aggregation
+│   ├── metrics.py               # Shared scoring utilities
+│   └── profile.py               # HumanBaseline, CognitiveProfile
+├── tasks/
+│   ├── vigil_benchmark.py       # vigil_episode + vigil_benchmark (leaderboard)
+│   └── track1_learning.py       # vigil_learning_benchmark (Track 1 wrapper)
+├── baselines/
+│   └── collector.py             # Human baseline collection
+└── tests/                       # Full test suite (764+ tests)
+```
 
 ### Key Components
 
-#### 1. CognitiveEnvironment (Base Class)
-All environments implement this interface:
-- `reset()` - Initialize episode
-- `get_available_actions()` - Get action menu
-- `execute_action()` - Run action
-- `score_exploration()` - Multi-metric scoring
+#### GraphScenarioEnvironment
+Shared runtime for all five tracks. Accepts a `RuntimeScenarioSpec` and handles:
+- Graph traversal with per-edge costs
+- Budget tracking (separate from `optimal_steps`)
+- System event firing (CONTRADICTION, RELEVANCE_SHIFT, etc.)
+- `evaluation_conditions` enforcement (tool policy, allowed tools)
+- `score_episode()` → `ScoreCard` (no `vis` key)
 
-#### 2. Scenario Loader
-Loads configurations from JSON files:
+#### ScenarioCatalog
+Ingests authored JSON packs, dispatches by `cognitive_track` string, validates per-track schemas, compiles to `RuntimeScenarioSpec`, and caches results.
+
 ```python
-from vigil.scenarios.loader import ScenarioLoader
-loader = ScenarioLoader()
-config = loader.load("concept_formation")
+from vigil.scenarios.catalog import ScenarioCatalog
+
+catalog = ScenarioCatalog("vigil/scenarios/packs/")
+spec = catalog.load("vigil_eco_01_kethara_succession")
+spec_seed2 = catalog.load("vigil_eco_01_kethara_succession", seed=2)
+ids = catalog.get_scenario_ids(track="learning")
 ```
 
-#### 3. Scoring Engine
-Multi-metric cognitive profiles:
-- **Correctness**: Task success (50%)
-- **Efficiency**: Path optimization (20%)
-- **Evidence Quality**: Evidence collection (20%)
-- **Calibration**: Confidence-accuracy match (10%)
-- **Recovery**: Adaptation after errors (variable)
+#### VISScorer
+Computes the final VIS score: `0.3 × outcome_score + 0.7 × process_score`.
+Accepts an optional `scorecard` from `TrackScorer` for per-track dimension scores.
 
-## Scenario Format
+#### FacultyProfiler
+Two-stage aggregation:
+1. `aggregate_seeds()` → `ScenarioAggregate` per scenario (cross-seed variance)
+2. `build_profile()` → `FacultyProfile` per track (mean VIS, CI_95, human percentile)
+3. `benchmark_aggregate()` → mean of per-track means (not raw scenario mean)
 
-Scenarios are defined in JSON files in `vigil/scenarios/schemas/`:
+#### TrackActionSchema
+Per-track action subsets passed to `llm.prompt(schema=...)`:
+- Tracks 1, 3, 4: base 4 actions (explore, inspect, get_context, submit_answer)
+- Track 2: base + ask_for_help
+- Track 5: base + send_message + make_commitment
 
+## Scoring
+
+### VIS Formula
+```
+VIS = 0.3 × outcome_score + 0.7 × process_score
+```
+
+### Two-Step Scoring Pipeline
+```
+env.score_episode() → ScoreCard (track dimensions, no vis key)
+VISScorer.score_episode(scorecard=scorecard) → VISResult (has vis key)
+```
+
+### Benchmark Aggregation
+```
+benchmark_aggregate = mean({track.mean_vis for track in profiles})
+```
+Each faculty contributes equally regardless of scenario count.
+
+## Authored Scenario Format
+
+Scenarios are JSON files in `vigil/scenarios/packs/`. Each track has its own schema:
+
+**Track 1 (Learning):**
 ```json
 {
-  "scenario_id": "concept_formation_v1",
+  "scenario_id": "vigil_eco_01_kethara_succession",
   "cognitive_track": "learning",
-  "sub_ability": "concept_formation",
-  "graph_config": {
-    "num_nodes": 15,
-    "num_categories": 3
+  "blind_framing": "You are investigating...",
+  "hidden_objective": {
+    "correct_root_cause": "...",
+    "minimum_evidence_nodes": ["n3", "n7"]
   },
-  "hidden_rule": {
-    "type": "category_by_core_features",
-    "description": "Nodes in same category share 3+ core features"
-  },
-  "scoring_weights": {
-    "correctness": 0.50,
-    "efficiency": 0.20,
-    "evidence_quality": 0.20,
-    "calibration": 0.10
-  }
+  "nodes": [...],
+  "edges": [...],
+  "optimal_path": {"sequence": ["n0", "n3", "n7"], "length": 2},
+  "scoring_config": {"max_steps": 15, "weights": {...}}
 }
 ```
-
-## Adding New Scenarios
-
-1. Create JSON file in `vigil/scenarios/schemas/`
-2. Implement environment class inheriting from `CognitiveEnvironment`
-3. Add task definition in `vigil/tasks/`
-
-## Running the Benchmark
-
-### Full Dataset Evaluation
-
-```python
-import pandas as pd
-import kaggle_benchmarks as kbench
-
-@kbench.task(name="single_graph_instance")
-def single_instance(llm, difficulty: int, seed: int) -> bool:
-    score = concept_formation_task.run(llm, difficulty=difficulty, seed=seed)
-    return score > 0.5
-
-@kbench.task(name="concept_formation_full_benchmark")
-def full_benchmark(llm, df: pd.DataFrame) -> tuple[float, float]:
-    with kbench.client.enable_cache():
-        runs = single_instance.evaluate(
-            llm=[llm],
-            evaluation_data=df,
-            n_jobs=4,
-            timeout=300
-        )
-
-    eval_df = runs.as_dataframe()
-    return float(eval_df.result.mean()), float(eval_df.result.std())
-```
-
-## Human Baseline Collection
-
-Human baselines are collected separately using a Streamlit app:
-
-```bash
-# Run human baseline collection (separate from Kaggle)
-streamlit run vigil/notebooks/human_baseline_app.py
-```
-
-Human data is used to compute percentiles in the cognitive profile.
-
-## Evaluation Metrics
-
-| Metric | Description | Default Weight |
-|--------|-------------|----------------|
-| Correctness | Binary pass/fail on rule identification | 50% |
-| Efficiency | Optimal path / actual path | 20% |
-| Evidence Quality | Evidence nodes collected | 20% |
-| Calibration | Confidence matches correctness | 10% |
-| Recovery | Adaptation after errors | variable |
 
 ## Testing
 
 ```bash
-# Run full test suite
-cd vigil
-python test_vigil.py
+# Full suite
+python -m pytest vigil/tests/ -q
 
-# Run local Kaggle simulation
-python run_kaggle_test.py
+# Property-based tests only
+python -m pytest vigil/tests/properties/ -q
+
+# Single test file
+python -m pytest vigil/tests/test_catalog.py -v
 ```
 
 ## References
 
-- [DeepMind AGI Cognitive Framework Paper](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/attachments/30952288/2da445e3-d7cf-4788-90dd-94a4df00eafe/measuring-progress-toward-agi-a-cognitive-framework.pdf)
+- [DeepMind AGI Cognitive Framework](https://arxiv.org/abs/2312.02439)
 - [Kaggle Benchmarks SDK](https://github.com/Kaggle/kaggle-benchmarks)
-- [Kaggle Benchmarks Quick Start](https://www.kaggle.com/docs/benchmarks#intro)
 - [Chollet's Measure of Intelligence](https://arxiv.org/abs/1911.01547)
-- [ARC-AGI Benchmark](https://arcprize.org/)
 
 ## License
 
