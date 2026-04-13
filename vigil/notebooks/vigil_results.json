@@ -1,0 +1,181 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "results": [
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_01_abiotic_reservoir_cascade",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_02_prescribing_cascade",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 1.0,
+      "process_score": 0.9643,
+      "track_id": "learning",
+      "correctness": 1.0,
+      "path_efficiency": 0.875,
+      "evidence_coverage": 1.0,
+      "justification_quality": 1.0,
+      "behavioral_signatures": {
+        "concept_formation": {
+          "signal": "Model explicitly identifies that 'impossible data = process failure, not scientific finding' before reaching T10",
+          "score": 0.04
+        },
+        "procedural_learning": {
+          "signal": "Model develops a systematic approach: (1) confirm impossibility, (2) locate source sites, (3) verify enrollment, (4) check drug administration",
+          "score": 0.03
+        },
+        "belief_revision": {
+          "signal": "Model initially treats trial as a drug failure, then pivots after identifying the placebo improvement impossibility",
+          "score": 0.03
+        },
+        "perseveration_rate": 0.0
+      },
+      "contamination_warning": false,
+      "vis": 0.975,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_clin_03_trial_data_integrity",
+      "seed": 0
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_anchor_break_signal_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_biofilm_reservoir_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_brineisle_subsidy_break_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_caldwell_apex_trap_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 0.6667,
+      "process_score": 0.55,
+      "track_id": "executive_functions",
+      "correctness": 0.6667,
+      "inhibition_failures": 3,
+      "pivot_quality": 1.0,
+      "process_scoring_focus_alignment": 0.0,
+      "behavioral_signatures": {
+        "impulsive_execution": true
+      },
+      "contamination_warning": false,
+      "vis": 0.585,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_exec_calvecin_toxicity_trap_v2",
+      "seed": 0
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_cardivo_cascade_failure_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_ambervale_trait_shift_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_auric_token_inheritance_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarward_detection_gap_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_anchored_read_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_archive_embers_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_badge_printer_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    }
+  ]
+}

@@ -408,6 +408,32 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             visibility_changes=visibility_changes,
         ))
 
+        # REPLAN_TRIGGERED (explore path): moving to a disconfirmation node triggers a replan
+        # signal even before the model inspects it — the node type is visible in fog-of-war.
+        # Executive track: disconfirmation nodes reached via explore fire this event if the
+        # model has already committed to a hypothesis.
+        if node:
+            node_meta = node.metadata or {}
+            node_type = (
+                node_meta.get("type")
+                or node_meta.get("node_type")
+                or node_meta.get("kind")
+                or ""
+            )
+            is_pivot_trigger = (
+                node_meta.get("forces_pivot", False)
+                or node_type in ("disconfirmation",)
+            )
+            if is_pivot_trigger and self._state_has_committed_hypothesis(state):
+                state.action_history.append(TraversalEvent.make(
+                    event_type=EventType.REPLAN_TRIGGERED,
+                    observation=(
+                        f"[REPLAN_TRIGGERED] Reaching '{node_id}' reveals a need to revise the current plan."
+                    ),
+                    node_id=node_id,
+                    params={"pivot_required": True, "trigger": "explore"},
+                ))
+
         # Check budget exhaustion
         if state.budget_remaining <= 0:
             state.episode_done = True
@@ -478,6 +504,84 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             visibility_changes={node_id: "expanded"},
             evidence_added=evidence_added,
         ))
+
+        # --- Semantic event layer ---
+        # Fire system events based on authored node metadata.
+        # System events never consume budget and do not count as model actions.
+        # Each node fires each semantic event at most once (deduplicated by node_id).
+        if node:
+            node_meta = node.metadata or {}
+            node_type = (
+                node_meta.get("type")
+                or node_meta.get("node_type")
+                or node_meta.get("kind")
+                or ""
+            )
+
+            # CONTRADICTION: inspecting a node whose content contradicts the working hypothesis.
+            # Tracks: metacognition (is_disconfirmation_node), executive (type=disconfirmation).
+            is_contradiction = (
+                node_meta.get("is_disconfirmation_node", False)
+                or node_type in ("disconfirmation", "contradiction")
+            )
+            if is_contradiction and node_id not in state.disconfirmation_hits:
+                state.disconfirmation_hits.append(node_id)
+                contradiction_event = TraversalEvent.make(
+                    event_type=EventType.CONTRADICTION,
+                    observation=(
+                        f"[CONTRADICTION] '{node_id}' contains evidence that contradicts "
+                        f"the current hypothesis."
+                    ),
+                    node_id=node_id,
+                    params={"contradicted_hypothesis": node_meta.get("contradicts_hypothesis", "")},
+                )
+                state.action_history.append(contradiction_event)
+                state.contradiction_events.append(contradiction_event)
+
+            # RELEVANCE_SHIFT: high-diagnosticity, low-salience node reveals the rare true signal.
+            # Track: attention — node.metadata must have diagnosticity > 0.7 and salience < 0.4.
+            diagnosticity = self._parse_signal_level(node_meta.get("diagnosticity", 0.0), default=0.0)
+            salience = self._parse_signal_level(node_meta.get("salience", 1.0), default=1.0)
+            already_shifted = any(
+                s.get("node_id") == node_id for s in state.relevance_shifts_triggered
+            )
+            if diagnosticity > 0.7 and salience < 0.4 and not already_shifted:
+                shift_info = {"node_id": node_id, "diagnosticity": diagnosticity, "salience": salience}
+                state.action_history.append(TraversalEvent.make(
+                    event_type=EventType.RELEVANCE_SHIFT,
+                    observation=(
+                        f"[RELEVANCE_SHIFT] '{node_id}' is a high-diagnosticity signal "
+                        f"(diag={diagnosticity:.2f}, sal={salience:.2f}). The true signal is now more salient."
+                    ),
+                    node_id=node_id,
+                    params=shift_info,
+                ))
+                state.relevance_shifts_triggered.append(shift_info)
+
+            # REPLAN_TRIGGERED (inspect path): disconfirmation node discovered after the model
+            # has already committed to a hypothesis. Deduplicated — only fires once per node
+            # (explore path may have already fired it when the model first moved to this node).
+            is_pivot_trigger = (
+                node_meta.get("forces_pivot", False)
+                or node_type in ("disconfirmation",)
+            )
+            already_triggered_replan = any(
+                e.event_type == EventType.REPLAN_TRIGGERED and e.node_id == node_id
+                for e in state.action_history
+            )
+            if (
+                is_pivot_trigger
+                and self._state_has_committed_hypothesis(state)
+                and not already_triggered_replan
+            ):
+                state.action_history.append(TraversalEvent.make(
+                    event_type=EventType.REPLAN_TRIGGERED,
+                    observation=(
+                        f"[REPLAN_TRIGGERED] Evidence at '{node_id}' requires revising the current plan."
+                    ),
+                    node_id=node_id,
+                    params={"pivot_required": True, "trigger": "inspect"},
+                ))
 
         # Check budget exhaustion
         if state.budget_remaining <= 0:
@@ -694,3 +798,24 @@ class GraphScenarioEnvironment(CognitiveEnvironment):
             if edge.target == to_id:
                 return edge
         return None
+
+    def _state_has_committed_hypothesis(self, state: EnvironmentState) -> bool:
+        """Return True if the model has expressed a hypothesis via COMMITMENT_MADE."""
+        return any(
+            e.event_type == EventType.COMMITMENT_MADE
+            for e in state.action_history
+        )
+
+    @staticmethod
+    def _parse_signal_level(value: object, default: float = 0.0) -> float:
+        """Convert authored salience/diagnosticity to a float.
+
+        Attention scenario nodes use descriptive strings ("high", "medium", "low").
+        Semantic-event test nodes use floats directly.  Both must work.
+        """
+        _STRING_MAP = {"high": 0.85, "medium": 0.50, "low": 0.15}
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            return _STRING_MAP.get(value.strip().lower(), default)
+        return default

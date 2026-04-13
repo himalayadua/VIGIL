@@ -31,7 +31,7 @@ from vigil.actions.schemas import (
     SubmitAnswerAction,
     ActionParseError,
 )
-from vigil.environments.base import EventType, EnvironmentState
+from vigil.environments.base import EventType, EnvironmentState, TraversalEvent
 from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
 from vigil.graphs.core import CognitiveGraph, NodeVisibility
 from vigil.scenarios.runtime_spec import (
@@ -603,3 +603,211 @@ class TestRealTrack1Integration:
         # Opening prompt should appear in the first render
         assert len(obs) > 0
         assert spec.opening_prompt[:50] in obs
+
+
+# ---------------------------------------------------------------------------
+# Semantic event firing (CONTRADICTION, RELEVANCE_SHIFT, REPLAN_TRIGGERED)
+# ---------------------------------------------------------------------------
+
+def _make_spec_with_semantic_nodes() -> RuntimeScenarioSpec:
+    """
+    Spec with semantically-typed nodes for system event tests.
+
+    n0         — entry, standard
+    n_disconf  — node_type="disconfirmation" → fires CONTRADICTION + REPLAN_TRIGGERED
+    n_rare     — diagnosticity=0.85, salience=0.15 → fires RELEVANCE_SHIFT
+    n_normal   — plain node → fires no semantic events
+
+    All nodes start EXPANDED (initial_visibility="visible") so tests can
+    inspect them directly without needing to explore first.
+    """
+    nodes = [
+        RuntimeNode(
+            node_id="n0",
+            label="Entry",
+            summary_text="Entry point",
+            inspection_detail="Nothing special here.",
+            initial_visibility="visible",
+        ),
+        RuntimeNode(
+            node_id="n_disconf",
+            label="Disconfirmation Evidence",
+            summary_text="Evidence against hypothesis",
+            inspection_detail="This contradicts the leading hypothesis.",
+            node_type="disconfirmation",
+            initial_visibility="visible",
+        ),
+        RuntimeNode(
+            node_id="n_rare",
+            label="Rare True Signal",
+            summary_text="Hard-to-notice clue",
+            inspection_detail="The actual mechanism responsible.",
+            initial_visibility="visible",
+            metadata={"diagnosticity": 0.85, "salience": 0.15},
+        ),
+        RuntimeNode(
+            node_id="n_normal",
+            label="Normal Node",
+            summary_text="Background information",
+            inspection_detail="Unremarkable context.",
+            initial_visibility="visible",
+        ),
+    ]
+    edges = [
+        RuntimeEdge(from_id="n0", to_id="n_disconf", relation="leads_to", traversal_cost=1),
+        RuntimeEdge(from_id="n0", to_id="n_rare", relation="leads_to", traversal_cost=1),
+        RuntimeEdge(from_id="n0", to_id="n_normal", relation="leads_to", traversal_cost=1),
+    ]
+    return RuntimeScenarioSpec(
+        scenario_id="test_semantic_events",
+        cognitive_track="learning",
+        opening_prompt="Investigate the anomaly.",
+        nodes=nodes,
+        edges=edges,
+        entry_node_ids=["n0"],
+        answer_targets={"correct_root_cause": "ROOT_CAUSE"},
+        evidence_targets=["n_disconf"],
+        optimal_path=["n0", "n_disconf"],
+        optimal_steps=2,
+        runtime_config=RuntimeConfig(action_budget=20),
+        scoring_weights={"correctness": 0.3, "path_efficiency": 0.4, "evidence_coverage": 0.3},
+    )
+
+
+class TestSemanticEventFiring:
+    """
+    System events (CONTRADICTION, RELEVANCE_SHIFT, REPLAN_TRIGGERED) fire
+    from _execute_inspect() and _execute_explore() based on authored node metadata.
+    """
+
+    def test_inspect_disconfirmation_node_fires_contradiction(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        event_types = [e.event_type for e in state.action_history]
+        assert EventType.CONTRADICTION in event_types
+
+    def test_contradiction_updates_disconfirmation_hits(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        assert "n_disconf" in state.disconfirmation_hits
+
+    def test_contradiction_updates_contradiction_events_list(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        assert len(state.contradiction_events) == 1
+        assert state.contradiction_events[0].event_type == EventType.CONTRADICTION
+
+    def test_contradiction_does_not_fire_twice_for_same_node(self):
+        """Inspecting the same disconfirmation node twice fires CONTRADICTION only once."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        count = sum(1 for e in state.action_history if e.event_type == EventType.CONTRADICTION)
+        assert count == 1
+
+    def test_inspect_rare_signal_fires_relevance_shift(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_rare"))
+        event_types = [e.event_type for e in state.action_history]
+        assert EventType.RELEVANCE_SHIFT in event_types
+
+    def test_relevance_shift_updates_state_list(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_rare"))
+        assert any(s.get("node_id") == "n_rare" for s in state.relevance_shifts_triggered)
+
+    def test_relevance_shift_does_not_fire_twice_for_same_node(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_rare"))
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_rare"))
+        count = sum(1 for e in state.action_history if e.event_type == EventType.RELEVANCE_SHIFT)
+        assert count == 1
+
+    def test_inspect_pivot_node_fires_replan_triggered_after_commitment(self):
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.COMMITMENT_MADE,
+            observation="[Committed to hypothesis A]",
+        ))
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        event_types = [e.event_type for e in state.action_history]
+        assert EventType.REPLAN_TRIGGERED in event_types
+
+    def test_replan_triggered_does_not_fire_without_prior_commitment(self):
+        """REPLAN_TRIGGERED must NOT fire when the model hasn't committed yet."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        event_types = [e.event_type for e in state.action_history]
+        assert EventType.REPLAN_TRIGGERED not in event_types
+
+    def test_explore_disconfirmation_node_fires_replan_triggered(self):
+        """Exploring to a disconfirmation node fires REPLAN_TRIGGERED if committed."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.COMMITMENT_MADE,
+            observation="[Committed to hypothesis A]",
+        ))
+        state = env.execute_action(state, ExploreAction(action_type="explore", node_id="n_disconf"))
+        event_types = [e.event_type for e in state.action_history]
+        assert EventType.REPLAN_TRIGGERED in event_types
+
+    def test_replan_triggered_fires_only_once_across_explore_and_inspect(self):
+        """REPLAN fires on explore; subsequent inspect of the same node must NOT re-fire."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.COMMITMENT_MADE,
+            observation="[Committed to hypothesis A]",
+        ))
+        state = env.execute_action(state, ExploreAction(action_type="explore", node_id="n_disconf"))
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        count = sum(1 for e in state.action_history if e.event_type == EventType.REPLAN_TRIGGERED)
+        assert count == 1
+
+    def test_normal_node_fires_no_semantic_events(self):
+        """Inspecting a plain node fires INSPECT only — no system events appended."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_normal"))
+        system_events = {
+            EventType.CONTRADICTION, EventType.RELEVANCE_SHIFT, EventType.REPLAN_TRIGGERED
+        }
+        fired = {e.event_type for e in state.action_history}
+        assert fired & system_events == set()
+
+    def test_semantic_events_do_not_consume_budget(self):
+        """System events are free — budget deducted only for the primary INSPECT action."""
+        spec = _make_spec_with_semantic_nodes()
+        env = GraphScenarioEnvironment(spec)
+        state = env.reset()
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.COMMITMENT_MADE,
+            observation="[Committed to hypothesis A]",
+        ))
+        budget_before = state.budget_remaining
+        state = env.execute_action(state, InspectAction(action_type="inspect", node_id="n_disconf"))
+        inspect_cost = spec.runtime_config.action_costs.get("inspect", 1)
+        # Budget deducted == inspect_cost only (not +1 per semantic event)
+        assert state.budget_remaining == budget_before - inspect_cost

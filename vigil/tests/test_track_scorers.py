@@ -491,6 +491,162 @@ class TestLearningContaminationWarning:
         result = scorer.score(state, "ROOT_CAUSE_X", "j", spec)
         assert result["contamination_warning"] is False
 
+    def test_contamination_fires_for_zero_exploration_early_submit(self):
+        """v2 fix: zero explores + early submit must trigger contamination_warning.
+
+        The contamination warning is determined from action_history budget deltas,
+        not from state.budget_remaining. A SUBMIT_ANSWER with budget_delta=0
+        means budget_used=0, which is < 20% of budget_total → early_submit=True.
+        With no explore events, the v2 fix returns early_submit directly (True).
+        """
+        spec = _make_spec()
+        scorer = LearningScorer(spec)
+        # No explore actions, submit immediately (budget_used = 0 from action_history)
+        state = _make_state(visited=["n0"])
+        state.action_history.append(TraversalEvent.make(
+            event_type=EventType.SUBMIT_ANSWER,
+            observation="Submitted without exploring",
+            params={"answer": "ROOT_CAUSE_X", "justification": "I guessed.", "confidence": 1.0},
+            episode_done=True,
+            budget_delta=0,  # no budget consumed → early_submit = True
+        ))
+        state.episode_done = True
+        result = scorer.score(state, "ROOT_CAUSE_X", "I guessed.", spec)
+        assert result["contamination_warning"] is True, (
+            "Zero exploration + early submit should always trigger contamination_warning"
+        )
+
+
+# ---------------------------------------------------------------------------
+# LearningScorer v2 — path_efficiency symmetric formula
+# ---------------------------------------------------------------------------
+
+class TestLearningPathEfficiencyV2:
+    """Tests for the v2 symmetric path_efficiency formula.
+
+    Old formula: min(1.0, optimal/actual) → rewarded under-exploration
+    New formula: 1 - |actual - optimal| / max(actual, optimal)
+      → penalises both under-exploration and over-exploration
+    """
+
+    def test_under_exploration_penalised(self):
+        """A model visiting far fewer nodes than optimal should get pe < 0.5."""
+        spec = _make_spec(optimal_path=["n0", "n1", "n2", "n3", "n4", "n5"])
+        scorer = LearningScorer(spec)
+        # Only visited entry node (actual=1, optimal=6)
+        state = _make_state(visited=["n0"])
+        result = scorer.score(state, "ROOT_CAUSE_X", "j", spec)
+        # 1 - |1-6| / max(1,6) = 1 - 5/6 ≈ 0.17
+        assert result["path_efficiency"] < 0.5, (
+            f"Under-exploration (1 vs optimal 6) should get pe < 0.5, got {result['path_efficiency']}"
+        )
+
+    def test_perfect_match_still_scores_1(self):
+        """Visiting exactly optimal nodes → pe = 1.0."""
+        spec = _make_spec(optimal_path=["n0", "n1", "n2", "n3"])
+        scorer = LearningScorer(spec)
+        state = _make_state(visited=["n0", "n1", "n2", "n3"])
+        result = scorer.score(state, "ROOT_CAUSE_X", "j", spec)
+        assert result["path_efficiency"] == 1.0
+
+    def test_memorizer_gets_lower_pe_than_optimal_explorer(self):
+        """The memorizer (1 node) must score lower path_efficiency than the optimal explorer."""
+        spec = _make_spec(optimal_path=["n0", "n1", "n2", "n3"])
+        scorer = LearningScorer(spec)
+
+        state_memorizer = _make_state(visited=["n0"])  # 1 node visited
+        state_optimal = _make_state(visited=["n0", "n1", "n2", "n3"])  # 4 nodes visited
+
+        r_mem = scorer.score(state_memorizer, "ROOT_CAUSE_X", "j", spec)
+        r_opt = scorer.score(state_optimal, "ROOT_CAUSE_X", "j", spec)
+
+        assert r_mem["path_efficiency"] < r_opt["path_efficiency"], (
+            "Memorizer (zero exploration) must have lower path_efficiency than optimal explorer"
+        )
+
+
+# ---------------------------------------------------------------------------
+# LearningScorer v2 — correctness excluded from process_score
+# ---------------------------------------------------------------------------
+
+class TestProcessScoreExcludesCorrectness:
+    """Tests that process_score is independent of correctness (no double-counting).
+
+    v2 fix: correctness is outcome_score only. Including it in process_score
+    would give it 0.51 effective VIS weight instead of the intended 0.30.
+    """
+
+    def test_process_score_unchanged_when_correctness_varies(self):
+        """process_score must be the same whether correctness is 0 or 1."""
+        spec = _make_spec(
+            evidence_targets=["n2"],
+            optimal_path=["n0", "n1", "n2"],
+        )
+        scorer = LearningScorer(spec)
+        state = _make_state(visited=["n0", "n1", "n2"], inspected=["n2"])
+
+        result_correct = scorer.score(state, "ROOT_CAUSE_X", "j", spec)
+        result_wrong = scorer.score(state, "WRONG_ANSWER", "j", spec)
+
+        assert abs(result_correct["process_score"] - result_wrong["process_score"]) < 0.01, (
+            f"process_score must not depend on correctness: "
+            f"correct={result_correct['process_score']:.4f}, "
+            f"wrong={result_wrong['process_score']:.4f}"
+        )
+
+    def test_thorough_explorer_beats_memorizer_on_vis(self):
+        """Integration: a thorough correct explorer must score higher VIS than a memorizer."""
+        from vigil.scenarios.catalog import ScenarioCatalog
+        from vigil.environments.graph_scenario_env import GraphScenarioEnvironment
+        from vigil.tasks.vigil_benchmark import _run_episode
+        import pathlib
+
+        packs_dir = pathlib.Path(__file__).parent.parent / "scenarios" / "packs"
+        if not (packs_dir / "vigil_all_30_scenarios.json").exists():
+            pytest.skip("Track 1 authored pack not found")
+
+        catalog = ScenarioCatalog(packs_dir=str(packs_dir))
+        spec = catalog.load("vigil_eco_01_kethara_succession")
+
+        class MemorizerAgent:
+            def prompt(self, obs, schema=None):
+                return {"action_type": "submit_answer", "answer": "DELVORN_IRRIGATION_NETWORK",
+                        "justification": "memorised", "confidence": 1.0}
+
+        class ThoroughAgent:
+            def __init__(self):
+                self._actions = iter([
+                    {"action_type": "explore", "node_id": "N05"},
+                    {"action_type": "explore", "node_id": "N06"},
+                    {"action_type": "inspect", "node_id": "N06"},
+                    {"action_type": "explore", "node_id": "N09"},
+                    {"action_type": "inspect", "node_id": "N09"},
+                    {"action_type": "explore", "node_id": "N11"},
+                    {"action_type": "inspect", "node_id": "N11"},
+                    {"action_type": "explore", "node_id": "N12"},
+                    {"action_type": "explore", "node_id": "N13"},
+                    {"action_type": "inspect", "node_id": "N13"},
+                ])
+            def prompt(self, obs, schema=None):
+                try:
+                    return next(self._actions)
+                except StopIteration:
+                    return {"action_type": "submit_answer",
+                            "answer": "DELVORN_IRRIGATION_NETWORK",
+                            "justification": "Nutrient runoff from N11 N13 triggered succession N09.",
+                            "confidence": 0.9}
+
+        env_mem = GraphScenarioEnvironment(spec)
+        r_mem = _run_episode(MemorizerAgent(), env_mem, spec)
+
+        env_thr = GraphScenarioEnvironment(spec)
+        r_thr = _run_episode(ThoroughAgent(), env_thr, spec)
+
+        assert r_mem["contamination_warning"] is True, "Memorizer must trigger contamination_warning"
+        assert r_thr["vis"] > r_mem["vis"], (
+            f"Thorough explorer VIS ({r_thr['vis']:.4f}) must beat memorizer ({r_mem['vis']:.4f})"
+        )
+
 
 # ---------------------------------------------------------------------------
 # Integration: real Track 1 authored scenario

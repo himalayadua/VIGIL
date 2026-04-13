@@ -76,6 +76,48 @@
           "label": "Departure Spike",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Peer Guide Private Log",
+          "description": "Guides privately record that they felt replaced without acknowledgment; publicly they express acceptance.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Digest Clerk Self-Assessment",
+          "description": "Clerks privately believe their summaries are thorough; they interpret silence from newcomers as satisfaction.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Peak Accusation Transcript",
+          "description": "The most visible incident \u2014 a heated public thread \u2014 is logged and timestamped during the conflict peak.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Stewardship Handoff Memo",
+          "description": "An internal memo confirms guides were replaced two weeks before the departure spike, unknown to newcomers.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Timing Disconfirmation",
+          "description": "Exit dates cluster 18 days after the accusation peak, not during it \u2014 the visible conflict cannot be the direct cause.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Care Handoff Gap Record",
+          "description": "No overlap period was scheduled between guide and clerk cohorts; newcomers lost continuity with no warning.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -108,6 +150,41 @@
           "source": "n2",
           "target": "n6",
           "relation": "appears_to_explain"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -194,6 +271,48 @@
           "label": "Never-Mediated Districts",
           "kind": "comparison_set",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Assembly Delegate Private Notes",
+          "description": "Delegates privately admit they relied on the outgoing mediator to synthesize competing views, but publicly claim self-sufficiency.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Replacement Coordinator Self-Report",
+          "description": "Replacement coordinator believes her procedural role is equivalent; she is unaware of the informal synthesis function she lacks.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Procedural Dispute",
+          "description": "A highly publicized rules argument during the mediator gap draws attention as the apparent cause of breakdown.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Backchannel Mediation Log",
+          "description": "The outgoing mediator's backchannel notes reveal dozens of pre-session alignment conversations that kept agreements intact.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Outcome Timing Disconfirmation",
+          "description": "The visible procedural dispute resolved in three days; collapse in decision quality persisted for six weeks after, ruling it out as cause.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Informal Network Collapse Trace",
+          "description": "Social-tie map shows the former mediator was the single bridge between three non-communicating factions.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -226,6 +345,41 @@
           "source": "n4",
           "target": "n5",
           "relation": "precedes"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -312,6 +466,48 @@
           "label": "Idea Bundle Ledger",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Community A Internal Expectation",
+          "description": "Community A members privately expect their counterparts to initiate; they interpret silence as rejection, not absence of messenger.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Community B Reciprocal Expectation",
+          "description": "Community B members hold the same expectation symmetrically; neither group learns the messenger role was discontinued.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Creative Output Gap",
+          "description": "A sudden drop in published collaborative outputs is cited publicly as evidence of deliberate withdrawal.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Messenger Role Discontinuation Notice",
+          "description": "Internal records show the bridge-messenger stipend was cut during a budget review, eliminating the liaison position.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Intent Disconfirmation",
+          "description": "Survey data shows mutual positive sentiment persists in both communities \u2014 the gap is logistical, not relational.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Missed Coordination Points",
+          "description": "Calendar data shows 14 joint events that were never scheduled due to the absent coordinating layer.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -344,6 +540,41 @@
           "source": "n1",
           "target": "n4",
           "relation": "indirectly_supports"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -430,6 +661,48 @@
           "label": "Staffing Roster",
           "kind": "evidence",
           "visibility": "discoverable"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Staff Private Anxiety Log",
+          "description": "Staff record in internal notes that observer presence triggers fear of punitive review, though no punishment has occurred.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Auditor Perceived Mandate",
+          "description": "Auditor privately frames role as supportive, unaware that the institutional context makes presence read as threat.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Compliance Inspection Event",
+          "description": "A formal compliance check co-occurs with the observer arrival and is widely interpreted as the cause of staff withdrawal.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Staff Exit Interview Fragments",
+          "description": "Departing staff cite the unannounced nature of observations, not the formal compliance review, as the trigger.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Compliance Event Disconfirmation",
+          "description": "Compliance results were positive; withdrawal predates the inspection report by three weeks.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Communication Protocol Gap",
+          "description": "No advance notice protocol existed for observer visits; staff had no channel to ask about the auditor's mandate.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -457,6 +730,41 @@
           "source": "n2",
           "target": "n5",
           "relation": "indirectly_causes"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -543,6 +851,48 @@
           "label": "Old Accusation Fragments",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Long-Term Member Loyalty Map",
+          "description": "Veteran members privately consider the archive central to identity; publicly they say 'it is just records.'",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "New Leadership Utility View",
+          "description": "New leaders privately view the archive as administrative overhead; publicly they commit to 'preserving the past.'",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Public Facility Renovation Announcement",
+          "description": "A building renovation is announced simultaneously and blamed publicly for access disruption.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Archival Access Policy Change",
+          "description": "An internal memo changed archive access from open to appointment-only, never communicated to members.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Renovation Timeline Disconfirmation",
+          "description": "Renovation started four months after membership drop began \u2014 the building work cannot be the precipitating cause.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Institutional Memory Fracture",
+          "description": "Three founding members who informally bridged old and new leadership retired in the same quarter with no handoff.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -570,6 +920,41 @@
           "source": "n3",
           "target": "n5",
           "relation": "sustains"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -656,6 +1041,48 @@
           "label": "Stage Distribution Ledger",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Senior Artisan Tacit Expectations",
+          "description": "Senior members assume novices will absorb norms by observation; they privately resent explicit instruction as 'coddling.'",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Novice Cohort Confusion State",
+          "description": "Novices privately feel bewildered by unspoken standards; publicly they perform confidence to avoid appearing weak.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Quality Dispute Event",
+          "description": "A publicized disagreement over a submitted piece escalates and is cited as the reason novices feel unwelcome.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Onboarding Expectation Gap Survey",
+          "description": "Anonymous survey reveals novices had no knowledge of informal critique norms that seniors treat as obvious.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Dispute Causality Disconfirmation",
+          "description": "Novice attrition began three cohorts before the visible quality dispute; the dispute post-dates the structural gap.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Apprenticeship Bridge Absence",
+          "description": "A formal apprenticeship pairing program lapsed five years ago with no replacement; informal transmission collapsed silently.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -688,6 +1115,41 @@
           "source": "n3",
           "target": "n4",
           "relation": "pushes_out"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -774,6 +1236,48 @@
           "label": "Moderator Count Sheet",
           "kind": "red_herring_evidence",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Coordinator Bandwidth Assumption",
+          "description": "Coordinator privately knows she cannot maintain personal outreach at current intake volume but publicly commits to continuity.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Volunteer Interpretation of Silence",
+          "description": "New volunteers interpret delayed responses as disinterest; they are unaware of capacity constraints on the coordinator's side.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible High-Intake Event",
+          "description": "A media feature drives a spike in applications, publicly celebrated as success but privately straining coordination capacity.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Outreach Volume Log",
+          "description": "Internal logs show personal follow-up rate dropped from 94% to 31% after the intake surge, without public acknowledgment.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Intake Enthusiasm Disconfirmation",
+          "description": "Application volume and early retention diverge sharply after the intake surge \u2014 enthusiasm and follow-through moved in opposite directions.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Triage Filter Gap",
+          "description": "No automated triage system was in place; all follow-up depended on coordinator discretion under growing volume.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -801,6 +1305,41 @@
           "source": "n2",
           "target": "n4",
           "relation": "drives"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -887,6 +1426,48 @@
           "label": "Service Collapse",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Departing Operator Handoff Perception",
+          "description": "Departing operator believes the transition document is complete; she is unaware critical tacit knowledge was not recorded.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Incoming Operator Knowledge Gap",
+          "description": "Incoming operator privately recognizes gaps but publicly performs competence to avoid undermining confidence.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Handoff Ceremony",
+          "description": "A formal transition event with documentation exchange is publicly recorded as a successful knowledge transfer.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Tacit Protocol Inventory",
+          "description": "Post-incident interviews reveal 11 informal exception-handling protocols existed only in the outgoing operator's memory.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Documentation Sufficiency Disconfirmation",
+          "description": "Error rates rise only on edge cases not covered by documentation \u2014 the formal handoff was complete but tacit knowledge was absent.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Shadow-Period Absence Record",
+          "description": "No overlap shadowing period was budgeted; the two operators worked together for only one half-day.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -914,6 +1495,41 @@
           "source": "n1",
           "target": "n6",
           "relation": "indirectly_causes"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1000,6 +1616,48 @@
           "label": "Collaboration Crash",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Visible Leader Public Posture",
+          "description": "Lead organizer publicly projects stability; private communications reveal awareness of simmering conflicts she is managing.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Peripheral Member Isolation State",
+          "description": "Members outside the core circle privately feel excluded from decisions; publicly they express support.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Calm Period Announcement",
+          "description": "Leadership announces a 'period of stability' that publicly signals the conflict era is over.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Internal Dispute Channel Archive",
+          "description": "Private message archives show unresolved disputes moved from public forums to small private channels, not resolved.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Conflict Absence Disconfirmation",
+          "description": "Social network analysis shows clique formation and reduced cross-group contact accelerated during the apparent calm period.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Decision Exclusion Pattern",
+          "description": "Meeting attendance records show peripheral members were dropped from key working groups during the calm announcement period.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1032,6 +1690,41 @@
           "source": "n5",
           "target": "n6",
           "relation": "fails_to_predict"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1118,6 +1811,48 @@
           "label": "Trust Decline",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Protocol Author's Intent Model",
+          "description": "Protocol designer privately believed the written procedure would be self-explanatory; she did not model bystander diffusion of responsibility.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Volunteer Bystander Attribution",
+          "description": "Volunteers privately assume someone else is responding; publicly they report the protocol as clear and adequate.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Incident Report",
+          "description": "A high-profile unaddressed incident triggers a public report that frames the failure as individual negligence.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Non-Response Pattern Log",
+          "description": "Logs show systematic non-response only in multi-witness scenarios \u2014 single-witness events were handled immediately.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Individual Negligence Disconfirmation",
+          "description": "Non-responders in multi-witness events had clean individual compliance records \u2014 the failure is structural, not personal.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Responsibility Assignment Gap",
+          "description": "The protocol assigned responsibility collectively with no individual accountability designation in group-witness cases.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1145,6 +1880,41 @@
           "source": "n4",
           "target": "n2",
           "relation": "implicates"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1231,6 +2001,48 @@
           "label": "Informal Etiquette Notes",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Senior Clinician Informal Role Belief",
+          "description": "Senior clinicians privately acknowledge the breakroom as a decompression space; formally they describe it as a utilitarian amenity.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Administration Resource View",
+          "description": "Administrators privately view the breakroom as an optimization target; publicly they frame renovation as an upgrade.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Renovation Announcement Event",
+          "description": "Breakroom renovation is announced publicly as a wellness improvement initiative during the same month morale declines begin.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Informal Network Observation",
+          "description": "Ethnographic notes capture 34 informal cross-unit consultations that occurred in the breakroom per week, now displaced.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Physical Upgrade Disconfirmation",
+          "description": "Post-renovation satisfaction surveys on the physical space are positive; morale decline continued and accelerated after reopening.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Consultation Displacement Record",
+          "description": "Post-renovation tracking shows informal consultations dropped 71%; no replacement venue was designated.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1258,6 +2070,41 @@
           "source": "n6",
           "target": "n1",
           "relation": "reveals_norm"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1344,6 +2191,48 @@
           "label": "Mentor Note",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Senior Clinician Status Script",
+          "description": "Senior clinicians privately believe professional courtesy requires deferring challenges upward; they experience dissent as inappropriate.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Junior Clinician Risk Perception",
+          "description": "Junior clinicians privately identify safety concerns but interpret courtesy norms as prohibiting direct challenge.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Communication Failure Event",
+          "description": "A documented miscommunication incident is publicly cited as the proximate cause of the cascade.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Pre-Incident Concern Log",
+          "description": "Private notes show junior staff had flagged the concern twice informally but routed through courtesy filters that muted urgency.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Communication Breakdown Disconfirmation",
+          "description": "Information technically reached the responsible party \u2014 the failure was in framing and escalation, not information transfer.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Escalation Norm Gap",
+          "description": "No formal escalation protocol existed that permitted junior staff to bypass courtesy norms for urgent safety concerns.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1371,6 +2260,41 @@
           "source": "n3",
           "target": "n5",
           "relation": "appears_to_confirm"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1457,6 +2381,48 @@
           "label": "Consensus Collapse",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Panel Member Private Priority Ordering",
+          "description": "Members privately rank their priorities differently than their stated positions, having learned that direct statements trigger deadlock.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Facilitator Consensus Model",
+          "description": "Facilitator privately models the panel as having convergent interests; she is unaware of the private priority inversions.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Procedural Impasse Event",
+          "description": "A procedural vote fails publicly and is documented as the cause of the panel's inability to reach decisions.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Side-Channel Alignment Record",
+          "description": "Informal pre-meeting conversations show members can agree on content privately but not in public session.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Procedural Failure Disconfirmation",
+          "description": "Identical procedural votes passed without incident in six prior panels with different member compositions.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Public/Private Stance Divergence Map",
+          "description": "Structured interviews reveal average panel member holds two publicly incompatible positions that are privately reconcilable.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1484,6 +2450,41 @@
           "source": "n3",
           "target": "n6",
           "relation": "later_reasserts"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1570,6 +2571,48 @@
           "label": "Durable Reconciliation Scores",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Facilitator Expertise Self-Model",
+          "description": "Facilitator privately believes her content knowledge enhances mediation; she is unaware it signals side-taking to participants.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Participant Neutrality Expectation",
+          "description": "Participants privately expect procedural neutrality; they interpret content contributions as betrayal of the mediator role.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Content Intervention Event",
+          "description": "A specific moment where the facilitator offered a substantive opinion is publicly identified as the turning point.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Trust Erosion Sequence Log",
+          "description": "Session recordings show participant disengagement beginning two sessions before the identified content intervention.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Intervention Causality Disconfirmation",
+          "description": "The visible content intervention occurred after trust erosion was already measurable \u2014 it was a symptom, not the cause.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Role Boundary Communication Gap",
+          "description": "No explicit role-scope agreement was established at program start; participants and facilitator held incompatible role models.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1597,6 +2640,41 @@
           "source": "n6",
           "target": "n3",
           "relation": "supports"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1683,6 +2761,48 @@
           "label": "No Shared-Leader Finding",
           "kind": "disconfirmation_evidence",
           "visibility": "discoverable"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Origin Program Tacit Context Model",
+          "description": "Origin program staff privately know the protocol depends on a specific trust infrastructure; they believe documentation captures it.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Receiving Program Implementation Belief",
+          "description": "Receiving staff privately assume success = faithful procedure replication; they do not know about context dependencies.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Protocol Adoption Event",
+          "description": "A formal adoption ceremony and documentation transfer is publicly celebrated as successful knowledge transfer.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Contextual Dependency Inventory",
+          "description": "Post-failure audit reveals the protocol assumed pre-existing peer trust networks built over three years at the origin site.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Procedure Fidelity Disconfirmation",
+          "description": "Receiving program achieved higher procedure fidelity scores than the origin site, yet outcomes diverged \u2014 fidelity was not the variable.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Trust Infrastructure Gap",
+          "description": "Receiving program's peer network was 18 months old vs. the 4-year network the protocol was calibrated against.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1710,6 +2830,41 @@
           "source": "n5",
           "target": "n1",
           "relation": "reveals_spreading_unit"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1796,6 +2951,48 @@
           "label": "Trust Collapse",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Clinician Supportive Intent Model",
+          "description": "Clinician privately frames the check-in as care; she is unaware patients interpret question frequency as distrust monitoring.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Patient Surveillance Interpretation",
+          "description": "Patients privately interpret repeated check-ins as surveillance for risk escalation, suppressing honest disclosure.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Frequency Increase Event",
+          "description": "A protocol change that doubled check-in frequency is publicly logged during the same period disclosure rates drop.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Patient Concealment Pattern",
+          "description": "Private session notes show patients began substituting reassuring responses for honest ones after the protocol change.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Frequency-Disclosure Correlation Disconfirmation",
+          "description": "Control wards with lower check-in frequency show higher disclosure rates \u2014 frequency and safety do not co-vary as expected.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Check-In Framing Gap",
+          "description": "The protocol specified frequency but not framing; patients received no explanation of the check-in's purpose or scope.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1823,6 +3020,41 @@
           "source": "n3",
           "target": "n6",
           "relation": "shows"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -1909,6 +3141,48 @@
           "label": "Table Stratification Sheet",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Volunteer Coordinator Status Assumption",
+          "description": "Coordinator privately assumes all volunteers share her view that badges are administrative; she underestimates status signaling.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "First-Time Attendee Badge Expectation",
+          "description": "First-time attendees privately rely on badges for permission to approach senior attendees; without them, they self-exclude.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Technical Failure Event",
+          "description": "The badge printer malfunction is publicly logged and framed as a minor logistical inconvenience without social consequence.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Self-Exclusion Behavior Log",
+          "description": "Post-event surveys show unbadged attendees rated the event as significantly less accessible despite uniform content.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Logistical Framing Disconfirmation",
+          "description": "Attendees who received handwritten badges reported nearly identical access experiences to printed-badge attendees \u2014 the signal, not the object, mattered.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Status Signal Infrastructure Gap",
+          "description": "No contingency protocol existed for badge failure; the coordinator had no alternative method of conferring visible permission.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -1936,6 +3210,41 @@
           "source": "n6",
           "target": "n3",
           "relation": "redirects_attention_to"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2022,6 +3331,48 @@
           "label": "Severe Outcome",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Support Specialist Prior-Case Anchoring",
+          "description": "Specialist privately relies on a recent high-stakes case as interpretive frame; publicly she describes each case as assessed independently.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Client Contextual Self-Presentation",
+          "description": "Client privately edits self-presentation based on perceived specialist expectations, reducing diagnostic signal fidelity.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Case Similarity Event",
+          "description": "A recent high-profile case is publicly discussed in team meetings during the same period mis-categorization rates rise.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Anchoring Sequence Log",
+          "description": "Case file timestamps show specialist's initial category assignment was made within 90 seconds of file opening, before evidence review.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Case Similarity Disconfirmation",
+          "description": "Mis-categorization affects cases with no surface similarity to the anchor case \u2014 similarity is not the operative variable.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Review Checkpoint Absence",
+          "description": "Protocol lacked a mandatory review gate between first impression and formal categorization; no structural interruption of anchoring.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2049,6 +3400,41 @@
           "source": "n1",
           "target": "n3",
           "relation": "emits"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2135,6 +3521,48 @@
           "label": "Unusual Intervention Failure",
           "kind": "disconfirmation_signal",
           "visibility": "discoverable"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Senior Outreach Worker Language Model",
+          "description": "Senior workers privately believe their rapport is based on relationship depth; they are unaware vocabulary drift has created a signal they cannot read.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Youth Network Decoding Assumption",
+          "description": "Young network members privately use slang as a trust filter; they interpret comprehension failure as evidence of outsider status.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Rapport Breakdown Event",
+          "description": "A publicized miscommunication during an outreach encounter is logged as a training failure requiring individual correction.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Lexical Drift Timeline",
+          "description": "Community documentation shows three generational vocabulary shifts in four years; outreach vocabulary was last updated six years ago.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Individual Rapport Disconfirmation",
+          "description": "Workers with strong pre-existing individual relationships show the same comprehension gaps \u2014 the drift is systematic, not personal.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Vocabulary Update Protocol Gap",
+          "description": "No structured mechanism existed for outreach teams to document and integrate emerging community vocabulary.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2162,6 +3590,41 @@
           "source": "n3",
           "target": "n1",
           "relation": "fails_to_explain"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2248,6 +3711,48 @@
           "label": "Origin Mapping Board",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Core Group Transparency Self-Assessment",
+          "description": "Core group members privately know decisions are made in the private channel first; publicly they frame public meetings as decision venues.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Peripheral Member Democratic Assumption",
+          "description": "Peripheral members privately invest in public deliberation believing it is consequential; they are unaware of pre-decision patterns.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Public Deliberation Event",
+          "description": "A well-attended public meeting is documented as evidence of the community's democratic process functioning normally.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Pre-Decision Alignment Record",
+          "description": "Private channel logs show all five major decisions of the past year were substantively settled before public meetings began.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Public Meeting Efficacy Disconfirmation",
+          "description": "Post-meeting vote outcomes deviated from pre-meeting public sentiment in zero of twelve cases \u2014 deliberation had no observable effect on outcomes.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Legitimacy Perception Gap",
+          "description": "Exit interviews from departing members cluster around 'feeling unheard' despite having spoken at every public meeting.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2275,6 +3780,41 @@
           "source": "n4",
           "target": "n2",
           "relation": "actually_causes"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2361,6 +3901,48 @@
           "label": "Alliance-Wide Confusion",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Alliance Leadership Pressure Absorption Belief",
+          "description": "Leaders privately absorb member grievances informally; they believe this prevents escalation, unaware it also prevents structural resolution.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Member Grievance Channel Assumption",
+          "description": "Members privately believe leadership absorbs feedback for action; they are unaware absorbed grievances are not forwarded to governance.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Conflict Escalation Event",
+          "description": "A public confrontation between two alliance members is documented as the proximate cause of the breakdown.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Informal Grievance Archive",
+          "description": "Leadership's informal notes contain 23 unresolved grievance threads predating the public confrontation by 14 months.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Confrontation Causality Disconfirmation",
+          "description": "The public confrontation participants had no shared prior grievance history; their clash was incidental to the structural pressure buildup.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Grievance Routing Gap",
+          "description": "No formal mechanism existed to convert informally absorbed grievances into governance agenda items.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2388,6 +3970,41 @@
           "source": "n5",
           "target": "n6",
           "relation": "cascades_into"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2474,6 +4091,48 @@
           "label": "Coalition-Wide Outage",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Platform Coordinator Roster Assumption",
+          "description": "Coordinator privately knows the founding roster is outdated; publicly she maintains it as authoritative to avoid renegotiation.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Joining Organization Membership Belief",
+          "description": "Newer organizations privately assume the roster reflects current influence distribution; they calibrate participation accordingly.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Founding Document Invocation",
+          "description": "A coalition meeting publicly cites the founding roster to resolve a dispute over speaking order, presented as neutral procedure.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Roster Discrepancy Analysis",
+          "description": "Internal review shows 7 of 12 founding organizations have reduced activity by >60%; 4 high-activity non-founding members are unrepresented.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Founding Authority Disconfirmation",
+          "description": "The three most influential contributing organizations in the current period are all post-founding entrants not listed on the authoritative roster.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Roster Update Protocol Gap",
+          "description": "Coalition bylaws specified a roster review every 18 months; no review had occurred in four years.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2501,6 +4160,41 @@
           "source": "n2",
           "target": "n6",
           "relation": "aggregates_into"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2587,6 +4281,48 @@
           "label": "Data Spill",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Delegating Council Scope Assumption",
+          "description": "Delegating council privately assumed the badge holder would interpret authority conservatively; they did not specify scope limits.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Badge Holder Authority Interpretation",
+          "description": "Badge holder privately interprets the delegation as broad; she makes commitments the delegating council did not authorize.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Commitment Event",
+          "description": "A cross-coalition commitment is publicly announced by the badge holder during a summit, generating goodwill and expectations.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Authorization Scope Record",
+          "description": "The delegation memo specifies attendance authorization only; no language authorizes commitment-making on behalf of the coalition.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Competence Disconfirmation",
+          "description": "The badge holder's commitments were substantively sound \u2014 the breakdown was jurisdictional, not related to her judgment quality.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Scope Negotiation Gap",
+          "description": "No pre-summit briefing occurred to align scope interpretation between delegating council and badge holder.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2614,6 +4350,41 @@
           "source": "n2",
           "target": "n6",
           "relation": "enables"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n3",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2700,6 +4471,48 @@
           "label": "Centralization Map",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Alliance Member A Vendor Reliability Model",
+          "description": "Member A privately knows the shared mediator has capacity limits; publicly she vouches for vendor reliability to protect the alliance relationship.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Alliance Member B Service Expectation",
+          "description": "Member B privately relies on published availability commitments; she is unaware of the informal capacity negotiations occurring behind them.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Service Failure Event",
+          "description": "A high-profile service disruption is publicly attributed to the vendor's technical failure and documented as a procurement lesson.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Capacity Negotiation Log",
+          "description": "Vendor's internal logs show Member A privately accepted reduced priority status in exchange for a fee discount six months prior.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Technical Failure Disconfirmation",
+          "description": "The service disruption occurred on schedule with the informal priority adjustment \u2014 the failure was contractual, not technical.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Disclosure Protocol Gap",
+          "description": "Alliance had no requirement for members to disclose bilateral vendor arrangements that affected shared service levels.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2727,6 +4540,41 @@
           "source": "n6",
           "target": "n1",
           "relation": "reveals_single_point_of_failure"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2813,6 +4661,48 @@
           "label": "Project Stalls",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Program Coordinator Single-Interpreter Awareness",
+          "description": "Coordinator privately knows the network depends on one interpreter for six language pairs; publicly she describes the network as resilient.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Participant Interpreter Availability Assumption",
+          "description": "Participants privately assume multiple interpreters exist for their language pair; they have no visibility into the concentration.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Interpreter Absence Event",
+          "description": "The critical interpreter's leave of absence is publicly documented as the proximate cause of three failed apprenticeship placements.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Dependency Concentration Map",
+          "description": "Internal records show 78% of successful cross-border placements in the past two years flowed through this single interpreter.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Individual Absence Disconfirmation",
+          "description": "The interpreter's absence was temporary; the network had no alternative routing for the 78% of flows she handled regardless of duration.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Redundancy Planning Gap",
+          "description": "No succession or cross-training plan existed for language pairs handled exclusively by the single interpreter.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2840,6 +4730,41 @@
           "source": "n1",
           "target": "n6",
           "relation": "reveals_dependency_through_loss"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n2",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -2926,6 +4851,48 @@
           "label": "Persistent Hostility",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Policy Author Population Model",
+          "description": "Policy author privately based design on a 2018 survey; publicly the policy is described as responsive to current community needs.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Current Community Self-Description",
+          "description": "Current community members privately know they differ from the policy's implied population; publicly they adapt behavior to appear compliant.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Compliance Metric Success Event",
+          "description": "Quarterly compliance metrics show the policy is being followed at high rates, publicly cited as evidence of policy effectiveness.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Behavioral Adaptation Log",
+          "description": "Ethnographic observation reveals community members performing compliance rituals without the underlying behavior change the policy targeted.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Metric Validity Disconfirmation",
+          "description": "The policy's target outcome (behavior change) shows no measurable movement despite compliance metrics at 94%.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Population Drift Documentation Gap",
+          "description": "No mechanism existed to update policy assumptions as community composition shifted over seven years.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -2953,6 +4920,41 @@
           "source": "n5",
           "target": "n4",
           "relation": "feeds"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n1",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -3039,6 +5041,48 @@
           "label": "Prior Affiliation Map",
           "kind": "evidence",
           "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Council Chair Consultant Neutrality Model",
+          "description": "Chair privately believes the consultant's cross-organization relationships enhance credibility; she does not model allegiance as variable.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Council Member Consultant Trust Model",
+          "description": "Members privately track which organizations the consultant bills; they interpret her recommendations through a current-client filter.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Consultant Recommendation Event",
+          "description": "A formal recommendation report is publicly presented and initially praised, becoming the focus of subsequent trust questions.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Billing Relationship Timeline",
+          "description": "Billing records show the consultant's primary client shifted from Group A to Group B three months before the recommendation was issued.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Recommendation Quality Disconfirmation",
+          "description": "Independent expert review rated the recommendation's technical quality as sound; the trust failure was relational, not substantive.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Conflict Disclosure Gap",
+          "description": "Council's engagement terms required no disclosure of concurrent client relationships; no conflict-check mechanism existed.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -3066,6 +5110,41 @@
           "source": "n4",
           "target": "n3",
           "relation": "shows_selective_delays"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -3152,6 +5231,48 @@
           "label": "Cost Doubling",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Board Member Procedural Belief",
+          "description": "Board members privately know the 'discovery' was anticipated; publicly they perform surprise to preserve the appearance of independent process.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Public Stakeholder Process Trust",
+          "description": "Public stakeholders privately expected genuine deliberation; they are unaware the outcome was settled before the process began.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Deliberation Process Event",
+          "description": "Public hearings and community consultations are documented as thorough; the process is publicly cited as exemplary.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Pre-Process Decision Evidence",
+          "description": "Internal correspondence predating the public process contains the final recommendation language verbatim.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Process Authenticity Disconfirmation",
+          "description": "Community input diverged significantly from the final recommendation in 11 of 13 categories \u2014 input had no observable effect on outcome.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Legitimacy Infrastructure Gap",
+          "description": "No independent process auditor role existed; board self-assessed procedural compliance without external verification.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -3179,6 +5300,41 @@
           "source": "n4",
           "target": "n3",
           "relation": "reveals_nonrandom_pattern"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -3265,6 +5421,48 @@
           "label": "Recurrent Harm",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Oversight Body Definition Authority Belief",
+          "description": "Oversight staff privately know the definition is narrow by design; publicly they describe it as the 'natural scope' of their mandate.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Affected Population Scope Assumption",
+          "description": "Affected parties privately believe their cases fall within scope; they invest significant effort in documentation before the definition gap is revealed.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Reporting Compliance Event",
+          "description": "Oversight body publishes a compliance report showing no violations, widely cited as evidence the system is functioning.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Excluded Category Inventory",
+          "description": "Internal categorization logs show 34% of reported cases were reclassified as out-of-scope during intake, before investigation.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Compliance Report Disconfirmation",
+          "description": "The compliance report accurately counted cases within the narrow definition \u2014 absence of violations reflects definition design, not absence of harm.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Definition Transparency Gap",
+          "description": "Scope definition was published in technical annexes; no plain-language summary existed for affected populations or referral organizations.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -3292,6 +5490,41 @@
           "source": "n1",
           "target": "n2",
           "relation": "is_interpreted_through"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n5",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n2",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n5",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {
@@ -3378,6 +5611,48 @@
           "label": "Long-Horizon Capacity Damage",
           "kind": "outcome",
           "visibility": "visible"
+        },
+        {
+          "id": "n_belief_A",
+          "label": "Senior Mentor Network Self-Sufficiency Belief",
+          "description": "Senior mentors privately rely on informal referral chains to find early-career candidates; publicly they describe the system as open and accessible.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_belief_B",
+          "label": "Early-Career Researcher Access Model",
+          "description": "Researchers outside the informal network privately experience access as blocked; they publicly attribute non-selection to merit gaps.",
+          "kind": "belief_state",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_surface_event",
+          "label": "Visible Output Decline Event",
+          "description": "A decline in collaborative publications is publicly attributed to reduced research funding in the same period.",
+          "kind": "event",
+          "visibility": "visible"
+        },
+        {
+          "id": "n_private_comm",
+          "label": "Informal Referral Dependency Audit",
+          "description": "Review of successful mentorship placements shows 89% were initiated through informal referrals from a shrinking senior network.",
+          "kind": "evidence",
+          "visibility": "hidden"
+        },
+        {
+          "id": "n_norm_conflict",
+          "label": "Funding Causality Disconfirmation",
+          "description": "Funding allocation data shows no reduction in the relevant research area during the output decline period.",
+          "kind": "disconfirmation",
+          "visibility": "discoverable"
+        },
+        {
+          "id": "n_coord_gap",
+          "label": "Formal Access Channel Gap",
+          "description": "No open application pathway existed for mentorship; all entry points required a warm introduction from network-adjacent individuals.",
+          "kind": "evidence",
+          "visibility": "discoverable"
         }
       ],
       "edges": [
@@ -3405,6 +5680,41 @@
           "source": "n4",
           "target": "n6",
           "relation": "mediates"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n6",
+          "relation": "appears_to_cause"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_A",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n3",
+          "target": "n_belief_B",
+          "relation": "holds_private_belief"
+        },
+        {
+          "source": "n_private_comm",
+          "target": "n_norm_conflict",
+          "relation": "supports"
+        },
+        {
+          "source": "n_coord_gap",
+          "target": "n6",
+          "relation": "structural_contributor"
+        },
+        {
+          "source": "n_surface_event",
+          "target": "n_private_comm",
+          "relation": "prompts_investigation"
+        },
+        {
+          "source": "n1",
+          "target": "n_surface_event",
+          "relation": "visible_alongside"
         }
       ],
       "track5_validation_notes": {

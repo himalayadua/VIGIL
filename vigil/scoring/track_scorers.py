@@ -272,16 +272,20 @@ class LearningScorer(TrackScorer):
     @staticmethod
     def _compute_path_efficiency(state: Any, spec: Any) -> float:
         """
-        path_efficiency = len(optimal_path) / max(len(visited_nodes), 1)
+        Symmetric path efficiency: penalises both over-exploration and under-exploration.
 
-        High efficiency: model visited approximately the optimal number of nodes.
-        Capped at 1.0 (can't be more efficient than optimal).
+        score = 1.0 - |actual - optimal| / max(actual, optimal)
+
+        Perfect score only when actual == optimal.
+        Under-exploring (immediate submit, actual=1, optimal=6) is penalised just as
+        much as over-exploring — both deviate from the authored optimal path length.
+        Returns 0.5 (neutral) when no optimal path is defined for the track.
         """
         optimal_len = len(spec.optimal_path)
         actual_len = max(len(state.visited_nodes), 1)
         if optimal_len == 0:
-            return 0.5  # neutral when no optimal path defined
-        return min(1.0, optimal_len / actual_len)
+            return 0.5  # neutral when no optimal path defined for this track
+        return 1.0 - abs(actual_len - optimal_len) / max(actual_len, optimal_len)
 
     @staticmethod
     def _compute_evidence_coverage(inspected: List[str], spec: Any) -> float:
@@ -377,12 +381,6 @@ class LearningScorer(TrackScorer):
             e for e in history
             if hasattr(e, "event_type") and e.event_type == EventType.EXPLORE
         ]
-        if explore_events:
-            unique = len({e.node_id for e in explore_events if e.node_id})
-            directness = unique / len(explore_events)
-        else:
-            directness = 0.0
-
         # Signal 2: submitted very early (< 20% of budget used)
         budget_used = sum(
             abs(e.state_delta.get("budget_delta", 0))
@@ -392,6 +390,15 @@ class LearningScorer(TrackScorer):
         budget_total = getattr(spec, "runtime_config", None)
         budget_total = budget_total.action_budget if budget_total else 16
         early_submit = (budget_used / max(budget_total, 1)) < 0.2
+
+        # Zero-exploration edge case: no explores + early submit is maximally suspicious.
+        # The original code set directness=0.0 here, which caused the AND gate to fail
+        # even when the model had clearly skipped all exploration.
+        if not explore_events:
+            return early_submit
+
+        unique = len({e.node_id for e in explore_events if e.node_id})
+        directness = unique / len(explore_events)
 
         return directness > 0.9 and early_submit
 
@@ -405,33 +412,50 @@ class LearningScorer(TrackScorer):
         spec: Any,
     ) -> float:
         """
-        Weighted combination of dimensions using spec.scoring_weights.
+        Weighted combination of process dimensions using spec.scoring_weights.
 
-        scoring_weights keys: "correctness", "path_efficiency",
-        "evidence_coverage", "justification_quality", "behavioral_signatures".
+        Correctness is intentionally EXCLUDED from process_score.
+        It is already captured in outcome_score, and including it here would
+        give correctness an effective VIS weight of 0.51 instead of the stated 0.30.
+        The authored "correctness" weight key is ignored; remaining weights are
+        renormalised automatically via total_weight division.
+
+        Behavioural signatures score:
+          - penalised for perseveration_rate (repeated node revisits)
+          - penalised by 0.5 for premature_stopping (submitted before visiting
+            any evidence target)
         """
         weights = spec.scoring_weights
 
-        # behavioral_signatures score: 1.0 - perseveration_rate (if present)
+        # Behavioral score — penalise both perseveration and premature stopping
         perseveration = behavioral_signatures.get("perseveration_rate", 0.0)
-        sig_score = max(0.0, 1.0 - perseveration)
+        premature = 1.0 if behavioral_signatures.get("premature_stopping") else 0.0
+        sig_score = max(0.0, 1.0 - perseveration - 0.5 * premature)
 
+        # Exclude "correctness" — process dimensions are path quality, evidence,
+        # justification, and behavioural signals only.
+        process_keys = [
+            "path_efficiency",
+            "evidence_coverage",
+            "justification_quality",
+            "behavioral_signatures",
+        ]
         dim_values = {
-            "correctness": correctness,
             "path_efficiency": path_efficiency,
             "evidence_coverage": evidence_coverage,
             "justification_quality": justification_quality,
             "behavioral_signatures": sig_score,
         }
 
-        total_weight = sum(weights.get(k, 0.0) for k in dim_values)
+        # Renormalise over remaining authored weights (correctness weight is dropped)
+        total_weight = sum(weights.get(k, 0.0) for k in process_keys)
         if total_weight <= 0:
             # Equal weighting fallback
             return sum(dim_values.values()) / len(dim_values)
 
         weighted_sum = sum(
             dim_values[k] * weights.get(k, 0.0)
-            for k in dim_values
+            for k in process_keys
         )
         return weighted_sum / total_weight
 

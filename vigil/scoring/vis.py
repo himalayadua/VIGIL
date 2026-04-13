@@ -127,10 +127,16 @@ class VISScorer:
         vis = 0.3 * outcome_score + 0.7 * process_score
         vis = max(0.0, min(1.0, vis))
 
-        # Contamination warning: scorecard value OR cr > 0.8 override
+        # Contamination warning: scorecard value OR cr > 0.7 override
         contamination_warning = scorecard.get("contamination_warning", False)
-        if cr > 0.8:
+        if cr > 0.7:
             contamination_warning = True
+
+        # Contamination gate: cap VIS at 0.45 when contamination is detected.
+        # This ensures a legitimate partial-score model always beats a model
+        # that skipped exploration and submitted a memorised answer.
+        if contamination_warning:
+            vis = min(vis, 0.45)
 
         # track_id from scorecard, fallback to scenario_config
         track_id = scorecard.get(
@@ -228,6 +234,12 @@ class VISScorer:
         vis = 0.3 * outcome_score + 0.7 * process_score
         vis = max(0.0, min(1.0, vis))
 
+        contamination_warning = cr > 0.7
+
+        # Contamination gate: cap VIS at 0.45 when contamination is detected.
+        if contamination_warning:
+            vis = min(vis, 0.45)
+
         result: Dict[str, Any] = {
             "vis": round(vis, 4),
             "outcome_score": round(outcome_score, 4),
@@ -239,7 +251,7 @@ class VISScorer:
             "stopping_quality": round(sq, 4),
             "metacognition": round(mc, 4),
             "contamination_risk": round(cr, 4),
-            "contamination_warning": cr > 0.8,
+            "contamination_warning": contamination_warning,
             "track_id": scenario_config.get("cognitive_track", "unknown"),
         }
 

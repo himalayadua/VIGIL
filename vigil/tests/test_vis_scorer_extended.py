@@ -399,6 +399,90 @@ class TestVISInvariant:
 
 
 # ---------------------------------------------------------------------------
+# v2 Contamination gate — VIS is capped at 0.45 when contamination fires
+# ---------------------------------------------------------------------------
+
+class TestContaminationGate:
+    """v2: contamination_warning=True must cap VIS at 0.45."""
+
+    def test_contamination_in_scorecard_caps_vis(self):
+        """When scorecard.contamination_warning=True, VIS must be ≤ 0.45."""
+        scorer = VISScorer()
+        state = _make_state()
+        # High outcome and process that would give VIS > 0.45 without cap
+        scorecard = _make_scorecard(outcome=1.0, process=1.0, contamination_warning=True)
+        result = scorer.score_episode(
+            state=state,
+            final_answer="answer",
+            justification="j",
+            scenario_config=_base_config(),
+            scorecard=scorecard,
+        )
+        assert result["contamination_warning"] is True
+        assert result["vis"] <= 0.45, (
+            f"Contaminated episode must have VIS ≤ 0.45, got {result['vis']}"
+        )
+
+    def test_high_cr_caps_vis_via_scorecard_path(self):
+        """When cr > 0.7 (computed from state), VIS must be ≤ 0.45."""
+        scorer = VISScorer()
+        state = _make_state()
+
+        # Force high contamination_risk
+        original = scorer.compute_contamination_risk
+        scorer.compute_contamination_risk = lambda s: 0.9
+
+        scorecard = _make_scorecard(outcome=1.0, process=1.0, contamination_warning=False)
+        result = scorer.score_episode(
+            state=state,
+            final_answer="answer",
+            justification="j",
+            scenario_config=_base_config(),
+            scorecard=scorecard,
+        )
+        assert result["contamination_warning"] is True
+        assert result["vis"] <= 0.45, (
+            f"High-CR episode must have VIS ≤ 0.45, got {result['vis']}"
+        )
+        scorer.compute_contamination_risk = original
+
+    def test_clean_episode_can_exceed_0_45(self):
+        """A clean episode (no contamination) must be able to score above 0.45."""
+        scorer = VISScorer()
+        state = _make_state()
+        scorecard = _make_scorecard(outcome=0.8, process=0.8, contamination_warning=False)
+        result = scorer.score_episode(
+            state=state,
+            final_answer="answer",
+            justification="j",
+            scenario_config=_base_config(),
+            scorecard=scorecard,
+        )
+        assert result["contamination_warning"] is False
+        assert result["vis"] > 0.45, (
+            f"Clean episode with high scores must exceed 0.45, got {result['vis']}"
+        )
+
+    def test_contamination_gate_invariant_scorecard(self):
+        """With contamination, VIS ≤ 0.45; without contamination, VIS = formula."""
+        scorer = VISScorer()
+        state = _make_state()
+
+        sc_clean = _make_scorecard(outcome=0.7, process=0.7, contamination_warning=False)
+        r_clean = scorer.score_episode(state=state, final_answer="a", justification="j",
+                                        scenario_config=_base_config(), scorecard=sc_clean)
+
+        sc_cont = _make_scorecard(outcome=0.7, process=0.7, contamination_warning=True)
+        r_cont = scorer.score_episode(state=state, final_answer="a", justification="j",
+                                       scenario_config=_base_config(), scorecard=sc_cont)
+
+        assert r_cont["vis"] < r_clean["vis"], (
+            "Contaminated episode must score lower than clean episode with same outcome/process"
+        )
+        assert r_cont["vis"] <= 0.45
+
+
+# ---------------------------------------------------------------------------
 # Property 1 — Hypothesis property test
 # ---------------------------------------------------------------------------
 
