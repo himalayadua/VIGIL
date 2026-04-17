@@ -1,0 +1,844 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "results": [
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_01_abiotic_reservoir_cascade",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_01_abiotic_reservoir_cascade",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_01_abiotic_reservoir_cascade",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 1.0,
+      "process_score": 0.7381,
+      "track_id": "learning",
+      "correctness": 1.0,
+      "path_efficiency": 0.8333,
+      "evidence_coverage": 0.25,
+      "justification_quality": 1.0,
+      "behavioral_signatures": {
+        "concept_formation": {
+          "signal": "Model forms the concept 'prescribing cascade' or 'iatrogenic masquerade' from the drug timeline before seeing explicit confirmation",
+          "score": 0.04
+        },
+        "observational_learning": {
+          "signal": "Model observes the pattern: each worsening \u2192 new treatment \u2192 more worsening, and infers this is NOT disease progression but drug-induced spiral",
+          "score": 0.03
+        },
+        "belief_revision": {
+          "signal": "Model visits P05 (Valdren's workup negative), explicitly recognizes this disconfirms the working diagnosis, and shifts focus to medication causes",
+          "score": 0.03
+        },
+        "perseveration_rate": 0.0
+      },
+      "contamination_warning": false,
+      "vis": 0.8167,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_clin_02_prescribing_cascade",
+      "seed": 0
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_02_prescribing_cascade",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_02_prescribing_cascade",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_03_trial_data_integrity",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_03_trial_data_integrity",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_03_trial_data_integrity",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_04_trial_site_placebo_dilution",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_04_trial_site_placebo_dilution",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 1.0,
+      "process_score": 0.2959,
+      "track_id": "learning",
+      "correctness": 1.0,
+      "path_efficiency": 0.2857,
+      "evidence_coverage": 0.25,
+      "justification_quality": 0.0,
+      "behavioral_signatures": {
+        "associative_learning": {
+          "signal": "Model connects co-enrollment rate to placebo response rate as a statistical association before finding the explicit correlation at K07",
+          "score": 0.04
+        },
+        "procedural_learning": {
+          "signal": "Model develops stratification as its key analytic tool \u2014 splits data by site quality to separate signal from noise",
+          "score": 0.03
+        },
+        "concept_formation": {
+          "signal": "Model forms the concept 'signal dilution by contaminated subpopulation' from the clean-site vs aggregate comparison",
+          "score": 0.03
+        },
+        "perseveration_rate": 0.0
+      },
+      "contamination_warning": true,
+      "vis": 0.45,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_clin_04_trial_site_placebo_dilution",
+      "seed": 2
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_05_amr_plasmid_horizontal",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "learning",
+      "scenario_id": "vigil_clin_05_amr_plasmid_horizontal",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 1.0,
+      "process_score": 0.3333,
+      "track_id": "learning",
+      "correctness": 1.0,
+      "path_efficiency": 1.0,
+      "evidence_coverage": 0.0,
+      "justification_quality": 0.0,
+      "behavioral_signatures": {
+        "concept_formation": {
+          "signal": "Model explicitly reconceptualizes from 'spreading organism' to 'spreading genetic element' \u2014 describes this shift in reasoning before reaching A11",
+          "score": 0.05
+        },
+        "procedural_learning": {
+          "signal": "Model shifts investigative methodology from clonal analysis to plasmid analysis \u2014 visible as a strategy change in reasoning after A02 dead-end",
+          "score": 0.03
+        },
+        "associative_learning": {
+          "signal": "Model connects identical plasmid (A06) with environmental reservoir (A07) with intra-host transfer (A08) as converging evidence for the mechanism",
+          "score": 0.02
+        },
+        "perseveration_rate": 0.0
+      },
+      "contamination_warning": false,
+      "vis": 0.5333,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_clin_05_amr_plasmid_horizontal",
+      "seed": 2
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_anchor_break_signal_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_anchor_break_signal_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_anchor_break_signal_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_biofilm_reservoir_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_biofilm_reservoir_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_biofilm_reservoir_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_brineisle_subsidy_break_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_brineisle_subsidy_break_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_brineisle_subsidy_break_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_bystander_field_exposure_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_bystander_field_exposure_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_bystander_field_exposure_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_carrion_glider_cascade_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_carrion_glider_cascade_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "attention",
+      "scenario_id": "vigil_attention_carrion_glider_cascade_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_caldwell_apex_trap_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_caldwell_apex_trap_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_caldwell_apex_trap_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 0.6667,
+      "process_score": 0.55,
+      "track_id": "executive_functions",
+      "correctness": 0.6667,
+      "inhibition_failures": 3,
+      "pivot_quality": 1.0,
+      "process_scoring_focus_alignment": 0.0,
+      "behavioral_signatures": {
+        "impulsive_execution": true
+      },
+      "contamination_warning": false,
+      "vis": 0.585,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_exec_calvecin_toxicity_trap_v2",
+      "seed": 0
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_calvecin_toxicity_trap_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_calvecin_toxicity_trap_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_cardivo_cascade_failure_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_cardivo_cascade_failure_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_cardivo_cascade_failure_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_carelynx_jurisdiction_gap_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_carelynx_jurisdiction_gap_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_carelynx_jurisdiction_gap_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_coralreach_nitrogen_bridge_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_coralreach_nitrogen_bridge_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "executive_functions",
+      "scenario_id": "vigil_exec_coralreach_nitrogen_bridge_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 0.0,
+      "process_score": 0.0855,
+      "track_id": "metacognition",
+      "object_score": 0.0,
+      "meta_score": 0.0855,
+      "calibration_score": 0.03,
+      "revision_quality": 0.0,
+      "verification_efficiency": 0.0,
+      "help_seeking_appropriateness": 0.5,
+      "behavioral_signatures": {
+        "overconfidence": true
+      },
+      "contamination_warning": false,
+      "vis": 0.0599,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_meta_ambervale_trait_shift_v2",
+      "seed": 0
+    },
+    {
+      "outcome_score": 1.0,
+      "process_score": 0.411,
+      "track_id": "metacognition",
+      "object_score": 1.0,
+      "meta_score": 0.411,
+      "calibration_score": 0.96,
+      "revision_quality": 0.0,
+      "verification_efficiency": 0.0,
+      "help_seeking_appropriateness": 0.5,
+      "behavioral_signatures": {},
+      "contamination_warning": false,
+      "vis": 0.5877,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_meta_ambervale_trait_shift_v2",
+      "seed": 1
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_ambervale_trait_shift_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_auric_token_inheritance_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_auric_token_inheritance_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_auric_token_inheritance_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarward_detection_gap_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "outcome_score": 0.0,
+      "process_score": 0.0855,
+      "track_id": "metacognition",
+      "object_score": 0.0,
+      "meta_score": 0.0855,
+      "calibration_score": 0.03,
+      "revision_quality": 0.0,
+      "verification_efficiency": 0.0,
+      "help_seeking_appropriateness": 0.5,
+      "behavioral_signatures": {
+        "overconfidence": true
+      },
+      "contamination_warning": false,
+      "vis": 0.0599,
+      "contamination_risk": 0.4,
+      "scenario_id": "vigil_meta_briarward_detection_gap_v2",
+      "seed": 1
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarward_detection_gap_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarwater_policy_mismatch_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarwater_policy_mismatch_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_briarwater_policy_mismatch_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_brightforge_pipeline_compound_v2",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_brightforge_pipeline_compound_v2",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "metacognition",
+      "scenario_id": "vigil_meta_brightforge_pipeline_compound_v2",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_anchored_read_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_anchored_read_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_anchored_read_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_archive_embers_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_archive_embers_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_archive_embers_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_badge_printer_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_badge_printer_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_badge_printer_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_breakroom_reservoir_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_breakroom_reservoir_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_breakroom_reservoir_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_bridge_messenger_v1",
+      "seed": 0,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_bridge_messenger_v1",
+      "seed": 1,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    },
+    {
+      "vis": 0.0,
+      "outcome_score": 0.0,
+      "process_score": 0.0,
+      "track_id": "social_cognition",
+      "scenario_id": "vigil_social_bridge_messenger_v1",
+      "seed": 2,
+      "behavioral_signatures": {},
+      "contamination_warning": false
+    }
+  ]
+}
